@@ -47,7 +47,7 @@ export const zh: Record<string, any> = {
     algoCount: '{count} 个算法',
     categoryDesc: {
       sorting: '冒泡·选择·插入·快速·归并·堆·希尔·基数·计数·桶',
-      searching: '线性搜索·二分搜索',
+      searching: '线性·二分·跳跃·插值·指数',
       graph: 'BFS·DFS·Dijkstra',
       'data-structure': '二叉搜索树',
     },
@@ -132,6 +132,9 @@ export const zh: Record<string, any> = {
     'bucket-sort': '桶排序',
     'linear-search': '线性搜索',
     'binary-search': '二分搜索',
+    'jump-search': '跳跃搜索',
+    'interpolation-search': '插值搜索',
+    'exponential-search': '指数搜索',
     'binary-search-tree': '二叉搜索树',
     'bfs': '广度优先搜索',
     'dfs': '深度优先搜索',

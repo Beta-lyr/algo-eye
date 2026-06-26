@@ -16,6 +16,9 @@ import { countingSort } from './sorting/countingSort';
 import { bucketSort } from './sorting/bucketSort';
 import { linearSearch } from './searching/linearSearch';
 import { binarySearch } from './searching/binarySearch';
+import { jumpSearch } from './searching/jumpSearch';
+import { interpolationSearch } from './searching/interpolationSearch';
+import { exponentialSearch } from './searching/exponentialSearch';
 import { binarySearchTree } from './data-structure/binarySearchTree';
 import { bfs } from './graph/bfs';
 import { dfs } from './graph/dfs';
@@ -35,6 +38,9 @@ export const algorithms: Algorithm[] = [
   bucketSort,
   linearSearch,
   binarySearch,
+  jumpSearch,
+  interpolationSearch,
+  exponentialSearch,
   binarySearchTree,
   bfs,
   dfs,

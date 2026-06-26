@@ -56,6 +56,39 @@ const MESSAGE_PATTERNS: Record<string, Record<Locale, string>> = {
     zh: '所有元素已按升序排列',
     en: 'All elements are sorted in ascending order',
   },
+  // 搜索相关
+  '开始线性搜索': {
+    zh: '开始线性搜索',
+    en: 'Starting Linear Search',
+  },
+  '开始二分搜索': {
+    zh: '开始二分搜索',
+    en: 'Starting Binary Search',
+  },
+  '开始跳跃搜索': {
+    zh: '开始跳跃搜索',
+    en: 'Starting Jump Search',
+  },
+  '开始插值搜索': {
+    zh: '开始插值搜索',
+    en: 'Starting Interpolation Search',
+  },
+  '开始指数搜索': {
+    zh: '开始指数搜索',
+    en: 'Starting Exponential Search',
+  },
+  '搜索完成': {
+    zh: '搜索完成',
+    en: 'Search complete',
+  },
+  '找到目标': {
+    zh: '找到目标',
+    en: 'Target found',
+  },
+  '未找到目标': {
+    zh: '未找到目标',
+    en: 'Target not found',
+  },
 };
 
 /** 正则模式翻译 */
@@ -269,6 +302,151 @@ const REGEX_PATTERNS: Array<{
     replacement: {
       zh: '合并完成 [$1..$2]',
       en: 'Merge complete [$1..$2]',
+    },
+  },
+  // 搜索相关
+  // 开始X搜索（数据已排序），目标值 target = Y
+  {
+    pattern: /开始(.+)搜索（数据已排序），目标值 target = (\d+)/,
+    replacement: {
+      zh: '开始$1搜索（数据已排序），目标值 target = $2',
+      en: 'Starting $1 Search (sorted data), target = $2',
+    },
+  },
+  // 开始X搜索（数据已排序且均匀分布），目标值 target = Y
+  {
+    pattern: /开始(.+)搜索（数据已排序且均匀分布），目标值 target = (\d+)/,
+    replacement: {
+      zh: '开始$1搜索（数据已排序且均匀分布），目标值 target = $2',
+      en: 'Starting $1 Search (sorted & uniform data), target = $2',
+    },
+  },
+  // 开始X搜索，目标值 target = Y
+  {
+    pattern: /开始(.+)搜索，目标值 target = (\d+)/,
+    replacement: {
+      zh: '开始$1搜索，目标值 target = $2',
+      en: 'Starting $1 Search, target = $2',
+    },
+  },
+  // 搜索区间 [X..Y]，mid = Z，arr[Z] = W
+  {
+    pattern: /搜索区间 \[(\d+)\.\.(\d+)\]，mid = (\d+)，arr\[(\d+)\] = (\d+)/,
+    replacement: {
+      zh: '搜索区间 [$1..$2]，mid = $3，arr[$4] = $5',
+      en: 'Search range [$1..$2], mid = $3, arr[$4] = $5',
+    },
+  },
+  // 搜索区间 [X..Y]，估算位置 pos = Z，arr[Z] = W
+  {
+    pattern: /搜索区间 \[(\d+)\.\.(\d+)\]，估算位置 pos = (\d+)，arr\[(\d+)\] = (\d+)/,
+    replacement: {
+      zh: '搜索区间 [$1..$2]，估算位置 pos = $3，arr[$4] = $5',
+      en: 'Search range [$1..$2], estimated pos = $3, arr[$4] = $5',
+    },
+  },
+  // 搜索完成，目标 X 位于下标 Y
+  {
+    pattern: /搜索完成，目标 (\d+) 位于下标 (\d+)/,
+    replacement: {
+      zh: '搜索完成，目标 $1 位于下标 $2',
+      en: 'Search complete, target $1 at index $2',
+    },
+  },
+  // 搜索完成，未找到目标值 X
+  {
+    pattern: /搜索完成，未找到目标值 (\d+)/,
+    replacement: {
+      zh: '搜索完成，未找到目标值 $1',
+      en: 'Search complete, target $1 not found',
+    },
+  },
+  // 检查 arr[X] = Y === Z?
+  {
+    pattern: /检查 arr\[(\d+)\] = (\d+) === (\d+)\?/,
+    replacement: {
+      zh: '检查 arr[$1] = $2 === $3?',
+      en: 'Check arr[$1] = $2 === $3?',
+    },
+  },
+  // 检查 arr[X] = Y < Z
+  {
+    pattern: /检查 arr\[(\d+)\] = (\d+) < (\d+)/,
+    replacement: {
+      zh: '检查 arr[$1] = $2 < $3',
+      en: 'Check arr[$1] = $2 < $3',
+    },
+  },
+  // arr[X] = Y ≠ Z，继续
+  {
+    pattern: /arr\[(\d+)\] = (\d+) ≠ (\d+)，继续/,
+    replacement: {
+      zh: 'arr[$1] = $2 ≠ $3，继续',
+      en: 'arr[$1] = $2 ≠ $3, continue',
+    },
+  },
+  // 跳跃：arr[X] = Y < Z，继续跳跃
+  {
+    pattern: /跳跃：arr\[(\d+)\] = (\d+) < (\d+)，继续跳跃/,
+    replacement: {
+      zh: '跳跃：arr[$1] = $2 < $3，继续跳跃',
+      en: 'Jump: arr[$1] = $2 < $3, continue jumping',
+    },
+  },
+  // 找到区间 [X..Y]，开始线性搜索
+  {
+    pattern: /找到区间 \[(\d+)\.\.(\d+)\]，开始线性搜索/,
+    replacement: {
+      zh: '找到区间 [$1..$2]，开始线性搜索',
+      en: 'Found range [$1..$2], start linear search',
+    },
+  },
+  // 指数扩展：i = X，arr[X] = Y ≤ Z
+  {
+    pattern: /指数扩展：i = (\d+)，arr\[(\d+)\] = (\d+) ≤ (\d+)/,
+    replacement: {
+      zh: '指数扩展：i = $1，arr[$2] = $3 ≤ $4',
+      en: 'Exponential expansion: i = $1, arr[$2] = $3 ≤ $4',
+    },
+  },
+  // 找到范围 [X..Y]，开始二分搜索
+  {
+    pattern: /找到范围 \[(\d+)\.\.(\d+)\]，开始二分搜索/,
+    replacement: {
+      zh: '找到范围 [$1..$2]，开始二分搜索',
+      en: 'Found range [$1..$2], start binary search',
+    },
+  },
+  // 二分搜索：区间 [X..Y]，mid = Z，arr[Z] = W
+  {
+    pattern: /二分搜索：区间 \[(\d+)\.\.(\d+)\]，mid = (\d+)，arr\[(\d+)\] = (\d+)/,
+    replacement: {
+      zh: '二分搜索：区间 [$1..$2]，mid = $3，arr[$4] = $5',
+      en: 'Binary search: range [$1..$2], mid = $3, arr[$4] = $5',
+    },
+  },
+  // arr[X] = Y < Z，搜索右半部分
+  {
+    pattern: /arr\[(\d+)\] = (\d+) < (\d+)，搜索右半部分/,
+    replacement: {
+      zh: 'arr[$1] = $2 < $3，搜索右半部分',
+      en: 'arr[$1] = $2 < $3, search right half',
+    },
+  },
+  // arr[X] = Y > Z，搜索左半部分
+  {
+    pattern: /arr\[(\d+)\] = (\d+) > (\d+)，搜索左半部分/,
+    replacement: {
+      zh: 'arr[$1] = $2 > $3，搜索左半部分',
+      en: 'arr[$1] = $2 > $3, search left half',
+    },
+  },
+  // ✓ 找到目标！arr[X] = Y
+  {
+    pattern: /✓ 找到目标！arr\[(\d+)\] = (\d+)/,
+    replacement: {
+      zh: '✓ 找到目标！arr[$1] = $2',
+      en: '✓ Target found! arr[$1] = $2',
     },
   },
 ];

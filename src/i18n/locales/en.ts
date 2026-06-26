@@ -47,7 +47,7 @@ export const en: Record<string, any> = {
     algoCount: '{count} algorithms',
     categoryDesc: {
       sorting: 'Bubble · Selection · Insertion · Quick · Merge · Heap · Shell · Radix · Counting · Bucket',
-      searching: 'Linear Search · Binary Search',
+      searching: 'Linear · Binary · Jump · Interpolation · Exponential',
       graph: 'BFS · DFS · Dijkstra',
       'data-structure': 'Binary Search Tree',
     },
@@ -132,6 +132,9 @@ export const en: Record<string, any> = {
     'bucket-sort': 'Bucket Sort',
     'linear-search': 'Linear Search',
     'binary-search': 'Binary Search',
+    'jump-search': 'Jump Search',
+    'interpolation-search': 'Interpolation Search',
+    'exponential-search': 'Exponential Search',
     'binary-search-tree': 'Binary Search Tree',
     'bfs': 'Breadth-First Search',
     'dfs': 'Depth-First Search',
