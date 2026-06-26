@@ -24,6 +24,7 @@ npm run type-check   # tsc --noEmit 类型检查
 - React 19 + TypeScript 6（严格模式）+ Vite 8
 - 路由：React Router v7
 - 状态管理：Zustand
+- 国际化：自研 i18n 模块（基于 Zustand，支持中英文切换）
 - 代码高亮：Prism.js（自定义 CRT 主题）
 - 样式：CSS Modules + 全局终端主题 CSS
 - Lint：OxLint（非 ESLint）
@@ -34,7 +35,7 @@ npm run type-check   # tsc --noEmit 类型检查
 
 ```
 UI 层 (React 组件)
-  Topbar / AlgorithmTree / VizStage / CodePanel / Controls / StatsPanel / CrtOverlay
+  Topbar / AlgorithmTree / VizStage / CodePanel / Controls / StatsPanel / CrtOverlay / LanguageSwitch
 ↓
 引擎层 (纯 TS，框架无关)
   StepPlayer（回放）/ AnimationController（时钟）/ Step / Snapshot 类型
@@ -44,6 +45,10 @@ UI 层 (React 组件)
 ↓
 数据/状态层 (Zustand)
   useVizStore: currentAlgo / data / stepIndex / playing / speed
+  useI18n: locale / t (翻译字典)
+↓
+国际化层 (i18n)
+  翻译字典 (zh/en) + 消息翻译器 + useT/useLocale/useTranslateMessage
 ```
 
 **核心数据流**：算法用 Generator 函数 yield Step → 引擎收集成 Step[] → StepPlayer 按速度回放 → Renderer.draw(ctx, snapshot) 画 Canvas → onStep 回调驱动 CodePanel 高亮与统计。
@@ -148,6 +153,7 @@ src/
 │   ├── CodePanel.tsx
 │   ├── Controls.tsx
 │   ├── StatsPanel.tsx
+│   ├── LanguageSwitch.tsx # 语言切换按钮
 │   └── crt/CrtOverlay.tsx
 ├── engine/               # 引擎层（框架无关）
 │   ├── StepPlayer.ts
@@ -165,6 +171,12 @@ src/
 │   ├── ArrayRenderer.ts  # 排序/搜索柱状图
 │   ├── GridRenderer.ts   # 图算法网格
 │   └── TreeRenderer.ts
+├── i18n/                 # 国际化层
+│   ├── index.ts          # Zustand store + hooks
+│   ├── locales/
+│   │   ├── zh.ts         # 中文翻译
+│   │   └── en.ts         # 英文翻译
+│   └── messageTranslator.ts # 算法步骤消息翻译器
 ├── store/                # 状态层
 │   └── useVizStore.ts
 ├── styles/
@@ -185,6 +197,38 @@ src/
 | 搜索 | 线性搜索、二分搜索 |
 | 数据结构 | 二叉搜索树 |
 | 图 | BFS、DFS、Dijkstra |
+
+## 国际化（i18n）使用指南
+
+### 架构
+- 基于 Zustand，无外部依赖
+- 语言偏好持久化到 localStorage
+- 消息翻译器支持模式匹配翻译算法步骤消息
+
+### 使用方式
+```tsx
+import { useT, useLocale, useSetLocale, useTranslateMessage } from '../i18n';
+
+function MyComponent() {
+  const t = useT();                    // 获取翻译字典
+  const locale = useLocale();          // 获取当前语言 ('zh' | 'en')
+  const setLocale = useSetLocale();    // 切换语言
+  const translateMsg = useTranslateMessage(); // 翻译算法步骤消息
+  
+  return <div>{t.landing.tagline}</div>;
+}
+```
+
+### 添加新语言
+1. 在 `src/i18n/locales/` 下创建新文件（如 `ja.ts`）
+2. 复制 `zh.ts` 的结构，翻译所有值
+3. 在 `src/i18n/index.ts` 中导入并添加到 `localeMap`
+4. 更新 `Locale` 类型定义
+
+### 添加新翻译 key
+1. 在 `src/i18n/locales/zh.ts` 中添加中文
+2. 在 `src/i18n/locales/en.ts` 中添加英文
+3. 在组件中使用 `t.newKey` 访问
 
 ## 新增算法 Checklist
 

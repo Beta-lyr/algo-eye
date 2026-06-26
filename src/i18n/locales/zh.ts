@@ -2,7 +2,7 @@
 // 中文翻译
 // ============================================================
 
-export const zh = {
+export const zh: Record<string, any> = {
   // 通用
   common: {
     about: '关于',

@@ -2,7 +2,7 @@
 // English translations
 // ============================================================
 
-export const en = {
+export const en: Record<string, any> = {
   // Common
   common: {
     about: 'About',

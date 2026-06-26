@@ -7,6 +7,7 @@
 ## ✨ 特性
 
 - 🎨 **Phosphor Terminal 风格** — 磷光绿 + 琥珀主色调，CRT 扫描线与辉光特效
+- 🌍 **中英文切换** — 国际化支持，语言偏好持久化
 - 🔄 **三段式管线架构** — 算法生成器 → 引擎回放 → 渲染器绘制，解耦彻底
 - 📊 **12 个算法** — 6 排序 + 2 搜索 + 1 数据结构 + 3 图算法
 - 🎮 **完整控制** — 播放/暂停/单步/调速/跳转/反向回放
@@ -36,6 +37,7 @@ npm run preview
 - **构建**：Vite 8
 - **路由**：React Router v7
 - **状态管理**：Zustand
+- **国际化**：自研 i18n 模块（基于 Zustand）
 - **代码高亮**：Prism.js（自定义 CRT 主题）
 - **样式**：CSS Modules + 全局终端主题 CSS
 - **Lint**：OxLint
@@ -47,7 +49,7 @@ npm run preview
 ┌─────────────────────────────────────────────┐
 │  UI 层 (React 组件)                          │
 │  Topbar / Tree / VizStage / CodePanel /      │
-│  Controls / Stats / CrtOverlay               │
+│  Controls / Stats / CrtOverlay / LangSwitch  │
 ├─────────────────────────────────────────────┤
 │  引擎层 (纯 TS，框架无关)                    │
 │  StepPlayer / AnimationController            │
@@ -56,7 +58,10 @@ npm run preview
 │  Algorithm 接口 + 各算法生成器                │
 ├─────────────────────────────────────────────┤
 │  数据/状态层 (Zustand)                       │
-│  useVizStore                                 │
+│  useVizStore + useI18n                       │
+├─────────────────────────────────────────────┤
+│  国际化层 (i18n)                             │
+│  翻译字典 (zh/en) + 消息翻译器               │
 └─────────────────────────────────────────────┘
 ```
 
@@ -118,6 +123,9 @@ src/
 ├── engine/           # 可视化引擎
 ├── algorithms/       # 算法实现
 ├── renderers/        # 渲染器
+├── i18n/             # 国际化
+│   ├── locales/      # 翻译文件 (zh/en)
+│   └── messageTranslator.ts
 ├── store/            # Zustand 状态
 ├── styles/           # 样式
 └── pages/            # 页面

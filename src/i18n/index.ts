@@ -13,7 +13,7 @@ import { translateMessage } from './messageTranslator';
 export type Locale = 'zh' | 'en';
 
 /** 翻译字典类型 */
-export type Translations = typeof zh;
+export type Translations = Record<string, any>;
 
 /** 语言包映射 */
 const localeMap: Record<Locale, Translations> = { zh, en };
