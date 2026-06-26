@@ -1111,6 +1111,18 @@ img {
   color: var(--green);
 }
 
+.learn-link {
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.learn-link:hover {
+  color: var(--amber);
+  border-color: var(--amber);
+  text-shadow: var(--glow-amber);
+}
+
 /* ===== 响应式 ===== */
 @media (max-width: 980px) {
   .main {
@@ -1133,6 +1145,228 @@ img {
   .topbar .nav {
     display: none;
   }
+}
+
+/* ===== Learn 页面 ===== */
+.learn-page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--green);
+}
+
+.learn-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: var(--bg-panel-raised);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.learn-nav {
+  display: flex;
+  gap: 16px;
+}
+
+.back-link {
+  color: var(--green-dim);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  transition: 0.15s;
+}
+
+.back-link:hover {
+  color: var(--green);
+  text-shadow: var(--glow-green);
+}
+
+.learn-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.learn-title h1 {
+  font-family: var(--term);
+  font-size: 24px;
+  color: var(--green);
+  text-shadow: var(--glow-green);
+  margin: 0;
+}
+
+.learn-badges {
+  display: flex;
+  gap: 8px;
+}
+
+.learn-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.learn-section {
+  margin-bottom: 32px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--amber);
+  margin: 0;
+}
+
+.section-icon {
+  color: var(--green);
+}
+
+.section-body {
+  padding: 16px;
+  background: var(--bg-panel-raised);
+}
+
+.section-body p {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--green-dim);
+}
+
+.core-idea {
+  font-size: 15px;
+  color: var(--amber) !important;
+  text-shadow: var(--glow-amber);
+  border-left: 3px solid var(--amber);
+  padding-left: 12px;
+}
+
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.steps-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border);
+}
+
+.steps-list li:last-child {
+  border-bottom: none;
+}
+
+.step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--green-faint);
+  border-radius: 50%;
+  font-size: 11px;
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+.step-text {
+  color: var(--green-dim);
+  line-height: 1.5;
+}
+
+.use-cases-list,
+.pitfalls-list,
+.variants-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.use-cases-list li,
+.pitfalls-list li,
+.variants-list li {
+  padding: 6px 0 6px 20px;
+  position: relative;
+  color: var(--green-dim);
+}
+
+.use-cases-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--green-soft);
+}
+
+.pitfalls-list li::before {
+  content: '✗';
+  position: absolute;
+  left: 0;
+  color: var(--red);
+}
+
+.variants-list li::before {
+  content: '◎';
+  position: absolute;
+  left: 0;
+  color: var(--cyan);
+}
+
+.code-block {
+  background: #060906;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--green-dim);
+  overflow-x: auto;
+  white-space: pre;
+  margin: 0;
+}
+
+.learn-cta {
+  text-align: center;
+  margin-top: 40px;
+  padding: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.learn-404 {
+  text-align: center;
+  padding: 60px 24px;
+}
+
+.ascii-error {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--red);
+  margin-bottom: 24px;
+}
+
+.learn-404 h2 {
+  font-family: var(--term);
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+
+.learn-404 p {
+  color: var(--green-faint);
+  margin-bottom: 24px;
 }
 
 /* ===== 无障碍：减少动效 ===== */

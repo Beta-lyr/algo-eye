@@ -5,6 +5,7 @@
 // ============================================================
 
 import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { useVizStore } from '../store/useVizStore';
 import { useT, useTranslateMessage } from '../i18n';
 import { ArrayRenderer } from '../renderers/ArrayRenderer';
@@ -337,6 +338,9 @@ export function VizStage() {
           <span className="badge ok">
             {t.viz.inPlace} <b>{t.viz.yes}</b>
           </span>
+          <Link to={`/algo/${currentAlgo.id}/learn`} className="badge learn-link">
+            📖 讲解
+          </Link>
         </div>
       </div>
 
