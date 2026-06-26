@@ -277,7 +277,7 @@ img {
 /* ===== 三栏主区域 ===== */
 .main {
   display: grid;
-  grid-template-columns: 230px 1fr 340px;
+  grid-template-columns: 230px 1fr 420px;
   min-height: 0;
 }
 
@@ -789,6 +789,150 @@ img {
   flex: 1;
 }
 
+/* ===== Landing 页 ===== */
+.landing {
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.landing-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 48px 24px;
+  max-width: 800px;
+  width: 100%;
+  z-index: 1;
+}
+
+.landing-logo {
+  text-align: center;
+}
+
+.ascii-art {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.2;
+  color: var(--green);
+  text-shadow: var(--glow-green);
+  white-space: pre;
+  margin-bottom: 16px;
+}
+
+.landing-title {
+  font-family: var(--term);
+  font-size: 48px;
+  color: var(--green);
+  text-shadow: var(--glow-green);
+  letter-spacing: 0.08em;
+}
+
+.landing-title .sep {
+  color: var(--amber);
+  text-shadow: var(--glow-amber);
+}
+
+.landing-subtitle {
+  font-size: 14px;
+  color: var(--green-dim);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+.landing-hero {
+  width: 100%;
+  max-width: 600px;
+  height: 200px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--bg-panel);
+}
+
+.landing-hero canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.landing-tagline {
+  font-size: 20px;
+  color: var(--amber);
+  text-shadow: var(--glow-amber);
+  letter-spacing: 0.06em;
+}
+
+.landing-cta {
+  font-size: 18px;
+  padding: 12px 32px;
+  letter-spacing: 0.08em;
+}
+
+.landing-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.landing-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.landing-card:hover {
+  border-color: var(--border-bright);
+  background: var(--bg-panel-raised);
+  box-shadow: var(--glow-green);
+}
+
+.card-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.card-label {
+  font-size: 16px;
+  color: var(--green);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.card-count {
+  font-size: 12px;
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+
+.card-desc {
+  font-size: 12px;
+  color: var(--green-faint);
+  letter-spacing: 0.06em;
+}
+
+.landing-footer {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.footer-text {
+  font-size: 11px;
+  color: var(--txt-dim);
+  letter-spacing: 0.1em;
+}
+
 /* ===== 响应式 ===== */
 @media (max-width: 980px) {
   .main {
@@ -815,11 +959,29 @@ img {
 
 /* ===== 无障碍：减少动效 ===== */
 @media (prefers-reduced-motion: reduce) {
+  /* 关闭 CRT 特效动画 */
   .crt-overlay {
     animation: none;
   }
 
   .crt-sweep {
     display: none;
+  }
+
+  /* 关闭状态指示灯脉冲动画 */
+  .topbar .status .dot {
+    animation: none;
+  }
+
+  /* 关闭所有过渡效果 */
+  * {
+    transition: none !important;
+  }
+
+  /* Landing 页：关闭 Hero 动画 */
+  .landing-hero canvas {
+    /* Hero 动画由 JS 控制，此处无法直接禁用 */
+    /* 但可以通过 opacity 降低视觉干扰 */
+    opacity: 0.7;
   }
 }
