@@ -15,6 +15,8 @@ const CATEGORY_KEYS: AlgorithmCategory[] = [
   'searching',
   'graph',
   'data-structure',
+  'string',
+  'dynamic-programming',
 ];
 
 const CATEGORY_ICONS: Record<AlgorithmCategory, string> = {
@@ -22,6 +24,8 @@ const CATEGORY_ICONS: Record<AlgorithmCategory, string> = {
   searching: '🔍',
   graph: '◈',
   'data-structure': '⊞',
+  string: 'Aa',
+  'dynamic-programming': '📊',
 };
 
 export function Landing() {
