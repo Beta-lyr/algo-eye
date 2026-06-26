@@ -1,0 +1,66 @@
+// ============================================================
+// 引擎层核心类型 — Step / Snapshot / ElementState
+// 算法与渲染器通过这两个数据契约解耦
+// ============================================================
+
+/** 步骤类型 */
+export type StepType =
+  | 'compare'
+  | 'swap'
+  | 'set'
+  | 'visit'
+  | 'mark'
+  | 'pointer'
+  | 'done';
+
+/** 元素状态色（算法状态语义色映射） */
+export type ElementState =
+  | 'default'
+  | 'compare'
+  | 'swap'
+  | 'sorted'
+  | 'visit'
+  | 'current'
+  | 'path'
+  | 'pivot';
+
+/** 数据形态 */
+export type DataKind = 'array' | 'grid' | 'tree' | 'graph';
+
+/**
+ * 某一时刻的数据快照
+ * 渲染器依赖 snapshot 绘制一帧——同一 snapshot 永远画同一帧
+ * 这是跳转 / 反向回放能正确工作的前提
+ */
+export interface Snapshot {
+  kind: DataKind;
+  /** 数组数据（array/grid 形态） */
+  data: number[];
+  /** 元素下标 → 状态色 */
+  states: Record<number, ElementState>;
+  /** 元素下标 → 指针标签（如 'j', 'j+1', 'pivot'） */
+  pointers?: Record<number, string>;
+  /** 网格特有：行数（grid 形态时有效） */
+  cols?: number;
+  /** 网格特有：起始/终点坐标 */
+  start?: [number, number];
+  target?: [number, number];
+}
+
+/**
+ * 算法生成器 yield 的每一步
+ * 包含操作描述 + 代码行号 + 完整数据快照
+ */
+export interface Step {
+  type: StepType;
+  /** 受影响的元素下标 */
+  indices?: number[];
+  /** 相关值 */
+  values?: number[];
+  /** 对应代码行号（1-based，供 CodePanel 高亮） */
+  line?: number;
+  /** 步骤说明文字 */
+  message?: string;
+  /** 该步结束时的完整数据状态 */
+  snapshot: Snapshot;
+}
