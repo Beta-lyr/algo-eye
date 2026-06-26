@@ -5,6 +5,7 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { useVizStore } from '../store/useVizStore';
+import { useT, useTranslateMessage } from '../i18n';
 import { ArrayRenderer } from '../renderers/ArrayRenderer';
 import { TreeRenderer } from '../renderers/TreeRenderer';
 import { GridRenderer } from '../renderers/GridRenderer';
@@ -33,6 +34,8 @@ export function VizStage() {
   const currentAlgo = useVizStore((s) => s.currentAlgo);
   const steps = useVizStore((s) => s.steps);
   const stepIndex = useVizStore((s) => s.stepIndex);
+  const t = useT();
+  const translateMsg = useTranslateMessage();
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
@@ -76,9 +79,9 @@ export function VizStage() {
   if (!currentAlgo) {
     return (
       <section className="pane center">
-        <div className="pane-hd">可视化</div>
+        <div className="pane-hd">{t.viz.title}</div>
         <div className="viz-stage" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--green-faint)' }}>
-          请选择一个算法
+          {t.viz.selectAlgo}
         </div>
       </section>
     );
@@ -103,18 +106,18 @@ export function VizStage() {
         <div className="viz-title">▸ {currentAlgo.name}{getSignature()}</div>
         <div className="badges">
           <span className="badge">
-            时间 <b>{complexity.time}</b>
+            {t.viz.time} <b>{complexity.time}</b>
           </span>
           <span className="badge">
-            空间 <b>{complexity.space}</b>
+            {t.viz.space} <b>{complexity.space}</b>
           </span>
           {complexity.stable !== undefined && (
             <span className={`badge${complexity.stable ? ' ok' : ''}`}>
-              稳定 <b>{complexity.stable ? '✓' : '✗'}</b>
+              {t.viz.stable} <b>{complexity.stable ? t.viz.yes : t.viz.no}</b>
             </span>
           )}
           <span className="badge ok">
-            原地 <b>✓</b>
+            {t.viz.inPlace} <b>{t.viz.yes}</b>
           </span>
         </div>
       </div>
@@ -131,48 +134,48 @@ export function VizStage() {
           <>
             <span>
               <i className="sw default" />
-              空地
+              {t.legend.empty}
             </span>
             <span>
               <i className="sw compare" />
-              墙
+              {t.legend.wall}
             </span>
             <span>
               <i className="sw visit" />
-              已访问
+              {t.legend.visited}
             </span>
             <span>
               <i className="sw current" />
-              前沿
+              {t.legend.frontier}
             </span>
             <span>
               <i className="sw path" />
-              最短路径
+              {t.legend.path}
             </span>
           </>
         ) : (
           <>
             <span>
               <i className="sw default" />
-              未处理
+              {t.legend.unsorted}
             </span>
             <span>
               <i className="sw compare" />
-              比较中
+              {t.legend.comparing}
             </span>
             <span>
               <i className="sw swap" />
-              交换中
+              {t.legend.swapping}
             </span>
             <span>
               <i className="sw sorted" />
-              已排序
+              {t.legend.sorted}
             </span>
           </>
         )}
         <span style={{ marginLeft: 'auto', color: 'var(--txt-dim)' }}>
           step {stepIndex + 1} / {steps.length}
-          {step && <> · {step.message?.slice(0, 30)}...</>}
+          {step && <> · {translateMsg(step.message ?? '').slice(0, 30)}...</>}
         </span>
       </div>
     </section>

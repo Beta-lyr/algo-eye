@@ -6,6 +6,7 @@
 import { useMemo } from 'react';
 import Prism from 'prismjs';
 import { useVizStore } from '../store/useVizStore';
+import { useT, useTranslateMessage } from '../i18n';
 
 /**
  * 高亮代码字符串并拆分为行
@@ -21,6 +22,8 @@ export function CodePanel() {
   const currentAlgo = useVizStore((s) => s.currentAlgo);
   const steps = useVizStore((s) => s.steps);
   const stepIndex = useVizStore((s) => s.stepIndex);
+  const t = useT();
+  const translateMsg = useTranslateMessage();
 
   // 预计算高亮后的行（仅在算法切换时重算）
   const highlightedLines = useMemo(() => {
@@ -32,7 +35,7 @@ export function CodePanel() {
     return (
       <aside className="pane right">
         <div className="pane-hd">
-          代码 <span className="hint">—</span>
+          {t.code.title} <span className="hint">—</span>
         </div>
         <div
           className="code"
@@ -43,7 +46,7 @@ export function CodePanel() {
             color: 'var(--green-faint)',
           }}
         >
-          选择算法以查看代码
+          {t.code.selectAlgo}
         </div>
       </aside>
     );
@@ -55,7 +58,7 @@ export function CodePanel() {
   return (
     <aside className="pane right">
       <div className="pane-hd">
-        代码 <span className="hint">line {currentLine || '—'}</span>
+        {t.code.title} <span className="hint">{t.code.line} {currentLine || '—'}</span>
       </div>
       <div className="code">
         {highlightedLines.map((html, i) => {
@@ -78,7 +81,7 @@ export function CodePanel() {
             <span className="tx">
               <span className="token comment">
                 {'// '}
-                {currentStep.message}
+                {translateMsg(currentStep.message)}
               </span>
             </span>
           </div>
@@ -87,9 +90,9 @@ export function CodePanel() {
 
       {/* 步骤说明 */}
       <div className="step-box">
-        <div className="lbl">当前步骤</div>
+        <div className="lbl">{t.code.currentStep}</div>
         <div className="msg">
-          {currentStep?.message ? `▸ ${currentStep.message}` : '▸ 就绪'}
+          {currentStep?.message ? `▸ ${translateMsg(currentStep.message)}` : t.code.ready}
         </div>
       </div>
 
@@ -105,23 +108,24 @@ function StatsPanel() {
   const swapCount = useVizStore((s) => s.swapCount);
   const stepIndex = useVizStore((s) => s.stepIndex);
   const steps = useVizStore((s) => s.steps);
+  const t = useT();
 
   return (
     <div className="stats">
       <div className="stat">
-        <div className="k">比较次数</div>
+        <div className="k">{t.stats.comparisons}</div>
         <div className="v amber">{compareCount}</div>
       </div>
       <div className="stat">
-        <div className="k">交换次数</div>
+        <div className="k">{t.stats.swaps}</div>
         <div className="v">{swapCount}</div>
       </div>
       <div className="stat">
-        <div className="k">当前步骤</div>
+        <div className="k">{t.stats.currentStep}</div>
         <div className="v">{stepIndex + 1}</div>
       </div>
       <div className="stat">
-        <div className="k">总步骤</div>
+        <div className="k">{t.stats.totalSteps}</div>
         <div className="v">{steps.length}</div>
       </div>
     </div>

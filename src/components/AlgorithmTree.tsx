@@ -5,15 +5,8 @@
 
 import { useState } from 'react';
 import { useVizStore } from '../store/useVizStore';
+import { useT } from '../i18n';
 import type { Algorithm, AlgorithmCategory } from '../algorithms/types';
-
-/** 分类中文名 */
-const CATEGORY_LABELS: Record<AlgorithmCategory, string> = {
-  sorting: '排序算法',
-  searching: '搜索算法',
-  graph: '图算法',
-  'data-structure': '数据结构',
-};
 
 /** 分类排序 */
 const CATEGORY_ORDER: AlgorithmCategory[] = [
@@ -27,6 +20,7 @@ export function AlgorithmTree() {
   const algorithms = useVizStore((s) => s.algorithms);
   const currentAlgo = useVizStore((s) => s.currentAlgo);
   const selectAlgorithm = useVizStore((s) => s.selectAlgorithm);
+  const t = useT();
 
   // 按分类分组
   const grouped: Record<string, Algorithm[]> = {};
@@ -54,7 +48,7 @@ export function AlgorithmTree() {
   return (
     <aside className="pane">
       <div className="pane-hd">
-        算法目录 <span className="hint">/tree</span>
+        {t.tree.title} <span className="hint">{t.tree.hint}</span>
       </div>
       <div className="tree">
         {CATEGORY_ORDER.map((cat) => {
@@ -69,7 +63,7 @@ export function AlgorithmTree() {
                 onClick={() => toggleCategory(cat)}
               >
                 <span className="chev" />
-                {CATEGORY_LABELS[cat]}
+                {t.category[cat]}
                 <span className="ct">{list.length}</span>
               </div>
               <div className="grp-bd">

@@ -5,21 +5,31 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useVizStore } from '../store/useVizStore';
+import { useT } from '../i18n';
+import { LanguageSwitch } from '../components/LanguageSwitch';
 import type { AlgorithmCategory } from '../algorithms/types';
 
 /** 分类入口卡数据 */
-const CATEGORY_CARDS: { key: AlgorithmCategory; label: string; icon: string; desc: string }[] = [
-  { key: 'sorting', label: '排序算法', icon: '↕', desc: '冒泡·选择·插入·快速·归并·堆' },
-  { key: 'searching', label: '搜索算法', icon: '🔍', desc: '线性搜索·二分搜索' },
-  { key: 'graph', label: '图算法', icon: '◈', desc: 'BFS·DFS·Dijkstra' },
-  { key: 'data-structure', label: '数据结构', icon: '⊞', desc: '二叉搜索树' },
+const CATEGORY_KEYS: AlgorithmCategory[] = [
+  'sorting',
+  'searching',
+  'graph',
+  'data-structure',
 ];
+
+const CATEGORY_ICONS: Record<AlgorithmCategory, string> = {
+  sorting: '↕',
+  searching: '🔍',
+  graph: '◈',
+  'data-structure': '⊞',
+};
 
 export function Landing() {
   const navigate = useNavigate();
   const algorithms = useVizStore((s) => s.algorithms);
   const selectAlgorithm = useVizStore((s) => s.selectAlgorithm);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const t = useT();
 
   // Hero 动画：自动循环播放冒泡排序
   useEffect(() => {
@@ -143,6 +153,11 @@ export function Landing() {
       <div className="crt-sweep" />
       <div className="crt-overlay" />
 
+      {/* 语言切换 */}
+      <div className="landing-lang">
+        <LanguageSwitch />
+      </div>
+
       {/* 主内容 */}
       <div className="landing-content">
         {/* ASCII Logo */}
@@ -159,7 +174,7 @@ export function Landing() {
             ▌ALGO<span className="sep">::</span>VIZ
           </div>
           <div className="landing-subtitle">
-            Phosphor Terminal for Algorithms
+            {t.landing.subtitle}
           </div>
         </div>
 
@@ -170,28 +185,30 @@ export function Landing() {
 
         {/* 标语 */}
         <div className="landing-tagline">
-          看算法跑，让逻辑可见
+          {t.landing.tagline}
         </div>
 
         {/* CTA 按钮 */}
         <button className="btn primary landing-cta" onClick={() => handleEnter()}>
-          ▸ 进入终端
+          {t.landing.cta}
         </button>
 
         {/* 算法分类入口卡 */}
         <div className="landing-cards">
-          {CATEGORY_CARDS.map((card) => {
-            const count = algorithms.filter((a) => a.category === card.key).length;
+          {CATEGORY_KEYS.map((key) => {
+            const count = algorithms.filter((a) => a.category === key).length;
             return (
               <div
-                key={card.key}
+                key={key}
                 className="landing-card"
-                onClick={() => handleEnter(card.key)}
+                onClick={() => handleEnter(key)}
               >
-                <div className="card-icon">{card.icon}</div>
-                <div className="card-label">{card.label}</div>
-                <div className="card-count">{count} 个算法</div>
-                <div className="card-desc">{card.desc}</div>
+                <div className="card-icon">{CATEGORY_ICONS[key]}</div>
+                <div className="card-label">{t.category[key]}</div>
+                <div className="card-count">
+                  {t.landing.algoCount.replace('{count}', String(count))}
+                </div>
+                <div className="card-desc">{t.landing.categoryDesc[key]}</div>
               </div>
             );
           })}
@@ -200,7 +217,7 @@ export function Landing() {
         {/* 底部信息 */}
         <div className="landing-footer">
           <span className="footer-text">
-            React + TypeScript + Canvas 2D · CRT 复古终端风格
+            {t.landing.footer}
           </span>
           <a
             href="https://github.com/Beta-lyr/algo-eye"
@@ -208,7 +225,7 @@ export function Landing() {
             rel="noopener noreferrer"
             className="footer-github"
           >
-            ▪ GITHUB
+            ▪ {t.common.github}
           </a>
         </div>
       </div>

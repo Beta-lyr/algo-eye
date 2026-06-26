@@ -3,17 +3,21 @@
 // ============================================================
 
 import { useVizStore } from '../store/useVizStore';
+import { useT } from '../i18n';
+import { LanguageSwitch } from './LanguageSwitch';
+import type { AlgorithmCategory } from '../algorithms/types';
 
-const NAV_ITEMS: { key: string; label: string }[] = [
-  { key: 'sorting', label: '排序' },
-  { key: 'searching', label: '搜索' },
-  { key: 'graph', label: '图' },
-  { key: 'data-structure', label: '数据结构' },
+const NAV_KEYS: AlgorithmCategory[] = [
+  'sorting',
+  'searching',
+  'graph',
+  'data-structure',
 ];
 
 export function Topbar() {
   const currentAlgo = useVizStore((s) => s.currentAlgo);
   const data = useVizStore((s) => s.data);
+  const t = useT();
 
   return (
     <header className="topbar">
@@ -25,27 +29,28 @@ export function Topbar() {
         target="_blank"
         rel="noopener noreferrer"
         className="github-badge"
-        title="View on GitHub"
+        title="GitHub"
       >
-        ⬡ GITHUB
+        ⬡ {t.common.github}
       </a>
-      <div className="tagline">phosphor terminal for algorithms</div>
+      <div className="tagline">{t.topbar.tagline}</div>
       <nav className="nav">
-        {NAV_ITEMS.map((item) => (
+        {NAV_KEYS.map((key) => (
           <a
-            key={item.key}
-            className={currentAlgo?.category === item.key ? 'active' : ''}
+            key={key}
+            className={currentAlgo?.category === key ? 'active' : ''}
             href="#"
           >
-            {item.label}
+            {t.nav[key]}
           </a>
         ))}
-        <a href="#">关于</a>
+        <a href="#">{t.common.about}</a>
       </nav>
       <div className="status">
         <span className="dot" />
-        LIVE · {data.length} elements · {currentAlgo?.name ?? '—'}
+        {t.topbar.live} · {data.length} {t.topbar.elements} · {currentAlgo?.name ?? '—'}
       </div>
+      <LanguageSwitch />
     </header>
   );
 }

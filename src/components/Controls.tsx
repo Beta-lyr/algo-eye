@@ -6,6 +6,7 @@
 
 import { useRef, useCallback, useEffect, useState } from 'react';
 import { useVizStore } from '../store/useVizStore';
+import { useT } from '../i18n';
 import { AnimationController } from '../engine/AnimationController';
 
 export function Controls() {
@@ -21,6 +22,7 @@ export function Controls() {
   const setData = useVizStore((s) => s.setData);
   const randomizeData = useVizStore((s) => s.randomizeData);
   const reset = useVizStore((s) => s.reset);
+  const t = useT();
 
   // AnimationController ref — 仅用于播放时钟
   const controllerRef = useRef<AnimationController | null>(null);
@@ -165,7 +167,7 @@ export function Controls() {
           className="btn"
           disabled={disabled || isAtStart}
           onClick={stepBack}
-          title="上一步"
+          title={t.controls.prev}
         >
           ⏮
         </button>
@@ -173,7 +175,7 @@ export function Controls() {
           className="btn primary"
           disabled={disabled}
           onClick={togglePlay}
-          title={playing ? '暂停' : '播放'}
+          title={playing ? t.controls.pause : t.controls.play}
         >
           {playing ? '⏸' : '▶'}
         </button>
@@ -181,7 +183,7 @@ export function Controls() {
           className="btn"
           disabled={disabled || isAtEnd}
           onClick={stepForward}
-          title="下一步"
+          title={t.controls.next}
         >
           ⏭
         </button>
@@ -189,7 +191,7 @@ export function Controls() {
 
       {/* 速度 */}
       <div className="speed">
-        <label>速度</label>
+        <label>{t.controls.speed}</label>
         <input
           type="range"
           min={1}
@@ -202,7 +204,7 @@ export function Controls() {
 
       {/* 数据量 */}
       <div className="ctrl-group">
-        <label>数据量</label>
+        <label>{t.controls.dataSize}</label>
         <input
           className="num-input"
           type="number"
@@ -215,13 +217,13 @@ export function Controls() {
 
       {/* 随机数据 */}
       <button className="btn" onClick={handleRandom}>
-        随机数据
+        {t.controls.randomData}
       </button>
 
       {/* 自定义数据 */}
       <input
         className="data-input"
-        placeholder={`自定义数据: ${data.join(',')} (回车应用)`}
+        placeholder={t.controls.customData.replace('{data}', data.join(','))}
         value={customInput}
         onChange={(e) => setCustomInput(e.target.value)}
         onKeyDown={handleCustomData}
@@ -231,7 +233,7 @@ export function Controls() {
 
       {/* 重置 */}
       <button className="btn" onClick={handleReset}>
-        重置
+        {t.controls.reset}
       </button>
     </footer>
   );
