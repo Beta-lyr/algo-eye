@@ -28,6 +28,8 @@ export function Controls() {
   const reset = useVizStore((s) => s.reset);
   const toggleCompareMode = useVizStore((s) => s.toggleCompareMode);
   const syncCompareStep = useVizStore((s) => s.syncCompareStep);
+  const getShareUrl = useVizStore((s) => s.getShareUrl);
+  const currentAlgo = useVizStore((s) => s.currentAlgo);
   const t = useT();
 
   // AnimationController ref — 仅用于播放时钟
@@ -169,6 +171,29 @@ export function Controls() {
     [customInput, setData, setPlaying],
   );
 
+  // 分享链接
+  const [shareStatus, setShareStatus] = useState<'idle' | 'copied'>('idle');
+  const handleShare = useCallback(() => {
+    const url = getShareUrl();
+    if (url) {
+      navigator.clipboard.writeText(url).then(() => {
+        setShareStatus('copied');
+        setTimeout(() => setShareStatus('idle'), 2000);
+      });
+    }
+  }, [getShareUrl]);
+
+  // 截图
+  const handleScreenshot = useCallback(() => {
+    const canvas = document.querySelector('.viz-stage canvas') as HTMLCanvasElement;
+    if (canvas) {
+      const link = document.createElement('a');
+      link.download = `algo-eye-${currentAlgo?.id ?? 'screenshot'}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  }, [currentAlgo]);
+
   const disabled = steps.length === 0;
   const isAtEnd = stepIndex >= steps.length - 1;
   const isAtStart = stepIndex === 0;
@@ -265,6 +290,16 @@ export function Controls() {
           vs: {compareProgress}
         </span>
       )}
+
+      {/* 截图 */}
+      <button className="btn" onClick={handleScreenshot} title="截图">
+        📷
+      </button>
+
+      {/* 分享 */}
+      <button className="btn" onClick={handleShare} title="分享链接">
+        {shareStatus === 'copied' ? '✓ 已复制' : '🔗 分享'}
+      </button>
 
       {/* 重置 */}
       <button className="btn" onClick={handleReset}>

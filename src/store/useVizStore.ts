@@ -68,6 +68,10 @@ export interface VizState {
   setCompareAlgo: (id: string) => void;
   /** 同步推进对比步骤 */
   syncCompareStep: () => void;
+  /** 生成分享 URL */
+  getShareUrl: () => string;
+  /** 从 URL 参数加载状态 */
+  loadFromUrl: () => boolean;
 }
 
 /** 生成随机整数数组 */
@@ -285,5 +289,54 @@ export const useVizStore = create<VizState>((set, get) => ({
       compareCompareCount,
       compareSwapCount,
     });
+  },
+
+  /** 生成分享 URL */
+  getShareUrl: () => {
+    const { currentAlgo, data, stepIndex } = get();
+    if (!currentAlgo) return '';
+
+    const params = new URLSearchParams();
+    params.set('algo', currentAlgo.id);
+    params.set('data', data.join(','));
+    if (stepIndex > 0) {
+      params.set('step', String(stepIndex));
+    }
+
+    return `${window.location.origin}/algo/${currentAlgo.id}?${params.toString()}`;
+  },
+
+  /** 从 URL 参数加载状态 */
+  loadFromUrl: () => {
+    const params = new URLSearchParams(window.location.search);
+    const algoId = params.get('algo') || window.location.pathname.split('/').pop();
+    const dataStr = params.get('data');
+    const stepStr = params.get('step');
+
+    if (algoId) {
+      const algo = getAlgorithmById(algoId);
+      if (algo) {
+        const data = dataStr
+          ? dataStr.split(',').map(Number).filter((n) => !isNaN(n))
+          : algo.defaultData ?? [];
+
+        if (data.length >= 4 && data.length <= 64) {
+          const steps = Array.from(algo.generate(data));
+          const stepIndex = stepStr ? Math.min(Number(stepStr), steps.length - 1) : 0;
+
+          set({
+            currentAlgo: algo,
+            data,
+            steps,
+            stepIndex: Math.max(0, stepIndex),
+            playing: false,
+            compareCount: 0,
+            swapCount: 0,
+          });
+          return true;
+        }
+      }
+    }
+    return false;
   },
 }));
