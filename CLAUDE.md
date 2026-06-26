@@ -19,6 +19,12 @@ npm run type-check   # tsc --noEmit 类型检查
 
 提交前必须运行 `npm run lint` 和 `npm run type-check`。
 
+## TypeScript 注意事项
+
+- `tsconfig.app.json` 启用了 `verbatimModuleSyntax`，类型导入必须使用 `import type` 语法
+- 启用了 `noUnusedLocals` 和 `noUnusedParameters`，未使用的变量/参数会导致编译错误
+- Lint 配置见 `.oxlintrc.json`（OxLint，非 ESLint）
+
 ## 技术栈
 
 - React 19 + TypeScript 6（严格模式）+ Vite 8
@@ -189,11 +195,11 @@ src/
 └── main.tsx
 ```
 
-## 当前状态（12 个算法）
+## 当前状态（16 个算法）
 
 | 分类 | 算法 |
 |------|------|
-| 排序 | 冒泡、选择、插入、快速、归并、堆 |
+| 排序 | 冒泡、选择、插入、快速、归并、堆、希尔、基数、计数、桶 |
 | 搜索 | 线性搜索、二分搜索 |
 | 数据结构 | 二叉搜索树 |
 | 图 | BFS、DFS、Dijkstra |

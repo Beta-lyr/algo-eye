@@ -32,6 +32,22 @@ const MESSAGE_PATTERNS: Record<string, Record<Locale, string>> = {
     zh: '开始堆排序',
     en: 'Starting Heap Sort',
   },
+  '开始希尔排序': {
+    zh: '开始希尔排序',
+    en: 'Starting Shell Sort',
+  },
+  '开始基数排序': {
+    zh: '开始基数排序',
+    en: 'Starting Radix Sort',
+  },
+  '开始计数排序': {
+    zh: '开始计数排序',
+    en: 'Starting Counting Sort',
+  },
+  '开始桶排序': {
+    zh: '开始桶排序',
+    en: 'Starting Bucket Sort',
+  },
   '排序完成': {
     zh: '排序完成',
     en: 'Sorting complete',
@@ -117,6 +133,142 @@ const REGEX_PATTERNS: Array<{
     replacement: {
       zh: 'n = $1',
       en: 'n = $1',
+    },
+  },
+  // 增量 gap = X
+  {
+    pattern: /增量 gap = (\d+)/,
+    replacement: {
+      zh: '增量 gap = $1',
+      en: 'Gap = $1',
+    },
+  },
+  // 取出 arr[X] = Y，gap = Z
+  {
+    pattern: /取出 arr\[(\d+)\] = (\d+)，gap = (\d+)/,
+    replacement: {
+      zh: '取出 arr[$1] = $2，gap = $3',
+      en: 'Take arr[$1] = $2, gap = $3',
+    },
+  },
+  // 比较 arr[X]=Y > Z，右移
+  {
+    pattern: /比较 arr\[(\d+)\]=(\d+) > (\d+)，右移/,
+    replacement: {
+      zh: '比较 arr[$1]=$2 > $3，右移',
+      en: 'Compare arr[$1]=$2 > $3, shift right',
+    },
+  },
+  // 插入 arr[X] = Y
+  {
+    pattern: /插入 arr\[(\d+)\] = (\d+)/,
+    replacement: {
+      zh: '插入 arr[$1] = $2',
+      en: 'Insert arr[$1] = $2',
+    },
+  },
+  // 按X位排序，exp = Y
+  {
+    pattern: /按(.+)排序，exp = (\d+)/,
+    replacement: {
+      zh: '按$1排序，exp = $2',
+      en: 'Sort by $1, exp = $2',
+    },
+  },
+  // X位排序完成
+  {
+    pattern: /(.+)排序完成/,
+    replacement: {
+      zh: '$1排序完成',
+      en: '$1 sort complete',
+    },
+  },
+  // X位=Y，放置 arr[Z]=W 到位置 V
+  {
+    pattern: /(.+)=\d+，放置 arr\[(\d+)\]=(\d+) 到位置 (\d+)/,
+    replacement: {
+      zh: '$1，放置 arr[$2]=$3 到位置 $4',
+      en: '$1, place arr[$2]=$3 at position $4',
+    },
+  },
+  // 范围：min=X，max=Y，range=Z
+  {
+    pattern: /范围：min=(\d+)，max=(\d+)，range=(\d+)/,
+    replacement: {
+      zh: '范围：min=$1，max=$2，range=$3',
+      en: 'Range: min=$1, max=$2, range=$3',
+    },
+  },
+  // 范围：min=X，max=Y，桶数=Z
+  {
+    pattern: /范围：min=(\d+)，max=(\d+)，桶数=(\d+)/,
+    replacement: {
+      zh: '范围：min=$1，max=$2，桶数=$3',
+      en: 'Range: min=$1, max=$2, buckets=$3',
+    },
+  },
+  // 计数：X 出现 Y 次
+  {
+    pattern: /计数：(\d+) 出现 (\d+) 次/,
+    replacement: {
+      zh: '计数：$1 出现 $2 次',
+      en: 'Count: $1 appears $2 times',
+    },
+  },
+  // 累计计数完成
+  {
+    pattern: /累计计数完成/,
+    replacement: {
+      zh: '累计计数完成',
+      en: 'Cumulative count complete',
+    },
+  },
+  // 放置 X 到位置 Y
+  {
+    pattern: /放置 (\d+) 到位置 (\d+)/,
+    replacement: {
+      zh: '放置 $1 到位置 $2',
+      en: 'Place $1 at position $2',
+    },
+  },
+  // 将 X 放入桶 Y
+  {
+    pattern: /将 (\d+) 放入桶 (\d+)/,
+    replacement: {
+      zh: '将 $1 放入桶 $2',
+      en: 'Put $1 into bucket $2',
+    },
+  },
+  // 桶 X 排序完成：[Y]
+  {
+    pattern: /桶 (\d+) 排序完成：\[(.+)\]/,
+    replacement: {
+      zh: '桶 $1 排序完成：[$2]',
+      en: 'Bucket $1 sorted: [$2]',
+    },
+  },
+  // 写回 arr[X] = Y
+  {
+    pattern: /写回 arr\[(\d+)\] = (\d+)/,
+    replacement: {
+      zh: '写回 arr[$1] = $2',
+      en: 'Write back arr[$1] = $2',
+    },
+  },
+  // 合并 [X..Y] 与 [Z..W]
+  {
+    pattern: /合并 \[(\d+)\.\.(\d+)\] 与 \[(\d+)\.\.(\d+)\]/,
+    replacement: {
+      zh: '合并 [$1..$2] 与 [$3..$4]',
+      en: 'Merge [$1..$2] with [$3..$4]',
+    },
+  },
+  // 合并完成 [X..Y]
+  {
+    pattern: /合并完成 \[(\d+)\.\.(\d+)\]/,
+    replacement: {
+      zh: '合并完成 [$1..$2]',
+      en: 'Merge complete [$1..$2]',
     },
   },
 ];

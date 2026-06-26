@@ -10,6 +10,10 @@ import { insertionSort } from './sorting/insertionSort';
 import { quickSort } from './sorting/quickSort';
 import { mergeSort } from './sorting/mergeSort';
 import { heapSort } from './sorting/heapSort';
+import { shellSort } from './sorting/shellSort';
+import { radixSort } from './sorting/radixSort';
+import { countingSort } from './sorting/countingSort';
+import { bucketSort } from './sorting/bucketSort';
 import { linearSearch } from './searching/linearSearch';
 import { binarySearch } from './searching/binarySearch';
 import { binarySearchTree } from './data-structure/binarySearchTree';
@@ -25,6 +29,10 @@ export const algorithms: Algorithm[] = [
   quickSort,
   mergeSort,
   heapSort,
+  shellSort,
+  radixSort,
+  countingSort,
+  bucketSort,
   linearSearch,
   binarySearch,
   binarySearchTree,
