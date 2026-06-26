@@ -1,0 +1,194 @@
+/* ============================================================
+   Phosphor Terminal 设计系统 — CRT 复古风格全局样式
+   唯一性约束：只做暗色模式，主色磷光绿 + 琥珀
+   禁止渐变、毛玻璃、霓虹虹彩
+   ============================================================ */
+
+/* ===== CSS 自定义属性（Token） ===== */
+:root {
+  /* 底色 */
+  --bg: #0a0e0a;
+  --bg-panel: #0d130d;
+  --bg-panel-raised: #101710;
+
+  /* 边框 */
+  --border: #1f2a1f;
+  --border-bright: #2f4a2f;
+
+  /* 主色：磷光绿系 */
+  --green: #33ff66;
+  --green-dim: #5cb574;
+  --green-faint: #2e5e3e;
+  --green-soft: #00e676;
+
+  /* 强调：琥珀 */
+  --amber: #ffb000;
+
+  /* 算法状态色 */
+  --red: #ff5555;
+  --cyan: #00e5ff;
+  --purple: #b388ff;
+  --pink: #ff79c6;
+
+  /* 文字弱色 */
+  --txt-dim: #3a6b4a;
+
+  /* 辉光 token */
+  --glow-green: 0 0 6px rgba(51, 255, 102, 0.55), 0 0 14px rgba(51, 255, 102, 0.25);
+  --glow-amber: 0 0 6px rgba(255, 176, 0, 0.6), 0 0 14px rgba(255, 176, 0, 0.28);
+  --glow-red: 0 0 6px rgba(255, 85, 85, 0.6), 0 0 14px rgba(255, 85, 85, 0.3);
+  --glow-cyan: 0 0 6px rgba(0, 229, 255, 0.6), 0 0 14px rgba(0, 229, 255, 0.28);
+
+  /* 字体 */
+  --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  --term: 'VT323', var(--mono);
+}
+
+/* ===== CSS Reset ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--mono);
+  background: var(--bg);
+  color: var(--green);
+  font-size: 14px;
+  line-height: 1.5;
+  overflow: hidden;
+  letter-spacing: 0.01em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===== 滚动条（终端风格） ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-bright);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green-faint);
+}
+
+/* ===== CRT 扫描线叠加层 ===== */
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0 2px,
+      rgba(0, 0, 0, 0.18) 2px 3px
+    ),
+    radial-gradient(
+      120% 120% at 50% 50%,
+      transparent 60%,
+      rgba(0, 0, 0, 0.55) 100%
+    );
+  mix-blend-mode: multiply;
+  animation: crt-flicker 5s infinite steps(60);
+}
+
+/* ===== CRT 漂移扫描带 ===== */
+.crt-sweep {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 140px;
+  pointer-events: none;
+  z-index: 9998;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(51, 255, 102, 0.04),
+    transparent
+  );
+  animation: crt-sweep 7s linear infinite;
+}
+
+@keyframes crt-flicker {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes crt-sweep {
+  0% {
+    top: -140px;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+/* ===== 无障碍：减少动效 ===== */
+@media (prefers-reduced-motion: reduce) {
+  .crt-overlay {
+    animation: none;
+  }
+
+  .crt-sweep {
+    display: none;
+  }
+}
