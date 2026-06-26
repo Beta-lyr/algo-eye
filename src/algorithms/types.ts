@@ -11,7 +11,8 @@ export type AlgorithmCategory =
   | 'searching'
   | 'graph'
   | 'data-structure'
-  | 'string';
+  | 'string'
+  | 'dynamic-programming';
 
 /** 复杂度信息 */
 export interface Complexity {

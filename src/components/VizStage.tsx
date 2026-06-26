@@ -12,6 +12,7 @@ import { GridRenderer } from '../renderers/GridRenderer';
 import { StringRenderer } from '../renderers/StringRenderer';
 import { LinkedListRenderer } from '../renderers/LinkedListRenderer';
 import { HashTableRenderer } from '../renderers/HashTableRenderer';
+import { DPGridRenderer } from '../renderers/DPGridRenderer';
 import type { Renderer } from '../renderers/Renderer';
 import type { Snapshot } from '../engine/types';
 
@@ -42,6 +43,11 @@ function shouldUseHashTableRenderer(snap: Snapshot): boolean {
   return snap.hashTable !== undefined;
 }
 
+/** 检查是否使用DP表格渲染器 */
+function shouldUseDPGridRenderer(snap: Snapshot): boolean {
+  return snap.dpGrid !== undefined;
+}
+
 export function VizStage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const currentAlgo = useVizStore((s) => s.currentAlgo);
@@ -60,7 +66,9 @@ export function VizStage() {
     const snap = steps[stepIndex].snapshot;
     // 根据数据类型选择渲染器
     let renderer: Renderer<Snapshot>;
-    if (shouldUseHashTableRenderer(snap)) {
+    if (shouldUseDPGridRenderer(snap)) {
+      renderer = DPGridRenderer;
+    } else if (shouldUseHashTableRenderer(snap)) {
       renderer = HashTableRenderer;
     } else {
       renderer = pickRenderer(snap.kind);

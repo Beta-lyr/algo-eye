@@ -29,6 +29,7 @@ export const en: Record<string, any> = {
     graph: 'Graph',
     'data-structure': 'Structure',
     string: 'String',
+    'dynamic-programming': 'DP',
   },
 
   // Algorithm categories (detailed)
@@ -38,6 +39,7 @@ export const en: Record<string, any> = {
     graph: 'Graph',
     'data-structure': 'Data Structure',
     string: 'String Matching',
+    'dynamic-programming': 'Dynamic Programming',
   },
 
   // Landing page
@@ -53,6 +55,7 @@ export const en: Record<string, any> = {
       graph: 'BFS · DFS · Dijkstra',
       'data-structure': 'BST · Heap · Linked List · Hash Table',
       string: 'KMP · Rabin-Karp · Boyer-Moore',
+      'dynamic-programming': 'LCS · Knapsack · Edit Distance',
     },
   },
 
@@ -148,6 +151,9 @@ export const en: Record<string, any> = {
     'kmp': 'KMP String Matching',
     'rabin-karp': 'Rabin-Karp',
     'boyer-moore': 'Boyer-Moore',
+    'lcs': 'Longest Common Subsequence',
+    'knapsack': '0-1 Knapsack',
+    'edit-distance': 'Edit Distance',
   },
 
   // Step message templates

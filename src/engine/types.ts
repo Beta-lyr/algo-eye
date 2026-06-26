@@ -25,7 +25,7 @@ export type ElementState =
   | 'pivot';
 
 /** 数据形态 */
-export type DataKind = 'array' | 'grid' | 'tree' | 'graph' | 'string' | 'linked-list';
+export type DataKind = 'array' | 'grid' | 'tree' | 'graph' | 'string' | 'linked-list' | 'dp-grid';
 
 /**
  * 树节点（用于 tree 形态的数据结构可视化）
@@ -77,6 +77,12 @@ export interface Snapshot {
   hashTable?: ({ key: number; value: number; next: any } | null)[];
   /** 哈希表特有：桶状态 */
   hashTableStates?: Record<number | string, ElementState>;
+  /** 动态规划特有：DP 表格 */
+  dpGrid?: (number | null)[][];
+  /** 动态规划特有：单元格状态 */
+  dpGridStates?: Record<string, ElementState>;
+  /** 动态规划特有：行列标签 */
+  dpLabels?: Record<string, string>;
 }
 
 /**

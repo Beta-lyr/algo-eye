@@ -29,6 +29,7 @@ export const zh: Record<string, any> = {
     graph: '图',
     'data-structure': '数据结构',
     string: '字符串',
+    'dynamic-programming': '动态规划',
   },
 
   // 算法分类（详细）
@@ -38,6 +39,7 @@ export const zh: Record<string, any> = {
     graph: '图算法',
     'data-structure': '数据结构',
     string: '字符串匹配',
+    'dynamic-programming': '动态规划',
   },
 
   // Landing 页
@@ -53,6 +55,7 @@ export const zh: Record<string, any> = {
       graph: 'BFS·DFS·Dijkstra',
       'data-structure': 'BST·堆·链表·哈希表',
       string: 'KMP·Rabin-Karp·Boyer-Moore',
+      'dynamic-programming': 'LCS·背包·编辑距离',
     },
   },
 
@@ -148,6 +151,9 @@ export const zh: Record<string, any> = {
     'kmp': 'KMP 字符串匹配',
     'rabin-karp': 'Rabin-Karp',
     'boyer-moore': 'Boyer-Moore',
+    'lcs': '最长公共子序列',
+    'knapsack': '0-1 背包',
+    'edit-distance': '编辑距离',
   },
 
   // 步骤消息模板

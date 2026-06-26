@@ -29,6 +29,9 @@ import { dijkstra } from './graph/dijkstra';
 import { kmp } from './string/kmp';
 import { rabinKarp } from './string/rabinKarp';
 import { boyerMoore } from './string/boyerMoore';
+import { lcs } from './dynamic-programming/lcs';
+import { knapsack } from './dynamic-programming/knapsack';
+import { editDistance } from './dynamic-programming/editDistance';
 
 /** 所有已注册的算法 */
 export const algorithms: Algorithm[] = [
@@ -57,6 +60,9 @@ export const algorithms: Algorithm[] = [
   kmp,
   rabinKarp,
   boyerMoore,
+  lcs,
+  knapsack,
+  editDistance,
 ];
 
 /** 按 ID 查找算法 */
