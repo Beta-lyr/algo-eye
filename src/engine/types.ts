@@ -28,6 +28,20 @@ export type ElementState =
 export type DataKind = 'array' | 'grid' | 'tree' | 'graph';
 
 /**
+ * 树节点（用于 tree 形态的数据结构可视化）
+ */
+export interface TreeNode {
+  /** 节点唯一标识（用于状态追踪） */
+  id: number;
+  /** 节点值 */
+  value: number;
+  /** 左子节点 */
+  left: TreeNode | null;
+  /** 右子节点 */
+  right: TreeNode | null;
+}
+
+/**
  * 某一时刻的数据快照
  * 渲染器依赖 snapshot 绘制一帧——同一 snapshot 永远画同一帧
  * 这是跳转 / 反向回放能正确工作的前提
@@ -40,6 +54,10 @@ export interface Snapshot {
   states: Record<number, ElementState>;
   /** 元素下标 → 指针标签（如 'j', 'j+1', 'pivot'） */
   pointers?: Record<number, string>;
+  /** 树数据（tree 形态时有效） */
+  tree?: TreeNode;
+  /** 节点 id → 状态色（tree 形态时使用） */
+  nodeStates?: Record<number, ElementState>;
   /** 网格特有：行数（grid 形态时有效） */
   cols?: number;
   /** 网格特有：起始/终点坐标 */

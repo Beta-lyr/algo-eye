@@ -6,6 +6,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useVizStore } from '../store/useVizStore';
 import { ArrayRenderer } from '../renderers/ArrayRenderer';
+import { TreeRenderer } from '../renderers/TreeRenderer';
 import type { Renderer } from '../renderers/Renderer';
 import type { Snapshot } from '../engine/types';
 
@@ -17,7 +18,9 @@ function pickRenderer(kind: Snapshot['kind']): Renderer<Snapshot> {
   switch (kind) {
     case 'array':
       return ArrayRenderer;
-    // TODO: grid / tree / graph 渲染器
+    case 'tree':
+      return TreeRenderer;
+    // TODO: grid / graph 渲染器
     default:
       return ArrayRenderer;
   }
@@ -81,12 +84,13 @@ export function VizStage() {
 
   const { complexity } = currentAlgo;
   const step = steps[stepIndex];
+  const isTree = currentAlgo.dataKind === 'tree';
 
   return (
     <section className="pane center">
       {/* 标题栏 */}
       <div className="viz-hd">
-        <div className="viz-title">▸ {currentAlgo.name}(arr)</div>
+        <div className="viz-title">▸ {currentAlgo.name}{isTree ? '()' : '(arr)'}</div>
         <div className="badges">
           <span className="badge">
             时间 <b>{complexity.time}</b>
@@ -108,7 +112,7 @@ export function VizStage() {
       {/* Canvas 画布 */}
       <div className="viz-stage">
         <canvas ref={canvasRef} />
-        <div className="axis-label">index →</div>
+        {!isTree && <div className="axis-label">index →</div>}
       </div>
 
       {/* 图例 */}

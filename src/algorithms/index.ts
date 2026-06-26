@@ -10,6 +10,9 @@ import { insertionSort } from './sorting/insertionSort';
 import { quickSort } from './sorting/quickSort';
 import { mergeSort } from './sorting/mergeSort';
 import { heapSort } from './sorting/heapSort';
+import { linearSearch } from './searching/linearSearch';
+import { binarySearch } from './searching/binarySearch';
+import { binarySearchTree } from './data-structure/binarySearchTree';
 
 /** 所有已注册的算法 */
 export const algorithms: Algorithm[] = [
@@ -19,6 +22,9 @@ export const algorithms: Algorithm[] = [
   quickSort,
   mergeSort,
   heapSort,
+  linearSearch,
+  binarySearch,
+  binarySearchTree,
 ];
 
 /** 按 ID 查找算法 */
