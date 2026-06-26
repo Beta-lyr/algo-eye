@@ -28,6 +28,7 @@ export const en: Record<string, any> = {
     searching: 'Search',
     graph: 'Graph',
     'data-structure': 'Structure',
+    string: 'String',
   },
 
   // Algorithm categories (detailed)
@@ -36,6 +37,7 @@ export const en: Record<string, any> = {
     searching: 'Searching',
     graph: 'Graph',
     'data-structure': 'Data Structure',
+    string: 'String Matching',
   },
 
   // Landing page
@@ -50,6 +52,7 @@ export const en: Record<string, any> = {
       searching: 'Linear · Binary · Jump · Interpolation · Exponential',
       graph: 'BFS · DFS · Dijkstra',
       'data-structure': 'Binary Search Tree',
+      string: 'KMP · Rabin-Karp · Boyer-Moore',
     },
   },
 
@@ -139,6 +142,9 @@ export const en: Record<string, any> = {
     'bfs': 'Breadth-First Search',
     'dfs': 'Depth-First Search',
     'dijkstra': 'Dijkstra\'s Shortest Path',
+    'kmp': 'KMP String Matching',
+    'rabin-karp': 'Rabin-Karp',
+    'boyer-moore': 'Boyer-Moore',
   },
 
   // Step message templates

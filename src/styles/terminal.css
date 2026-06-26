@@ -319,7 +319,7 @@ img {
 /* ===== 三栏主区域 ===== */
 .main {
   display: grid;
-  grid-template-columns: 230px 1fr 420px;
+  grid-template-columns: 230px 1fr 640px;
   min-height: 0;
 }
 

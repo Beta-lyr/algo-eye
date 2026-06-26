@@ -10,7 +10,8 @@ export type AlgorithmCategory =
   | 'sorting'
   | 'searching'
   | 'graph'
-  | 'data-structure';
+  | 'data-structure'
+  | 'string';
 
 /** 复杂度信息 */
 export interface Complexity {

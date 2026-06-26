@@ -28,6 +28,7 @@ export const zh: Record<string, any> = {
     searching: '搜索',
     graph: '图',
     'data-structure': '数据结构',
+    string: '字符串',
   },
 
   // 算法分类（详细）
@@ -36,6 +37,7 @@ export const zh: Record<string, any> = {
     searching: '搜索算法',
     graph: '图算法',
     'data-structure': '数据结构',
+    string: '字符串匹配',
   },
 
   // Landing 页
@@ -50,6 +52,7 @@ export const zh: Record<string, any> = {
       searching: '线性·二分·跳跃·插值·指数',
       graph: 'BFS·DFS·Dijkstra',
       'data-structure': '二叉搜索树',
+      string: 'KMP·Rabin-Karp·Boyer-Moore',
     },
   },
 
@@ -139,6 +142,9 @@ export const zh: Record<string, any> = {
     'bfs': '广度优先搜索',
     'dfs': '深度优先搜索',
     'dijkstra': 'Dijkstra 最短路径',
+    'kmp': 'KMP 字符串匹配',
+    'rabin-karp': 'Rabin-Karp',
+    'boyer-moore': 'Boyer-Moore',
   },
 
   // 步骤消息模板

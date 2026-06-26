@@ -9,6 +9,7 @@ import { useT, useTranslateMessage } from '../i18n';
 import { ArrayRenderer } from '../renderers/ArrayRenderer';
 import { TreeRenderer } from '../renderers/TreeRenderer';
 import { GridRenderer } from '../renderers/GridRenderer';
+import { StringRenderer } from '../renderers/StringRenderer';
 import type { Renderer } from '../renderers/Renderer';
 import type { Snapshot } from '../engine/types';
 
@@ -24,6 +25,8 @@ function pickRenderer(kind: Snapshot['kind']): Renderer<Snapshot> {
       return TreeRenderer;
     case 'grid':
       return GridRenderer;
+    case 'string':
+      return StringRenderer;
     default:
       return ArrayRenderer;
   }

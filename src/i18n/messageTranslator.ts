@@ -89,6 +89,47 @@ const MESSAGE_PATTERNS: Record<string, Record<Locale, string>> = {
     zh: '未找到目标',
     en: 'Target not found',
   },
+  // 字符串匹配相关
+  '开始 KMP 搜索': {
+    zh: '开始 KMP 搜索',
+    en: 'Starting KMP Search',
+  },
+  '开始 Rabin-Karp 搜索': {
+    zh: '开始 Rabin-Karp 搜索',
+    en: 'Starting Rabin-Karp Search',
+  },
+  '开始 Boyer-Moore 搜索': {
+    zh: '开始 Boyer-Moore 搜索',
+    en: 'Starting Boyer-Moore Search',
+  },
+  '找到匹配': {
+    zh: '找到匹配',
+    en: 'Match found',
+  },
+  '未找到匹配': {
+    zh: '未找到匹配',
+    en: 'No match found',
+  },
+  '计算 LPS': {
+    zh: '计算 LPS',
+    en: 'Computing LPS',
+  },
+  '构建坏字符表': {
+    zh: '构建坏字符表',
+    en: 'Building bad character table',
+  },
+  '哈希匹配': {
+    zh: '哈希匹配',
+    en: 'Hash match',
+  },
+  '滚动哈希': {
+    zh: '滚动哈希',
+    en: 'Rolling hash',
+  },
+  '坏字符规则': {
+    zh: '坏字符规则',
+    en: 'Bad character rule',
+  },
 };
 
 /** 正则模式翻译 */

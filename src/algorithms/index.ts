@@ -23,6 +23,9 @@ import { binarySearchTree } from './data-structure/binarySearchTree';
 import { bfs } from './graph/bfs';
 import { dfs } from './graph/dfs';
 import { dijkstra } from './graph/dijkstra';
+import { kmp } from './string/kmp';
+import { rabinKarp } from './string/rabinKarp';
+import { boyerMoore } from './string/boyerMoore';
 
 /** 所有已注册的算法 */
 export const algorithms: Algorithm[] = [
@@ -45,6 +48,9 @@ export const algorithms: Algorithm[] = [
   bfs,
   dfs,
   dijkstra,
+  kmp,
+  rabinKarp,
+  boyerMoore,
 ];
 
 /** 按 ID 查找算法 */
