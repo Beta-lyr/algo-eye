@@ -30,7 +30,7 @@ npm run type-check   # tsc --noEmit 类型检查
 - Node 版本：20（见 `.node-version`）
 - 部署目标：Vercel / GitHub Pages（纯静态）
 
-## 架构分层
+## 架构分层（不可更改）
 
 ```
 UI 层 (React 组件)
@@ -69,23 +69,134 @@ interface Renderer<TSnapshot> {
 
 渲染器是**纯函数**：同一 snapshot 永远画同一帧，这是跳转/反向回放的前提。
 
-## 设计系统约束（Phosphor Terminal）
+## 设计系统约束（Phosphor Terminal）— 必须遵守
 
-- **只做暗色模式**，不提供亮色
-- 主色：磷光绿 `#33ff66` + 琥珀 `#ffb000`，其余是算法状态语义色（compare=amber, swap=red, sorted=cyan, visit=purple, pivot=pink）
-- 字体：JetBrains Mono（正文）/ VT323（终端大字）
+### 核心原则
+- **只做暗色模式**，不提供亮色（亮色会摧毁磷光辉光与扫描线的表现力）
 - **禁止**渐变、毛玻璃、霓虹虹彩——这是对抗"AI 味"的纪律
-- CRT 特效：扫描线叠层（CSS repeating-linear-gradient）+ shadowBlur 辉光 + 漂移扫描带
-- `prefers-reduced-motion` 下关闭 sweep/闪烁
+- 状态色不可挪作装饰；同一时刻一个元素只有一个状态（状态机互斥）
 
-## 当前状态
+### 色彩 Token
 
-项目处于初始化阶段（M1 前），基础架构已搭建：Vite + React + TypeScript + 路由骨架。核心业务代码（engine/、algorithms/、renderers/、store/）尚未实现。详细设计方案见 `docs/算法可视化网站-前端设计与技术方案.md`，UI 视觉稿见 `docs/algo-viz-ui-mockup.html`。
+| Token | 值 | 用途 |
+|-------|-----|------|
+| `--bg` | `#0a0e0a` | 画布/页面底（略带绿调的近黑） |
+| `--bg-panel` | `#0d130d` | 面板底 |
+| `--bg-panel-raised` | `#101710` | 顶/底栏渐变 |
+| `--border` | `#1f2a1f` | 面板边框 |
+| `--border-bright` | `#2f4a2f` | 悬停/聚焦边框 |
+| `--green` | `#33ff66` | 磷光主色：正文、默认元素 |
+| `--green-dim` | `#5cb574` | 次要文字 |
+| `--green-faint` | `#2e5e3e` | 弱文字/标签 |
+| `--amber` | `#ffb000` | 强调：当前代码行、比较中、聚焦 |
+| `--red` | `#ff5555` | 交换中/错误 |
+| `--cyan` | `#00e5ff` | 已排序/锁定/信息 |
+| `--purple` | `#b388ff` | 已访问（图算法） |
+| `--pink` | `#ff79c6` | 轴点（快排）/关键字 |
+| `--green-soft` | `#00e676` | 路径/成功 |
 
-## 实现顺序（里程碑）
+### 算法状态色映射（语义骨架）
 
-1. **M1**：冒泡排序端到端 — engine/types → bubbleSort 生成器 → ArrayRenderer → StepPlayer → AnimationController → useVizStore → VizStage + CodePanel + Controls + CrtOverlay
-2. **M2**：扩展 5 个排序算法 + 可编辑数据
-3. **M3**：搜索算法 + 数据结构（链表/栈/二叉树）+ TreeRenderer
-4. **M4**：图算法 + GridRenderer + 网格编辑器
-5. **M5**：Landing 页、性能优化、部署
+| 状态 | 色 | 语义 |
+|------|-----|------|
+| `default` | 磷光绿 | 未处理 |
+| `compare` | 琥珀 | 正在比较 |
+| `swap` | 红 | 正在交换 |
+| `sorted` | 青 | 已就位/锁定 |
+| `visit` | 紫 | 已访问（图/搜索） |
+| `current` | 琥珀 | 当前指针/前沿 |
+| `path` | 亮绿 | 最短路径/解 |
+| `pivot` | 粉 | 轴点（快排） |
+
+### 字体
+- 主字族：`'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace`
+- 终端显示字：`'VT323'`（仅用于 logo / 大号数字 / 算法标题）
+- 字号：正文 14px，代码 13px，标签 11px（大写 + 字间距 0.12em），终端大字 20–26px
+
+### 间距与栅格
+- 4px 基线尺：`4 / 8 / 12 / 16 / 24 / 32 / 48`
+- 面板内边距 14–18px，控件间 8–14px
+- 布局栅格：左栏 230px / 中栏自适应 / 右栏 420px，底栏 56px、顶栏 48px
+
+### CRT 特效
+- 扫描线叠层：CSS `repeating-linear-gradient` + `radial-gradient` 暗角
+- 辉光：Canvas 用 `ctx.shadowBlur`/`shadowColor`；DOM 文字用 `text-shadow`
+- 漂移扫描带：140px 柔光带缓慢下扫（纯 CSS 动画）
+- `prefers-reduced-motion` 下关闭 sweep/闪烁，保留状态色
+
+### 组件规范
+- **面板 Panel**：深底 + 1px `--border` + 可选扫描线叠层 + 内辉光。标题栏 11px 大写弱色
+- **按钮 Button**：等宽大写、描边式（无填充）；主操作用琥珀描边；悬停=更亮辉光。不用圆角胶囊和填充渐变
+- **代码面板 CodePanel**：绿字黑底，行号弱色，当前行琥珀底 + 左边框 + 辉光
+- **画布 Canvas**：暗底 + 40px 网格线（极弱绿）+ 元素用状态色 + `shadowBlur` 辉光
+- **控制栏 Controls**：播放/暂停/单步/速度滑块（琥珀滑块）/数据量输入/随机/自定义数据/重置
+- **徽章 Badge**：描边式，展示时间/空间复杂度、稳定性
+
+### 动效规范
+- 磷光淡入：元素出现时辉光从弱到强（bloom）
+- 柱体过渡：高度/颜色 0.25s `cubic-bezier(.2,.8,.2,1)`，带辉光拖尾
+- 代码行高亮切换瞬时，不做缓动（代码同步要"咔哒"感，不要"滑"感）
+
+## 目录结构
+
+```
+src/
+├── components/            # UI 层
+│   ├── Topbar.tsx
+│   ├── AlgorithmTree.tsx
+│   ├── VizStage.tsx
+│   ├── CodePanel.tsx
+│   ├── Controls.tsx
+│   ├── StatsPanel.tsx
+│   └── crt/CrtOverlay.tsx
+├── engine/               # 引擎层（框架无关）
+│   ├── StepPlayer.ts
+│   ├── AnimationController.ts
+│   └── types.ts          # Step / Snapshot / State
+├── algorithms/           # 算法层
+│   ├── types.ts          # Algorithm 接口
+│   ├── sorting/
+│   ├── searching/
+│   ├── graph/
+│   ├── data-structure/
+│   └── index.ts          # 算法注册表
+├── renderers/            # 渲染器层
+│   ├── Renderer.ts       # 接口
+│   ├── ArrayRenderer.ts  # 排序/搜索柱状图
+│   ├── GridRenderer.ts   # 图算法网格
+│   └── TreeRenderer.ts
+├── store/                # 状态层
+│   └── useVizStore.ts
+├── styles/
+│   ├── global.css
+│   └── terminal.css      # CRT 主题 + Prism 主题
+├── pages/
+│   ├── Workspace.tsx
+│   └── Landing.tsx
+├── App.tsx
+└── main.tsx
+```
+
+## 当前状态（12 个算法）
+
+| 分类 | 算法 |
+|------|------|
+| 排序 | 冒泡、选择、插入、快速、归并、堆 |
+| 搜索 | 线性搜索、二分搜索 |
+| 数据结构 | 二叉搜索树 |
+| 图 | BFS、DFS、Dijkstra |
+
+## 新增算法 Checklist
+
+1. 在 `src/algorithms/<category>/` 下创建新文件
+2. 实现 `Algorithm` 接口（id、name、category、complexity、codeLines、dataKind、generate）
+3. 在 `src/algorithms/index.ts` 中导入并注册
+4. 如果需要新的数据形态，在 `engine/types.ts` 扩展 `Snapshot['kind']`
+5. 如果需要新的渲染器，在 `src/renderers/` 下创建并实现 `Renderer` 接口
+6. 运行 `npm run lint` 和 `npm run type-check` 确认无误
+
+## 设计方案参考
+
+- 详细设计方案：`docs/算法可视化网站-前端设计与技术方案.md`
+- V2 迭代方案：`docs/Algo-Eye-V2-技术方案.md`
+- UI 视觉稿：`docs/algo-viz-ui-mockup.html`
