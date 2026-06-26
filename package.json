@@ -1,0 +1,31 @@
+{
+  "name": "algo-eye",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "算法可视化学习网站 - 终端 CRT 复古风格",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "oxlint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "prismjs": "^1.30.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.0",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.2",
+    "@types/prismjs": "^1.26.6",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "oxlint": "^1.69.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.1.0"
+  }
+}
