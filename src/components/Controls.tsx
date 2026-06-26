@@ -2,6 +2,7 @@
 // Controls — 底栏控制栏
 // 播放/暂停/单步/速度/数据量/随机/重置
 // store 是唯一状态源，AnimationController 仅负责播放时钟
+// 支持对比模式
 // ============================================================
 
 import { useRef, useCallback, useEffect, useState } from 'react';
@@ -15,6 +16,9 @@ export function Controls() {
   const playing = useVizStore((s) => s.playing);
   const speed = useVizStore((s) => s.speed);
   const data = useVizStore((s) => s.data);
+  const compareMode = useVizStore((s) => s.compareMode);
+  const compareSteps = useVizStore((s) => s.compareSteps);
+  const compareStepIndex = useVizStore((s) => s.compareStepIndex);
 
   const setStepIndex = useVizStore((s) => s.setStepIndex);
   const setPlaying = useVizStore((s) => s.setPlaying);
@@ -22,6 +26,8 @@ export function Controls() {
   const setData = useVizStore((s) => s.setData);
   const randomizeData = useVizStore((s) => s.randomizeData);
   const reset = useVizStore((s) => s.reset);
+  const toggleCompareMode = useVizStore((s) => s.toggleCompareMode);
+  const syncCompareStep = useVizStore((s) => s.syncCompareStep);
   const t = useT();
 
   // AnimationController ref — 仅用于播放时钟
@@ -41,10 +47,16 @@ export function Controls() {
     if (!ctrl) return;
 
     ctrl.onTick(() => {
-      // 使用 useVizStore.getState() 获取最新状态
       const state = useVizStore.getState();
+
+      // 推进主算法
       if (state.stepIndex < state.steps.length - 1) {
         state.setStepIndex(state.stepIndex + 1);
+
+        // 如果是对比模式，同步推进对比算法
+        if (state.compareMode) {
+          state.syncCompareStep();
+        }
       } else {
         // 到达末尾，停止播放
         ctrl.pause();
@@ -58,7 +70,6 @@ export function Controls() {
   }, []);
 
   // 当 steps 变化时（算法/数据切换），停止播放并重置
-  // 通过比较 steps 引用来判断
   const stepsRef = useRef(steps);
   useEffect(() => {
     if (stepsRef.current !== steps) {
@@ -89,8 +100,11 @@ export function Controls() {
   const stepForward = useCallback(() => {
     if (stepIndex < steps.length - 1) {
       setStepIndex(stepIndex + 1);
+      if (compareMode) {
+        syncCompareStep();
+      }
     }
-  }, [stepIndex, steps.length, setStepIndex]);
+  }, [stepIndex, steps.length, setStepIndex, compareMode, syncCompareStep]);
 
   // 单步后退
   const stepBack = useCallback(() => {
@@ -159,8 +173,22 @@ export function Controls() {
   const isAtEnd = stepIndex >= steps.length - 1;
   const isAtStart = stepIndex === 0;
 
+  // 对比模式进度
+  const compareProgress = compareMode && compareSteps.length > 0
+    ? `${compareStepIndex + 1}/${compareSteps.length}`
+    : '';
+
   return (
     <footer className="controls">
+      {/* 对比模式开关 */}
+      <button
+        className={`btn ${compareMode ? 'primary' : ''}`}
+        onClick={toggleCompareMode}
+        title="对比模式"
+      >
+        {compareMode ? '⇔ 对比' : '⇔'}
+      </button>
+
       {/* 播放控制 */}
       <div className="ctrl-group">
         <button
@@ -230,6 +258,13 @@ export function Controls() {
       />
 
       <div className="spacer" />
+
+      {/* 对比模式进度 */}
+      {compareMode && compareProgress && (
+        <span className="compare-progress">
+          vs: {compareProgress}
+        </span>
+      )}
 
       {/* 重置 */}
       <button className="btn" onClick={handleReset}>

@@ -59,6 +59,8 @@ UI 层 (React 组件)
 
 **核心数据流**：算法用 Generator 函数 yield Step → 引擎收集成 Step[] → StepPlayer 按速度回放 → Renderer.draw(ctx, snapshot) 画 Canvas → onStep 回调驱动 CodePanel 高亮与统计。
 
+**对比模式**：支持左右分屏同步播放两个算法，实时比较效率差异（V2.6）。
+
 ## 关键接口（实现新算法时必用）
 
 ```ts

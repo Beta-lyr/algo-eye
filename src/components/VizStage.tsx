@@ -1,9 +1,10 @@
 // ============================================================
 // VizStage — 可视化舞台（Canvas 画布 + 标题 + 图例）
 // 监听 store 的 stepIndex 变化，调用 Renderer 绘制当前帧
+// 支持对比模式分屏显示
 // ============================================================
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { useVizStore } from '../store/useVizStore';
 import { useT, useTranslateMessage } from '../i18n';
 import { ArrayRenderer } from '../renderers/ArrayRenderer';
@@ -14,11 +15,11 @@ import { LinkedListRenderer } from '../renderers/LinkedListRenderer';
 import { HashTableRenderer } from '../renderers/HashTableRenderer';
 import { DPGridRenderer } from '../renderers/DPGridRenderer';
 import type { Renderer } from '../renderers/Renderer';
-import type { Snapshot } from '../engine/types';
+import type { Snapshot, Step } from '../engine/types';
+import type { Algorithm } from '../algorithms/types';
 
 /**
  * 根据 snapshot.kind 选择对应 Renderer
- * 扩展时在此注册新的 Renderer
  */
 function pickRenderer(kind: Snapshot['kind']): Renderer<Snapshot> {
   switch (kind) {
@@ -31,77 +32,185 @@ function pickRenderer(kind: Snapshot['kind']): Renderer<Snapshot> {
     case 'string':
       return StringRenderer;
     case 'linked-list':
-      // 根据是否有 hashTable 数据选择渲染器
       return LinkedListRenderer;
     default:
       return ArrayRenderer;
   }
 }
 
-/** 检查是否使用哈希表渲染器 */
-function shouldUseHashTableRenderer(snap: Snapshot): boolean {
-  return snap.hashTable !== undefined;
+/** 选择正确的渲染器 */
+function getRenderer(snap: Snapshot): Renderer<Snapshot> {
+  if (snap.dpGrid !== undefined) return DPGridRenderer;
+  if (snap.hashTable !== undefined) return HashTableRenderer;
+  return pickRenderer(snap.kind);
 }
 
-/** 检查是否使用DP表格渲染器 */
-function shouldUseDPGridRenderer(snap: Snapshot): boolean {
-  return snap.dpGrid !== undefined;
+/** 绘制单个画布 */
+function drawCanvas(
+  canvas: HTMLCanvasElement,
+  step: Step | undefined,
+): void {
+  if (!step) return;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const snap = step.snapshot;
+  const renderer = getRenderer(snap);
+
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  const cssW = rect.width;
+  const cssH = rect.height;
+
+  if (canvas.width !== cssW * dpr || canvas.height !== cssH * dpr) {
+    canvas.width = cssW * dpr;
+    canvas.height = cssH * dpr;
+  }
+
+  ctx.save();
+  ctx.scale(dpr, dpr);
+  renderer.draw(ctx, snap, { canvasWidth: cssW, canvasHeight: cssH });
+  ctx.restore();
 }
 
-export function VizStage() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const currentAlgo = useVizStore((s) => s.currentAlgo);
-  const steps = useVizStore((s) => s.steps);
-  const stepIndex = useVizStore((s) => s.stepIndex);
+/** 单个算法面板组件 */
+function AlgorithmPanel({
+  algo,
+  steps,
+  stepIndex,
+  compareCount,
+  swapCount,
+  canvasRef,
+}: {
+  algo: Algorithm;
+  steps: Step[];
+  stepIndex: number;
+  compareCount: number;
+  swapCount: number;
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;
+}) {
   const t = useT();
   const translateMsg = useTranslateMessage();
 
-  const draw = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || steps.length === 0) return;
+  const step = steps[stepIndex];
+  const isTree = algo.dataKind === 'tree';
+  const isGrid = algo.dataKind === 'grid';
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+  const getSignature = () => {
+    if (isTree) return '()';
+    if (isGrid) return '(grid)';
+    return '(arr)';
+  };
 
-    const snap = steps[stepIndex].snapshot;
-    // 根据数据类型选择渲染器
-    let renderer: Renderer<Snapshot>;
-    if (shouldUseDPGridRenderer(snap)) {
-      renderer = DPGridRenderer;
-    } else if (shouldUseHashTableRenderer(snap)) {
-      renderer = HashTableRenderer;
-    } else {
-      renderer = pickRenderer(snap.kind);
-    }
-
-    // 高 DPI 适配
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    const cssW = rect.width;
-    const cssH = rect.height;
-
-    if (canvas.width !== cssW * dpr || canvas.height !== cssH * dpr) {
-      canvas.width = cssW * dpr;
-      canvas.height = cssH * dpr;
-    }
-
-    ctx.save();
-    ctx.scale(dpr, dpr);
-    renderer.draw(ctx, snap, { canvasWidth: cssW, canvasHeight: cssH });
-    ctx.restore();
-  }, [steps, stepIndex]);
-
-  // 步骤变化时重绘
+  // 绘制
   useEffect(() => {
-    draw();
-  }, [draw]);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    drawCanvas(canvas, step);
+  }, [step, canvasRef]);
 
   // 窗口大小变化时重绘
   useEffect(() => {
-    const onResize = () => draw();
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const onResize = () => drawCanvas(canvas, step);
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
-  }, [draw]);
+  }, [step, canvasRef]);
+
+  return (
+    <div className="compare-side">
+      {/* 标题栏 */}
+      <div className="compare-header">
+        <div className="algo-name">
+          ▸ {algo.name}{getSignature()}
+        </div>
+        <div className="algo-stats">
+          <span>{t.viz.time} <b>{algo.complexity.time}</b></span>
+          <span>{t.viz.space} <b>{algo.complexity.space}</b></span>
+          <span className="amber">{t.stats.comparisons}: {compareCount}</span>
+          <span>{t.stats.swaps}: {swapCount}</span>
+        </div>
+      </div>
+
+      {/* Canvas 画布 */}
+      <div className="viz-stage">
+        <canvas ref={canvasRef} />
+        {!isTree && !isGrid && <div className="axis-label">index →</div>}
+      </div>
+
+      {/* 步骤信息 */}
+      {step && (
+        <div className="step-info">
+          <span className="step-msg">
+            {translateMsg(step.message ?? '').slice(0, 40)}
+          </span>
+          <span className="step-idx">
+            {stepIndex + 1}/{steps.length}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function VizStage() {
+  const mainCanvasRef = useRef<HTMLCanvasElement>(null);
+  const compareCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  const currentAlgo = useVizStore((s) => s.currentAlgo);
+  const steps = useVizStore((s) => s.steps);
+  const stepIndex = useVizStore((s) => s.stepIndex);
+  const compareCount = useVizStore((s) => s.compareCount);
+  const swapCount = useVizStore((s) => s.swapCount);
+
+  const compareMode = useVizStore((s) => s.compareMode);
+  const compareAlgo = useVizStore((s) => s.compareAlgo);
+  const compareSteps = useVizStore((s) => s.compareSteps);
+  const compareStepIndex = useVizStore((s) => s.compareStepIndex);
+  const compareCompareCount = useVizStore((s) => s.compareCompareCount);
+  const compareSwapCount = useVizStore((s) => s.compareSwapCount);
+
+  const algorithms = useVizStore((s) => s.algorithms);
+  const setCompareAlgo = useVizStore((s) => s.setCompareAlgo);
+
+  const t = useT();
+  const translateMsg = useTranslateMessage();
+
+  // 主画布绘制
+  useEffect(() => {
+    const canvas = mainCanvasRef.current;
+    if (!canvas || steps.length === 0) return;
+    drawCanvas(canvas, steps[stepIndex]);
+  }, [steps, stepIndex]);
+
+  // 对比画布绘制
+  useEffect(() => {
+    if (!compareMode) return;
+    const canvas = compareCanvasRef.current;
+    if (!canvas || compareSteps.length === 0) return;
+    drawCanvas(canvas, compareSteps[compareStepIndex]);
+  }, [compareMode, compareSteps, compareStepIndex]);
+
+  // 窗口大小变化时重绘
+  useEffect(() => {
+    const onResize = () => {
+      const mainCanvas = mainCanvasRef.current;
+      if (mainCanvas && steps.length > 0) {
+        drawCanvas(mainCanvas, steps[stepIndex]);
+      }
+      if (compareMode) {
+        const compareCanvas = compareCanvasRef.current;
+        if (compareCanvas && compareSteps.length > 0) {
+          drawCanvas(compareCanvas, compareSteps[compareStepIndex]);
+        }
+      }
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [steps, stepIndex, compareMode, compareSteps, compareStepIndex]);
 
   if (!currentAlgo) {
     return (
@@ -114,12 +223,94 @@ export function VizStage() {
     );
   }
 
+  // 对比模式
+  if (compareMode) {
+    const { complexity } = currentAlgo;
+
+    // 可选的对比算法（排除当前算法）
+    const availableAlgos = algorithms.filter((a) => a.id !== currentAlgo.id);
+
+    return (
+      <section className="pane center">
+        {/* 标题栏 */}
+        <div className="viz-hd">
+          <div className="viz-title">▸ 对比模式</div>
+          <div className="badges">
+            <span className="badge">
+              {t.viz.time} <b>{complexity.time}</b>
+            </span>
+            <span className="badge">
+              {t.viz.space} <b>{complexity.space}</b>
+            </span>
+          </div>
+          {/* 对比算法选择 */}
+          <select
+            className="compare-select"
+            value={compareAlgo?.id ?? ''}
+            onChange={(e) => setCompareAlgo(e.target.value)}
+          >
+            {availableAlgos.map((algo) => (
+              <option key={algo.id} value={algo.id}>
+                {algo.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* 分屏画布 */}
+        <div className="compare-container">
+          <AlgorithmPanel
+            algo={currentAlgo}
+            steps={steps}
+            stepIndex={stepIndex}
+            compareCount={compareCount}
+            swapCount={swapCount}
+            canvasRef={mainCanvasRef}
+          />
+          {compareAlgo && (
+            <AlgorithmPanel
+              algo={compareAlgo}
+              steps={compareSteps}
+              stepIndex={compareStepIndex}
+              compareCount={compareCompareCount}
+              swapCount={compareSwapCount}
+              canvasRef={compareCanvasRef}
+            />
+          )}
+        </div>
+
+        {/* 图例 */}
+        <div className="legend">
+          <span>
+            <i className="sw default" />
+            {t.legend.unsorted}
+          </span>
+          <span>
+            <i className="sw compare" />
+            {t.legend.comparing}
+          </span>
+          <span>
+            <i className="sw swap" />
+            {t.legend.swapping}
+          </span>
+          <span>
+            <i className="sw sorted" />
+            {t.legend.sorted}
+          </span>
+          <span style={{ marginLeft: 'auto', color: 'var(--txt-dim)' }}>
+            主: {stepIndex + 1}/{steps.length} · 对比: {compareStepIndex + 1}/{compareSteps.length}
+          </span>
+        </div>
+      </section>
+    );
+  }
+
+  // 普通模式
   const { complexity } = currentAlgo;
   const step = steps[stepIndex];
   const isTree = currentAlgo.dataKind === 'tree';
   const isGrid = currentAlgo.dataKind === 'grid';
 
-  // 根据算法类型显示不同的函数签名
   const getSignature = () => {
     if (isTree) return '()';
     if (isGrid) return '(grid)';
@@ -151,7 +342,7 @@ export function VizStage() {
 
       {/* Canvas 画布 */}
       <div className="viz-stage">
-        <canvas ref={canvasRef} />
+        <canvas ref={mainCanvasRef} />
         {!isTree && !isGrid && <div className="axis-label">index →</div>}
       </div>
 

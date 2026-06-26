@@ -1001,6 +1001,116 @@ img {
   text-shadow: var(--glow-green);
 }
 
+/* ===== 对比模式 ===== */
+.compare-progress {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--amber);
+  text-shadow: var(--glow-amber);
+  padding: 4px 8px;
+  border: 1px solid #5a3d00;
+  border-radius: 2px;
+}
+
+.compare-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  height: 100%;
+}
+
+.compare-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-right: 1px solid var(--border);
+}
+
+.compare-side:last-child {
+  border-right: none;
+  border-left: 1px solid var(--border);
+}
+
+.compare-side .compare-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: var(--bg-panel-raised);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.compare-side .compare-header .algo-name {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.compare-side .compare-header .algo-stats {
+  color: var(--green-faint);
+}
+
+.compare-side .compare-header .algo-stats span {
+  margin-left: 12px;
+}
+
+.compare-side .compare-header .algo-stats .amber {
+  color: var(--amber);
+}
+
+.compare-side canvas {
+  flex: 1;
+  min-height: 0;
+}
+
+.compare-side .step-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+}
+
+.compare-side .step-info .step-msg {
+  color: var(--amber);
+  font-family: var(--mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.compare-side .step-info .step-idx {
+  color: var(--green-faint);
+  margin-left: 12px;
+}
+
+.compare-select {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--green);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-bright);
+  border-radius: 2px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.compare-select:focus {
+  outline: none;
+  border-color: var(--amber);
+  box-shadow: var(--glow-amber);
+}
+
+.compare-select option {
+  background: var(--bg-panel);
+  color: var(--green);
+}
+
 /* ===== 响应式 ===== */
 @media (max-width: 980px) {
   .main {
