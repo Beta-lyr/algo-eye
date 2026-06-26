@@ -202,6 +202,14 @@ export function Landing() {
           <span className="footer-text">
             React + TypeScript + Canvas 2D · CRT 复古终端风格
           </span>
+          <a
+            href="https://github.com/Beta-lyr/algo-eye"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-github"
+          >
+            ▪ GITHUB
+          </a>
         </div>
       </div>
     </div>

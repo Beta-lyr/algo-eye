@@ -20,6 +20,15 @@ export function Topbar() {
       <div className="logo">
         ▌ALGO<span className="sep">::</span>VIZ
       </div>
+      <a
+        href="https://github.com/Beta-lyr/algo-eye"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="github-badge"
+        title="View on GitHub"
+      >
+        ⬡ GITHUB
+      </a>
       <div className="tagline">phosphor terminal for algorithms</div>
       <nav className="nav">
         {NAV_ITEMS.map((item) => (

@@ -268,6 +268,28 @@ img {
   animation: dot-pulse 1.6s infinite;
 }
 
+.topbar .github-badge {
+  color: var(--amber);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  padding: 5px 12px;
+  border: 1px solid #5a3d00;
+  border-radius: 2px;
+  background: rgba(255, 176, 0, 0.06);
+  transition: 0.15s;
+  margin-left: 4px;
+}
+
+.topbar .github-badge:hover {
+  color: var(--amber);
+  border-color: var(--amber);
+  text-shadow: var(--glow-amber);
+  box-shadow: var(--glow-amber);
+  background: rgba(255, 176, 0, 0.1);
+}
+
 @keyframes dot-pulse {
   50% {
     opacity: 0.4;
@@ -931,6 +953,25 @@ img {
   font-size: 11px;
   color: var(--txt-dim);
   letter-spacing: 0.1em;
+}
+
+.landing-footer .footer-github {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--green-faint);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  transition: 0.15s;
+}
+
+.landing-footer .footer-github:hover {
+  color: var(--green);
+  border-color: var(--green-faint);
+  text-shadow: var(--glow-green);
 }
 
 /* ===== 响应式 ===== */
