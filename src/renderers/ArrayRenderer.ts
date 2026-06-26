@@ -19,6 +19,9 @@ const STATE_COLORS: Record<ElementState, string> = {
   pivot: '#ff79c6',
 };
 
+/** 性能阈值：数据量超过此值时关闭辉光效果 */
+const GLOW_THRESHOLD = 32;
+
 export const ArrayRenderer: Renderer<Snapshot> = {
   draw(ctx: CanvasRenderingContext2D, snap: Snapshot, opts: DrawOpts): void {
     const { canvasWidth, canvasHeight } = opts;
@@ -41,6 +44,9 @@ export const ArrayRenderer: Renderer<Snapshot> = {
       (canvasWidth - paddingX * 2 - barGap * (data.length - 1)) / data.length,
     );
 
+    // 性能优化：大数据集关闭辉光
+    const enableGlow = data.length <= GLOW_THRESHOLD;
+
     // 逐个绘制
     for (let i = 0; i < data.length; i++) {
       const val = data[i];
@@ -50,9 +56,11 @@ export const ArrayRenderer: Renderer<Snapshot> = {
       const x = paddingX + i * (barWidth + barGap);
       const y = barAreaHeight - barHeight;
 
-      // ===== 辉光 =====
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = color;
+      // ===== 辉光（性能优化：大数据集关闭） =====
+      if (enableGlow) {
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = color;
+      }
 
       // ===== 柱体 =====
       ctx.fillStyle = color;
@@ -61,25 +69,31 @@ export const ArrayRenderer: Renderer<Snapshot> = {
       // ===== 重置辉光 =====
       ctx.shadowBlur = 0;
 
-      // ===== 数值（柱顶） =====
-      ctx.fillStyle = '#2e5e3e';
-      ctx.font = '10px "JetBrains Mono", monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'bottom';
-      ctx.fillText(String(val), x + barWidth / 2, y - 2);
+      // ===== 数值（柱顶）— 大数据集时隐藏以提升性能 =====
+      if (data.length <= 32) {
+        ctx.fillStyle = '#2e5e3e';
+        ctx.font = '10px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(String(val), x + barWidth / 2, y - 2);
+      }
 
-      // ===== 下标（柱底） =====
-      ctx.fillStyle = '#3a6b4a';
-      ctx.font = '9px "JetBrains Mono", monospace';
-      ctx.textBaseline = 'top';
-      ctx.fillText(String(i), x + barWidth / 2, barAreaHeight + 4);
+      // ===== 下标（柱底）— 大数据集时隐藏以提升性能 =====
+      if (data.length <= 32) {
+        ctx.fillStyle = '#3a6b4a';
+        ctx.font = '9px "JetBrains Mono", monospace';
+        ctx.textBaseline = 'top';
+        ctx.fillText(String(i), x + barWidth / 2, barAreaHeight + 4);
+      }
 
       // ===== 指针标签（如 'j', 'j+1', 'pivot'） =====
-      if (pointers && pointers[i]) {
+      if (pointers && pointers[i] && data.length <= 32) {
         ctx.fillStyle = '#ffb000';
         ctx.font = '11px "JetBrains Mono", monospace';
-        ctx.shadowBlur = 6;
-        ctx.shadowColor = '#ffb000';
+        if (enableGlow) {
+          ctx.shadowBlur = 6;
+          ctx.shadowColor = '#ffb000';
+        }
         ctx.textBaseline = 'bottom';
         ctx.fillText(pointers[i], x + barWidth / 2, y - 14);
         ctx.shadowBlur = 0;
