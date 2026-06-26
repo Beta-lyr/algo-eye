@@ -7,6 +7,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import { useVizStore } from '../store/useVizStore';
 import { ArrayRenderer } from '../renderers/ArrayRenderer';
 import { TreeRenderer } from '../renderers/TreeRenderer';
+import { GridRenderer } from '../renderers/GridRenderer';
 import type { Renderer } from '../renderers/Renderer';
 import type { Snapshot } from '../engine/types';
 
@@ -20,7 +21,8 @@ function pickRenderer(kind: Snapshot['kind']): Renderer<Snapshot> {
       return ArrayRenderer;
     case 'tree':
       return TreeRenderer;
-    // TODO: grid / graph 渲染器
+    case 'grid':
+      return GridRenderer;
     default:
       return ArrayRenderer;
   }
@@ -85,12 +87,20 @@ export function VizStage() {
   const { complexity } = currentAlgo;
   const step = steps[stepIndex];
   const isTree = currentAlgo.dataKind === 'tree';
+  const isGrid = currentAlgo.dataKind === 'grid';
+
+  // 根据算法类型显示不同的函数签名
+  const getSignature = () => {
+    if (isTree) return '()';
+    if (isGrid) return '(grid)';
+    return '(arr)';
+  };
 
   return (
     <section className="pane center">
       {/* 标题栏 */}
       <div className="viz-hd">
-        <div className="viz-title">▸ {currentAlgo.name}{isTree ? '()' : '(arr)'}</div>
+        <div className="viz-title">▸ {currentAlgo.name}{getSignature()}</div>
         <div className="badges">
           <span className="badge">
             时间 <b>{complexity.time}</b>
@@ -112,27 +122,54 @@ export function VizStage() {
       {/* Canvas 画布 */}
       <div className="viz-stage">
         <canvas ref={canvasRef} />
-        {!isTree && <div className="axis-label">index →</div>}
+        {!isTree && !isGrid && <div className="axis-label">index →</div>}
       </div>
 
       {/* 图例 */}
       <div className="legend">
-        <span>
-          <i className="sw default" />
-          未处理
-        </span>
-        <span>
-          <i className="sw compare" />
-          比较中
-        </span>
-        <span>
-          <i className="sw swap" />
-          交换中
-        </span>
-        <span>
-          <i className="sw sorted" />
-          已排序
-        </span>
+        {isGrid ? (
+          <>
+            <span>
+              <i className="sw default" />
+              空地
+            </span>
+            <span>
+              <i className="sw compare" />
+              墙
+            </span>
+            <span>
+              <i className="sw visit" />
+              已访问
+            </span>
+            <span>
+              <i className="sw current" />
+              前沿
+            </span>
+            <span>
+              <i className="sw path" />
+              最短路径
+            </span>
+          </>
+        ) : (
+          <>
+            <span>
+              <i className="sw default" />
+              未处理
+            </span>
+            <span>
+              <i className="sw compare" />
+              比较中
+            </span>
+            <span>
+              <i className="sw swap" />
+              交换中
+            </span>
+            <span>
+              <i className="sw sorted" />
+              已排序
+            </span>
+          </>
+        )}
         <span style={{ marginLeft: 'auto', color: 'var(--txt-dim)' }}>
           step {stepIndex + 1} / {steps.length}
           {step && <> · {step.message?.slice(0, 30)}...</>}

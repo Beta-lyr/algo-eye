@@ -13,6 +13,9 @@ import { heapSort } from './sorting/heapSort';
 import { linearSearch } from './searching/linearSearch';
 import { binarySearch } from './searching/binarySearch';
 import { binarySearchTree } from './data-structure/binarySearchTree';
+import { bfs } from './graph/bfs';
+import { dfs } from './graph/dfs';
+import { dijkstra } from './graph/dijkstra';
 
 /** 所有已注册的算法 */
 export const algorithms: Algorithm[] = [
@@ -25,6 +28,9 @@ export const algorithms: Algorithm[] = [
   linearSearch,
   binarySearch,
   binarySearchTree,
+  bfs,
+  dfs,
+  dijkstra,
 ];
 
 /** 按 ID 查找算法 */
