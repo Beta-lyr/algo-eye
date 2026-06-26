@@ -5,10 +5,20 @@
 
 import type { Algorithm } from './types';
 import { bubbleSort } from './sorting/bubbleSort';
+import { selectionSort } from './sorting/selectionSort';
+import { insertionSort } from './sorting/insertionSort';
+import { quickSort } from './sorting/quickSort';
+import { mergeSort } from './sorting/mergeSort';
+import { heapSort } from './sorting/heapSort';
 
 /** 所有已注册的算法 */
 export const algorithms: Algorithm[] = [
   bubbleSort,
+  selectionSort,
+  insertionSort,
+  quickSort,
+  mergeSort,
+  heapSort,
 ];
 
 /** 按 ID 查找算法 */
