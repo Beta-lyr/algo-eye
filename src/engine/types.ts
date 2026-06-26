@@ -25,7 +25,7 @@ export type ElementState =
   | 'pivot';
 
 /** 数据形态 */
-export type DataKind = 'array' | 'grid' | 'tree' | 'graph' | 'string';
+export type DataKind = 'array' | 'grid' | 'tree' | 'graph' | 'string' | 'linked-list';
 
 /**
  * 树节点（用于 tree 形态的数据结构可视化）
@@ -71,6 +71,12 @@ export interface Snapshot {
   textStates?: Record<number, ElementState>;
   /** 字符串匹配特有：模式中每个位置的状态 */
   patternStates?: Record<number, ElementState>;
+  /** 链表特有：链表头节点 */
+  linkedList?: { id: number; value: number; next: any } | null;
+  /** 哈希表特有：桶数组 */
+  hashTable?: ({ key: number; value: number; next: any } | null)[];
+  /** 哈希表特有：桶状态 */
+  hashTableStates?: Record<number | string, ElementState>;
 }
 
 /**

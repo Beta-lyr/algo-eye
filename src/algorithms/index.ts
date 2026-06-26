@@ -20,6 +20,9 @@ import { jumpSearch } from './searching/jumpSearch';
 import { interpolationSearch } from './searching/interpolationSearch';
 import { exponentialSearch } from './searching/exponentialSearch';
 import { binarySearchTree } from './data-structure/binarySearchTree';
+import { heap } from './data-structure/heap';
+import { linkedList } from './data-structure/linkedList';
+import { hashTable } from './data-structure/hashTable';
 import { bfs } from './graph/bfs';
 import { dfs } from './graph/dfs';
 import { dijkstra } from './graph/dijkstra';
@@ -45,6 +48,9 @@ export const algorithms: Algorithm[] = [
   interpolationSearch,
   exponentialSearch,
   binarySearchTree,
+  heap,
+  linkedList,
+  hashTable,
   bfs,
   dfs,
   dijkstra,

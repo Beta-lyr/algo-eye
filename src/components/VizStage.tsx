@@ -10,6 +10,8 @@ import { ArrayRenderer } from '../renderers/ArrayRenderer';
 import { TreeRenderer } from '../renderers/TreeRenderer';
 import { GridRenderer } from '../renderers/GridRenderer';
 import { StringRenderer } from '../renderers/StringRenderer';
+import { LinkedListRenderer } from '../renderers/LinkedListRenderer';
+import { HashTableRenderer } from '../renderers/HashTableRenderer';
 import type { Renderer } from '../renderers/Renderer';
 import type { Snapshot } from '../engine/types';
 
@@ -27,9 +29,17 @@ function pickRenderer(kind: Snapshot['kind']): Renderer<Snapshot> {
       return GridRenderer;
     case 'string':
       return StringRenderer;
+    case 'linked-list':
+      // 根据是否有 hashTable 数据选择渲染器
+      return LinkedListRenderer;
     default:
       return ArrayRenderer;
   }
+}
+
+/** 检查是否使用哈希表渲染器 */
+function shouldUseHashTableRenderer(snap: Snapshot): boolean {
+  return snap.hashTable !== undefined;
 }
 
 export function VizStage() {
@@ -48,7 +58,13 @@ export function VizStage() {
     if (!ctx) return;
 
     const snap = steps[stepIndex].snapshot;
-    const renderer = pickRenderer(snap.kind);
+    // 根据数据类型选择渲染器
+    let renderer: Renderer<Snapshot>;
+    if (shouldUseHashTableRenderer(snap)) {
+      renderer = HashTableRenderer;
+    } else {
+      renderer = pickRenderer(snap.kind);
+    }
 
     // 高 DPI 适配
     const dpr = window.devicePixelRatio || 1;
