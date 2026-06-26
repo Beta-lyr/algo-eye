@@ -195,14 +195,14 @@ src/
 └── main.tsx
 ```
 
-## 当前状态（28 个算法）
+## 当前状态（32 个算法）
 
 | 分类 | 算法 |
 |------|------|
 | 排序 | 冒泡、选择、插入、快速、归并、堆、希尔、基数、计数、桶 |
 | 搜索 | 线性、二分、跳跃、插值、指数 |
 | 数据结构 | BST、堆、链表、哈希表 |
-| 图 | BFS、DFS、Dijkstra |
+| 图 | BFS、DFS、Dijkstra、A*、Bellman-Ford、Prim、Kruskal |
 | 字符串 | KMP、Rabin-Karp、Boyer-Moore |
 | 动态规划 | LCS、背包、编辑距离 |
 

@@ -26,6 +26,10 @@ import { hashTable } from './data-structure/hashTable';
 import { bfs } from './graph/bfs';
 import { dfs } from './graph/dfs';
 import { dijkstra } from './graph/dijkstra';
+import { astar } from './graph/astar';
+import { bellmanFord } from './graph/bellmanFord';
+import { prim } from './graph/prim';
+import { kruskal } from './graph/kruskal';
 import { kmp } from './string/kmp';
 import { rabinKarp } from './string/rabinKarp';
 import { boyerMoore } from './string/boyerMoore';
@@ -57,6 +61,10 @@ export const algorithms: Algorithm[] = [
   bfs,
   dfs,
   dijkstra,
+  astar,
+  bellmanFord,
+  prim,
+  kruskal,
   kmp,
   rabinKarp,
   boyerMoore,
