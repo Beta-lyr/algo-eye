@@ -42,6 +42,16 @@ export interface VizState {
   /** 提示消息 */
   hintMessage: string;
 
+  // ===== 书签 =====
+  /** stepIndex → 注释文本 */
+  bookmarks: Record<number, string>;
+  /** 切换书签（有则删，无则加） */
+  toggleBookmark: (stepIndex: number) => void;
+  /** 更新书签注释 */
+  updateBookmarkComment: (stepIndex: number, comment: string) => void;
+  /** 导出书签为 JSON */
+  exportBookmarks: () => string;
+
   // ===== 对比模式 =====
   /** 是否启用对比模式 */
   compareMode: boolean;
@@ -114,6 +124,9 @@ export const useVizStore = create<VizState>((set, get) => ({
   selectedIndices: [],
   hintMessage: '',
 
+  // ===== 书签初始值 =====
+  bookmarks: {},
+
   // ===== 对比模式初始值 =====
   compareMode: false,
   compareAlgo: null,
@@ -123,6 +136,28 @@ export const useVizStore = create<VizState>((set, get) => ({
   compareSwapCount: 0,
 
   // ===== 操作实现 =====
+  toggleBookmark: (stepIndex: number) => {
+    const { bookmarks } = get();
+    if (bookmarks[stepIndex] !== undefined) {
+      const next = { ...bookmarks };
+      delete next[stepIndex];
+      set({ bookmarks: next });
+    } else {
+      set({ bookmarks: { ...bookmarks, [stepIndex]: '' } });
+    }
+  },
+
+  updateBookmarkComment: (stepIndex: number, comment: string) => {
+    const { bookmarks } = get();
+    if (bookmarks[stepIndex] === undefined) return;
+    set({ bookmarks: { ...bookmarks, [stepIndex]: comment } });
+  },
+
+  exportBookmarks: () => {
+    const { bookmarks, currentAlgo, data } = get();
+    return JSON.stringify({ algorithm: currentAlgo?.id, data, bookmarks }, null, 2);
+  },
+
   toggleManualMode: () => {
     const { manualMode } = get();
     if (manualMode) {

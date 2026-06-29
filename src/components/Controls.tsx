@@ -32,7 +32,35 @@ export function Controls() {
   const currentAlgo = useVizStore((s) => s.currentAlgo);
   const manualMode = useVizStore((s) => s.manualMode);
   const toggleManualMode = useVizStore((s) => s.toggleManualMode);
+
+  const bookmarks = useVizStore((s) => s.bookmarks);
+  const toggleBookmark = useVizStore((s) => s.toggleBookmark);
+  const updateBookmarkComment = useVizStore((s) => s.updateBookmarkComment);
+  const exportBookmarks = useVizStore((s) => s.exportBookmarks);
+
   const t = useT();
+
+  // 进度条相关
+  const progressRef = useRef<HTMLDivElement>(null);
+  const seekStep = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const el = progressRef.current;
+    if (!el || steps.length === 0) return;
+    const rect = el.getBoundingClientRect();
+    const ratio = (e.clientX - rect.left) / rect.width;
+    const idx = Math.round(ratio * (steps.length - 1));
+    setStepIndex(Math.max(0, Math.min(steps.length - 1, idx)));
+  }, [steps.length, setStepIndex]);
+
+  const handleExportBookmarks = useCallback(() => {
+    const json = exportBookmarks();
+    navigator.clipboard.writeText(json).then(() => {
+      /* silently succeed */
+    });
+  }, [exportBookmarks]);
+
+  // 书签编辑状态
+  const [editingBookmark, setEditingBookmark] = useState<number | null>(null);
+  const [editText, setEditText] = useState('');
 
   // AnimationController ref — 仅用于播放时钟
   const controllerRef = useRef<AnimationController | null>(null);
@@ -207,118 +235,209 @@ export function Controls() {
     ? `${compareStepIndex + 1}/${compareSteps.length}`
     : '';
 
+  const bmEntries = Object.entries(bookmarks)
+    .map(([s, c]) => ({ step: Number(s), comment: c }))
+    .sort((a, b) => a.step - b.step);
+
+  const pct = steps.length > 1 ? (stepIndex / (steps.length - 1)) * 100 : 0;
+
   return (
-    <footer className="controls">
-      {/* 对比模式开关 */}
-      <button
-        className={`btn ${compareMode ? 'primary' : ''}`}
-        onClick={toggleCompareMode}
-        title="对比模式"
-      >
-        {compareMode ? '⇔ 对比' : '⇔'}
-      </button>
-
-      {/* 手动模式开关 */}
-      <button
-        className={`btn ${manualMode ? 'primary' : ''}`}
-        onClick={toggleManualMode}
-        title="手动模式"
-        disabled={currentAlgo?.dataKind !== 'array'}
-      >
-        ✋ {manualMode ? '手动' : ''}
-      </button>
-
-      {/* 播放控制 */}
-      <div className="ctrl-group">
-        <button
-          className="btn"
-          disabled={disabled || isAtStart}
-          onClick={stepBack}
-          title={t.controls.prev}
-        >
-          ⏮
-        </button>
-        <button
-          className="btn primary"
-          disabled={disabled}
-          onClick={togglePlay}
-          title={playing ? t.controls.pause : t.controls.play}
-        >
-          {playing ? '⏸' : '▶'}
-        </button>
-        <button
-          className="btn"
-          disabled={disabled || isAtEnd}
-          onClick={stepForward}
-          title={t.controls.next}
-        >
-          ⏭
-        </button>
-      </div>
-
-      {/* 速度 */}
-      <div className="speed">
-        <label>{t.controls.speed}</label>
-        <input
-          type="range"
-          min={1}
-          max={10}
-          value={speed}
-          onChange={handleSpeedChange}
-        />
-        <span className="val">{speed}×</span>
-      </div>
-
-      {/* 数据量 */}
-      <div className="ctrl-group">
-        <label>{t.controls.dataSize}</label>
-        <input
-          className="num-input"
-          type="number"
-          value={data.length}
-          min={4}
-          max={64}
-          onChange={handleCountChange}
-        />
-      </div>
-
-      {/* 随机数据 */}
-      <button className="btn" onClick={handleRandom}>
-        {t.controls.randomData}
-      </button>
-
-      {/* 自定义数据 */}
-      <input
-        className="data-input"
-        placeholder={t.controls.customData.replace('{data}', data.join(','))}
-        value={customInput}
-        onChange={(e) => setCustomInput(e.target.value)}
-        onKeyDown={handleCustomData}
-      />
-
-      <div className="spacer" />
-
-      {/* 对比模式进度 */}
-      {compareMode && compareProgress && (
-        <span className="compare-progress">
-          vs: {compareProgress}
-        </span>
+    <footer className="controls-wrap">
+      {/* 进度条 */}
+      {steps.length > 1 && (
+        <div className="progress-row">
+          <div className="progress-bar" ref={progressRef} onClick={seekStep}>
+            <div className="progress-fill" style={{ width: `${pct}%` }} />
+            {Object.keys(bookmarks).length > 0 && (
+              <div className="bookmark-marks">
+                {bmEntries.map(({ step }) => (
+                  <div
+                    key={step}
+                    className="bm-dot"
+                    style={{ left: `${(step / (steps.length - 1)) * 100}%` }}
+                    title={`Step ${step + 1}${bookmarks[step] ? ': ' + bookmarks[step] : ''}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+          <span className="progress-label">{stepIndex + 1}/{steps.length}</span>
+          <button
+            className="btn bm-btn"
+            onClick={() => toggleBookmark(stepIndex)}
+            title={bookmarks[stepIndex] !== undefined ? '移除书签' : '添加书签'}
+            disabled={disabled}
+          >
+            {bookmarks[stepIndex] !== undefined ? '🔖' : '🏷️'}
+          </button>
+        </div>
       )}
 
-      {/* 截图 */}
-      <button className="btn" onClick={handleScreenshot} title="截图">
-        📷
-      </button>
+      {/* 书签列表 */}
+      {bmEntries.length > 0 && (
+        <div className="bookmark-list">
+          {bmEntries.map(({ step, comment }) => (
+            <div key={step} className="bm-item">
+              <span
+                className="bm-step"
+                onClick={() => setStepIndex(step)}
+              >
+                #{step + 1}
+              </span>
+              {editingBookmark === step ? (
+                <input
+                  className="bm-input"
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  onBlur={() => {
+                    updateBookmarkComment(step, editText);
+                    setEditingBookmark(null);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      updateBookmarkComment(step, editText);
+                      setEditingBookmark(null);
+                    }
+                    if (e.key === 'Escape') setEditingBookmark(null);
+                  }}
+                  autoFocus
+                />
+              ) : (
+                <span
+                  className="bm-comment"
+                  onClick={() => {
+                    setEditingBookmark(step);
+                    setEditText(comment);
+                  }}
+                >
+                  {comment || '点击添加注释…'}
+                </span>
+              )}
+              <button className="btn bm-del" onClick={() => toggleBookmark(step)}>
+                ✕
+              </button>
+            </div>
+          ))}
+          {bmEntries.length > 0 && (
+            <button className="btn bm-export" onClick={handleExportBookmarks}>
+              📋 导出
+            </button>
+          )}
+        </div>
+      )}
 
-      {/* 分享 */}
-      <button className="btn" onClick={handleShare} title="分享链接">
-        {shareStatus === 'copied' ? '✓ 已复制' : '🔗 分享'}
-      </button>
+      <div className="controls">
+        {/* 对比模式开关 */}
+        <button
+          className={`btn ${compareMode ? 'primary' : ''}`}
+          onClick={toggleCompareMode}
+          title="对比模式"
+        >
+          {compareMode ? '⇔ 对比' : '⇔'}
+        </button>
 
-      {/* 重置 */}
-      <button className="btn" onClick={handleReset}>
-        {t.controls.reset}
-      </button>
+        {/* 手动模式开关 */}
+        <button
+          className={`btn ${manualMode ? 'primary' : ''}`}
+          onClick={toggleManualMode}
+          title="手动模式"
+          disabled={currentAlgo?.dataKind !== 'array'}
+        >
+          ✋ {manualMode ? '手动' : ''}
+        </button>
+
+        {/* 播放控制 */}
+        <div className="ctrl-group">
+          <button
+            className="btn"
+            disabled={disabled || isAtStart}
+            onClick={stepBack}
+            title={t.controls.prev}
+          >
+            ⏮
+          </button>
+          <button
+            className="btn primary"
+            disabled={disabled}
+            onClick={togglePlay}
+            title={playing ? t.controls.pause : t.controls.play}
+          >
+            {playing ? '⏸' : '▶'}
+          </button>
+          <button
+            className="btn"
+            disabled={disabled || isAtEnd}
+            onClick={stepForward}
+            title={t.controls.next}
+          >
+            ⏭
+          </button>
+        </div>
+
+        {/* 速度 */}
+        <div className="speed">
+          <label>{t.controls.speed}</label>
+          <input
+            type="range"
+            min={1}
+            max={10}
+            value={speed}
+            onChange={handleSpeedChange}
+          />
+          <span className="val">{speed}×</span>
+        </div>
+
+        {/* 数据量 */}
+        <div className="ctrl-group">
+          <label>{t.controls.dataSize}</label>
+          <input
+            className="num-input"
+            type="number"
+            value={data.length}
+            min={4}
+            max={64}
+            onChange={handleCountChange}
+          />
+        </div>
+
+        {/* 随机数据 */}
+        <button className="btn" onClick={handleRandom}>
+          {t.controls.randomData}
+        </button>
+
+        {/* 自定义数据 */}
+        <input
+          className="data-input"
+          placeholder={t.controls.customData.replace('{data}', data.join(','))}
+          value={customInput}
+          onChange={(e) => setCustomInput(e.target.value)}
+          onKeyDown={handleCustomData}
+        />
+
+        <div className="spacer" />
+
+        {/* 对比模式进度 */}
+        {compareMode && compareProgress && (
+          <span className="compare-progress">
+            vs: {compareProgress}
+          </span>
+        )}
+
+        {/* 截图 */}
+        <button className="btn" onClick={handleScreenshot} title="截图">
+          📷
+        </button>
+
+        {/* 分享 */}
+        <button className="btn" onClick={handleShare} title="分享链接">
+          {shareStatus === 'copied' ? '✓ 已复制' : '🔗 分享'}
+        </button>
+
+        {/* 重置 */}
+        <button className="btn" onClick={handleReset}>
+          {t.controls.reset}
+        </button>
+      </div>
     </footer>
   );
 }

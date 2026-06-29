@@ -185,7 +185,7 @@ img {
 /* ===== 应用布局 ===== */
 .app {
   display: grid;
-  grid-template-rows: 48px 1fr 56px;
+  grid-template-rows: 48px 1fr auto;
   height: 100vh;
 }
 
@@ -713,7 +713,6 @@ img {
   gap: 14px;
   padding: 0 18px;
   background: linear-gradient(180deg, var(--bg-panel), var(--bg-panel-raised));
-  border-top: 1px solid var(--border);
 }
 
 .btn {
@@ -845,6 +844,139 @@ img {
 
 .spacer {
   flex: 1;
+}
+
+/* ===== 进度条 + 书签 ===== */
+.controls-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-panel);
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #0d130d;
+  border: 1px solid var(--border-bright);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+  overflow: visible;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--green);
+  box-shadow: var(--glow-green);
+  border-radius: 1px;
+  transition: width 0.15s;
+}
+
+.bookmark-marks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bm-dot {
+  position: absolute;
+  top: -3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: var(--glow-amber);
+  transform: translateX(-50%);
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.progress-label {
+  font-family: var(--term);
+  font-size: 14px;
+  color: var(--green-dim);
+  min-width: 72px;
+  text-align: right;
+  letter-spacing: 0.06em;
+}
+
+.bm-btn {
+  font-size: 14px;
+  padding: 2px 8px;
+}
+
+.bookmark-list {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 18px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 176, 0, 0.03);
+  flex-wrap: wrap;
+}
+
+.bm-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 12px;
+}
+
+.bm-step {
+  color: var(--amber);
+  cursor: pointer;
+  font-weight: 500;
+  user-select: none;
+}
+
+.bm-step:hover {
+  text-shadow: var(--glow-amber);
+}
+
+.bm-comment {
+  color: var(--green-dim);
+  cursor: text;
+  min-width: 40px;
+  border-bottom: 1px dashed var(--border-bright);
+  padding: 0 4px;
+}
+
+.bm-input {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: #060906;
+  border: 1px solid var(--amber);
+  color: var(--green);
+  padding: 2px 6px;
+  border-radius: 2px;
+  outline: none;
+  width: 120px;
+}
+
+.bm-del {
+  font-size: 10px;
+  padding: 1px 4px;
+  color: var(--red);
+  border-color: transparent;
+}
+
+.bm-export {
+  font-size: 11px;
+  padding: 2px 8px;
+  margin-left: auto;
 }
 
 /* ===== Landing 页 ===== */
