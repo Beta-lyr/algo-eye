@@ -110,6 +110,27 @@ export function Controls() {
     }
   }, [steps]);
 
+  // 键盘快捷键
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement).tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePlay();
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        stepBack();
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        stepForward();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [togglePlay, stepBack, stepForward]);
+
   // 播放/暂停
   const togglePlay = useCallback(() => {
     const ctrl = controllerRef.current;
