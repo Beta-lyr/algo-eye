@@ -519,6 +519,19 @@ img {
   letter-spacing: 0.1em;
 }
 
+/* ===== 手动模式提示条 ===== */
+.manual-hint {
+  padding: 6px 22px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--amber);
+  background: rgba(255, 176, 0, 0.04);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .legend {
   display: flex;
   gap: 16px;

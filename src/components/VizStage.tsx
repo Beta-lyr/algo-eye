@@ -4,7 +4,7 @@
 // 支持对比模式分屏显示
 // ============================================================
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useVizStore } from '../store/useVizStore';
 import { useT, useTranslateMessage } from '../i18n';
@@ -50,13 +50,17 @@ function getRenderer(snap: Snapshot): Renderer<Snapshot> {
 function drawCanvas(
   canvas: HTMLCanvasElement,
   step: Step | undefined,
+  selectedIndices?: number[],
 ): void {
   if (!step) return;
 
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  const snap = step.snapshot;
+  const rawSnap = step.snapshot;
+  const snap = selectedIndices?.length
+    ? { ...rawSnap, states: { ...rawSnap.states, ...Object.fromEntries(selectedIndices.map((i) => [i, 'pivot' as const])) } }
+    : rawSnap;
   const renderer = getRenderer(snap);
 
   const dpr = window.devicePixelRatio || 1;
@@ -167,6 +171,12 @@ export function VizStage() {
   const compareCount = useVizStore((s) => s.compareCount);
   const swapCount = useVizStore((s) => s.swapCount);
 
+  const manualMode = useVizStore((s) => s.manualMode);
+  const selectedIndices = useVizStore((s) => s.selectedIndices);
+  const hintMessage = useVizStore((s) => s.hintMessage);
+  const selectIndex = useVizStore((s) => s.selectIndex);
+  const data = useVizStore((s) => s.data);
+
   const compareMode = useVizStore((s) => s.compareMode);
   const compareAlgo = useVizStore((s) => s.compareAlgo);
   const compareSteps = useVizStore((s) => s.compareSteps);
@@ -180,12 +190,34 @@ export function VizStage() {
   const t = useT();
   const translateMsg = useTranslateMessage();
 
+  // 手动模式：canvas 点击 → 映射为数组下标
+  const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = mainCanvasRef.current;
+    if (!canvas || !manualMode || !currentAlgo || currentAlgo.dataKind !== 'array') return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const n = data.length;
+
+    const paddingX = 40;
+    const barGap = 6;
+    const barWidth = Math.max(4, (rect.width - paddingX * 2 - barGap * (n - 1)) / n);
+
+    const index = Math.floor((x - paddingX) / (barWidth + barGap));
+    if (index < 0 || index >= n) return;
+
+    const barX = paddingX + index * (barWidth + barGap);
+    if (x >= barX && x <= barX + barWidth) {
+      selectIndex(index);
+    }
+  }, [manualMode, currentAlgo, data.length, selectIndex]);
+
   // 主画布绘制
   useEffect(() => {
     const canvas = mainCanvasRef.current;
     if (!canvas || steps.length === 0) return;
-    drawCanvas(canvas, steps[stepIndex]);
-  }, [steps, stepIndex]);
+    drawCanvas(canvas, steps[stepIndex], selectedIndices);
+  }, [steps, stepIndex, selectedIndices]);
 
   // 对比画布绘制
   useEffect(() => {
@@ -200,7 +232,7 @@ export function VizStage() {
     const onResize = () => {
       const mainCanvas = mainCanvasRef.current;
       if (mainCanvas && steps.length > 0) {
-        drawCanvas(mainCanvas, steps[stepIndex]);
+        drawCanvas(mainCanvas, steps[stepIndex], selectedIndices);
       }
       if (compareMode) {
         const compareCanvas = compareCanvasRef.current;
@@ -211,7 +243,7 @@ export function VizStage() {
     };
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
-  }, [steps, stepIndex, compareMode, compareSteps, compareStepIndex]);
+  }, [steps, stepIndex, compareMode, compareSteps, compareStepIndex, selectedIndices]);
 
   if (!currentAlgo) {
     return (
@@ -346,9 +378,24 @@ export function VizStage() {
 
       {/* Canvas 画布 */}
       <div className="viz-stage">
-        <canvas ref={mainCanvasRef} />
+        <canvas
+          ref={mainCanvasRef}
+          onClick={handleCanvasClick}
+          style={{ cursor: manualMode && currentAlgo?.dataKind === 'array' ? 'crosshair' : undefined }}
+        />
         {!isTree && !isGrid && <div className="axis-label">index →</div>}
       </div>
+
+      {/* 手动模式提示 */}
+      {manualMode && (
+        <div className="manual-hint">
+          {hintMessage || (
+            selectedIndices.length === 0
+              ? `🔍 ${translateMsg(steps[stepIndex]?.message ?? '').slice(0, 36)} — 请点击对应的柱体`
+              : `已选中 [${selectedIndices.join(', ')}]，请选择另一个`
+          )}
+        </div>
+      )}
 
       {/* 图例 */}
       <div className="legend">

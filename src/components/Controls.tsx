@@ -30,6 +30,8 @@ export function Controls() {
   const syncCompareStep = useVizStore((s) => s.syncCompareStep);
   const getShareUrl = useVizStore((s) => s.getShareUrl);
   const currentAlgo = useVizStore((s) => s.currentAlgo);
+  const manualMode = useVizStore((s) => s.manualMode);
+  const toggleManualMode = useVizStore((s) => s.toggleManualMode);
   const t = useT();
 
   // AnimationController ref — 仅用于播放时钟
@@ -89,6 +91,8 @@ export function Controls() {
       ctrl.pause();
       setPlaying(false);
     } else {
+      // 退出手动模式
+      if (manualMode) toggleManualMode();
       // 如果在末尾，从头开始
       if (stepIndex >= steps.length - 1) {
         setStepIndex(0);
@@ -96,7 +100,7 @@ export function Controls() {
       ctrl.play();
       setPlaying(true);
     }
-  }, [playing, steps, stepIndex, setPlaying, setStepIndex]);
+  }, [playing, steps, stepIndex, setPlaying, setStepIndex, manualMode, toggleManualMode]);
 
   // 单步前进
   const stepForward = useCallback(() => {
@@ -212,6 +216,16 @@ export function Controls() {
         title="对比模式"
       >
         {compareMode ? '⇔ 对比' : '⇔'}
+      </button>
+
+      {/* 手动模式开关 */}
+      <button
+        className={`btn ${manualMode ? 'primary' : ''}`}
+        onClick={toggleManualMode}
+        title="手动模式"
+        disabled={currentAlgo?.dataKind !== 'array'}
+      >
+        ✋ {manualMode ? '手动' : ''}
       </button>
 
       {/* 播放控制 */}

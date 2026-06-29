@@ -34,6 +34,14 @@ export interface VizState {
   compareCount: number;
   swapCount: number;
 
+  // ===== 手动模式 =====
+  /** 是否启用手动操作模式 */
+  manualMode: boolean;
+  /** 用户已选中的下标 */
+  selectedIndices: number[];
+  /** 提示消息 */
+  hintMessage: string;
+
   // ===== 对比模式 =====
   /** 是否启用对比模式 */
   compareMode: boolean;
@@ -48,6 +56,12 @@ export interface VizState {
   compareSwapCount: number;
 
   // ===== 操作 =====
+  /** 切换手动模式 */
+  toggleManualMode: () => void;
+  /** 点击选中/取消某个下标 */
+  selectIndex: (index: number) => void;
+  /** 清空选中 */
+  clearSelection: () => void;
   /** 选择算法 */
   selectAlgorithm: (id: string) => void;
   /** 设置数据并重新生成步骤 */
@@ -95,6 +109,11 @@ export const useVizStore = create<VizState>((set, get) => ({
   compareCount: 0,
   swapCount: 0,
 
+  // ===== 手动模式初始值 =====
+  manualMode: false,
+  selectedIndices: [],
+  hintMessage: '',
+
   // ===== 对比模式初始值 =====
   compareMode: false,
   compareAlgo: null,
@@ -104,6 +123,87 @@ export const useVizStore = create<VizState>((set, get) => ({
   compareSwapCount: 0,
 
   // ===== 操作实现 =====
+  toggleManualMode: () => {
+    const { manualMode } = get();
+    if (manualMode) {
+      set({ manualMode: false, selectedIndices: [], hintMessage: '' });
+    } else {
+      set({ manualMode: true, selectedIndices: [], hintMessage: '', playing: false });
+    }
+  },
+
+  selectIndex: (index: number) => {
+    const { selectedIndices, steps, stepIndex, currentAlgo } = get();
+    if (!currentAlgo || currentAlgo.dataKind !== 'array') return;
+
+    const cur = new Set(selectedIndices);
+
+    // 点击已选中的 → 取消选中
+    if (cur.has(index)) {
+      cur.delete(index);
+      set({ selectedIndices: [...cur], hintMessage: '' });
+      return;
+    }
+
+    // 已选两个 → 清空重选
+    if (cur.size >= 2) {
+      set({ selectedIndices: [index], hintMessage: '' });
+      return;
+    }
+
+    // 加入选中
+    cur.add(index);
+    const sel = [...cur];
+
+    if (sel.length < 2) {
+      set({ selectedIndices: sel });
+      return;
+    }
+
+    // 选了两个 → 校验
+    const step = steps[stepIndex];
+    if (!step || !step.indices || step.indices.length < 2) {
+      set({ selectedIndices: [], hintMessage: '该步骤无需选择下标' });
+      return;
+    }
+
+    const sortedSel = [...sel].sort((a, b) => a - b);
+    const sortedStep = [...step.indices].sort((a, b) => a - b);
+    const match = sortedSel.length === sortedStep.length &&
+      sortedSel.every((v, i) => v === sortedStep[i]);
+
+    if (match) {
+      // 校验通过，前进到下一步
+      if (stepIndex < steps.length - 1) {
+        const newIndex = stepIndex + 1;
+        let compareCount = 0;
+        let swapCount = 0;
+        for (let i = 0; i <= newIndex; i++) {
+          if (steps[i].type === 'compare') compareCount++;
+          if (steps[i].type === 'swap') swapCount++;
+        }
+        set({
+          stepIndex: newIndex,
+          compareCount,
+          swapCount,
+          selectedIndices: [],
+          hintMessage: newIndex >= steps.length - 1 ? '🎉 已完成所有步骤！' : '✓ 正确！',
+        });
+      } else {
+        set({ selectedIndices: [], hintMessage: '🎉 已完成所有步骤！' });
+      }
+    } else {
+      set({
+        selectedIndices: [],
+        hintMessage: `✗ 应为下标 [${sortedStep.join(', ')}] 的操作，请重试`,
+      });
+    }
+  },
+
+  clearSelection: () => {
+    set({ selectedIndices: [], hintMessage: '' });
+  },
+
   selectAlgorithm: (id: string) => {
     const algo = getAlgorithmById(id);
     if (!algo) return;
@@ -119,6 +219,8 @@ export const useVizStore = create<VizState>((set, get) => ({
       playing: false,
       compareCount: 0,
       swapCount: 0,
+      selectedIndices: [],
+      hintMessage: '',
     };
 
     // 如果是对比模式，也更新对比算法
