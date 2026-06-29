@@ -46,11 +46,34 @@ function getRenderer(snap: Snapshot): Renderer<Snapshot> {
   return pickRenderer(snap.kind);
 }
 
+/** 缓动函数（平滑减速） */
+function easeOutCubic(t: number): number {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+/** 线性插值 */
+function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t;
+}
+
+/** 插值两个数据数组 */
+function interpData(prev: number[], curr: number[], t: number): number[] {
+  const len = Math.max(prev.length, curr.length);
+  const result = new Array<number>(len);
+  for (let i = 0; i < len; i++) {
+    const a = i < prev.length ? prev[i] : (i < curr.length ? curr[i] : 0);
+    const b = i < curr.length ? curr[i] : (i < prev.length ? prev[i] : 0);
+    result[i] = lerp(a, b, t);
+  }
+  return result;
+}
+
 /** 绘制单个画布 */
 function drawCanvas(
   canvas: HTMLCanvasElement,
   step: Step | undefined,
   selectedIndices?: number[],
+  interpDataArr?: number[],
 ): void {
   if (!step) return;
 
@@ -58,9 +81,15 @@ function drawCanvas(
   if (!ctx) return;
 
   const rawSnap = step.snapshot;
-  const snap = selectedIndices?.length
+  let snap = selectedIndices?.length
     ? { ...rawSnap, states: { ...rawSnap.states, ...Object.fromEntries(selectedIndices.map((i) => [i, 'pivot' as const])) } }
     : rawSnap;
+
+  // 插值替换 data
+  if (interpDataArr && snap.data) {
+    snap = { ...snap, data: interpDataArr };
+  }
+
   const renderer = getRenderer(snap);
 
   const dpr = window.devicePixelRatio || 1;
@@ -235,12 +264,57 @@ export function VizStage() {
     if (idx !== null) selectIndex(idx);
   }, [manualMode, currentAlgo, xyToIndex, selectIndex]);
 
-  // 主画布绘制
+  // 动画插值 refs
+  const prevDataRef = useRef<number[]>([]);
+  const transitionRef = useRef(1);
+  const rafRef = useRef(0);
+  const interpDataRef = useRef<number[]>([]);
+
+  // 主画布绘制（含插值动画）
   useEffect(() => {
     const canvas = mainCanvasRef.current;
     if (!canvas || steps.length === 0) return;
-    drawCanvas(canvas, steps[stepIndex], selectedIndices);
-  }, [steps, stepIndex, selectedIndices]);
+    const step = steps[stepIndex];
+    if (!step) return;
+
+    const currentData = step.snapshot.data;
+
+    // 仅对 array kind 启用插值
+    if (currentData && currentData.length > 0 && currentAlgo?.dataKind === 'array') {
+      const prev = prevDataRef.current;
+      if (prev.length === currentData.length && prev.some((v, i) => v !== currentData[i])) {
+        transitionRef.current = 0;
+        const startTime = performance.now();
+        const duration = 250;
+
+        const animate = (now: number) => {
+          const elapsed = now - startTime;
+          const t = Math.min(elapsed / duration, 1);
+          const eased = easeOutCubic(t);
+          interpDataRef.current = interpData(prev, currentData, eased);
+          drawCanvas(canvas, step, selectedIndices, interpDataRef.current);
+          if (t < 1) {
+            rafRef.current = requestAnimationFrame(animate);
+          } else {
+            transitionRef.current = 1;
+            drawCanvas(canvas, step, selectedIndices);
+          }
+        };
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = requestAnimationFrame(animate);
+      } else {
+        drawCanvas(canvas, step, selectedIndices);
+      }
+      prevDataRef.current = [...currentData];
+    } else {
+      drawCanvas(canvas, step, selectedIndices);
+    }
+  }, [steps, stepIndex, selectedIndices, currentAlgo]);
+
+  // 卸载时清理 RAF
+  useEffect(() => {
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
 
   // 对比画布绘制
   useEffect(() => {
