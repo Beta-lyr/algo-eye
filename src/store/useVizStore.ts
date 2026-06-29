@@ -136,8 +136,8 @@ export const useVizStore = create<VizState>((set, get) => {
   return ({
   // ===== 初始值 =====
   algorithms,
-  currentAlgo: algorithms[0] ?? null,
-  data: algorithms[0]?.defaultData ?? randomArray(16),
+  currentAlgo: null,
+  data: randomArray(16),
   steps: [],
   stepIndex: 0,
   playing: false,
