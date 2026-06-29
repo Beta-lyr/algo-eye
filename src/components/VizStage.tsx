@@ -29,6 +29,7 @@ function pickRenderer(kind: Snapshot['kind']): Renderer<Snapshot> {
     case 'tree':
       return TreeRenderer;
     case 'grid':
+    case 'graph':
       return GridRenderer;
     case 'string':
       return StringRenderer;
