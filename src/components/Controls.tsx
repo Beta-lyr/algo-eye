@@ -111,6 +111,9 @@ export function Controls() {
     }
   }, [steps]);
 
+  // 快捷键帮助
+  const [showShortcuts, setShowShortcuts] = useState(false);
+
   // 键盘快捷键
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -129,6 +132,9 @@ export function Controls() {
       } else if (e.code === 'KeyF') {
         e.preventDefault();
         toggleFocusMode();
+      } else if (e.code === 'Slash' && e.shiftKey) {
+        e.preventDefault();
+        setShowShortcuts((v) => !v);
       }
     };
     window.addEventListener('keydown', onKeyDown);
@@ -458,11 +464,35 @@ export function Controls() {
           {shareStatus === 'copied' ? '✓ 已复制' : '🔗 分享'}
         </button>
 
+        {/* 快捷键帮助 */}
+        <button className="btn" onClick={() => setShowShortcuts((v) => !v)} title="快捷键">
+          ⌨
+        </button>
+
         {/* 重置 */}
         <button className="btn" onClick={handleReset}>
           {t.controls.reset}
         </button>
       </div>
+
+      {/* 快捷键帮助面板 */}
+      {showShortcuts && (
+        <div className="shortcuts-overlay" onClick={() => setShowShortcuts(false)}>
+          <div className="shortcuts-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="shortcuts-hd">
+              ⌨ 键盘快捷键
+              <span className="close" onClick={() => setShowShortcuts(false)}>✕</span>
+            </div>
+            <div className="shortcuts-body">
+              <div className="shortcut-row"><kbd>Space</kbd><span>播放 / 暂停</span></div>
+              <div className="shortcut-row"><kbd>←</kbd><span>上一步</span></div>
+              <div className="shortcut-row"><kbd>→</kbd><span>下一步</span></div>
+              <div className="shortcut-row"><kbd>F</kbd><span>焦点模式（全屏画布）</span></div>
+              <div className="shortcut-row"><kbd>?</kbd><span>切换此面板</span></div>
+            </div>
+          </div>
+        </div>
+      )}
     </footer>
   );
 }

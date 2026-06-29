@@ -1347,6 +1347,78 @@ img {
   box-shadow: var(--glow-amber);
 }
 
+/* ===== 快捷键帮助面板 ===== */
+.shortcuts-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shortcuts-panel {
+  background: var(--bg-panel-raised);
+  border: 1px solid var(--border-bright);
+  border-radius: 4px;
+  min-width: 320px;
+  max-width: 420px;
+  box-shadow: 0 0 30px rgba(51, 255, 102, 0.15);
+}
+
+.shortcuts-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-family: var(--term);
+  font-size: 14px;
+  color: var(--green);
+  border-bottom: 1px solid var(--border);
+}
+
+.shortcuts-hd .close {
+  cursor: pointer;
+  color: var(--txt-dim);
+  font-size: 14px;
+}
+
+.shortcuts-hd .close:hover {
+  color: var(--red);
+}
+
+.shortcuts-body {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shortcut-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.shortcut-row kbd {
+  display: inline-block;
+  min-width: 60px;
+  padding: 3px 8px;
+  font-family: var(--term);
+  font-size: 12px;
+  color: var(--amber);
+  background: #0d130d;
+  border: 1px solid var(--border-bright);
+  border-radius: 2px;
+  text-align: center;
+}
+
+.shortcut-row span {
+  color: var(--green-dim);
+}
+
 /* ===== 响应式 ===== */
 @media (max-width: 980px) {
   .main {
