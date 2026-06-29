@@ -8,6 +8,7 @@ import { create } from 'zustand';
 import type { Algorithm } from '../algorithms/types';
 import type { Step } from '../engine/types';
 import { algorithms, getAlgorithmById } from '../algorithms';
+import { dispatchAchievement } from '../lib/achievementEvents';
 
 export interface VizState {
   // ===== 算法 =====
@@ -270,6 +271,7 @@ export const useVizStore = create<VizState>((set, get) => {
         challengeActive: false,
         challengeResult: newResult ? { ...newResult, userSwaps: newSwaps, userTimeMs: elapsed } : null,
       });
+      dispatchAchievement('speed-runner');
     }
   },
 

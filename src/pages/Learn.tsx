@@ -3,7 +3,9 @@
 // 展示算法的详细说明：概述、核心思想、复杂度分析等
 // ============================================================
 
+import { useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { dispatchAchievement } from '../lib/achievementEvents';
 import { getAlgorithmById } from '../algorithms';
 import { getExplanation } from '../algorithms/explanations';
 import { useT } from '../i18n';
@@ -13,6 +15,10 @@ export function Learn() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const t = useT();
+
+  useEffect(() => {
+    dispatchAchievement('bookworm');
+  }, []);
 
   const algo = id ? getAlgorithmById(id) : undefined;
   const explanation = id ? getExplanation(id) : undefined;

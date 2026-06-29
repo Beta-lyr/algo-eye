@@ -13,6 +13,8 @@ import { CodePanel } from '../components/CodePanel';
 import { Controls } from '../components/Controls';
 import { CrtOverlay } from '../components/crt/CrtOverlay';
 import { Tutorial } from '../components/Tutorial';
+import { AchievementToast } from '../components/AchievementToast';
+import { trackAlgoView } from '../lib/achievementEvents';
 
 export function Workspace() {
   const loadFromUrl = useVizStore((s) => s.loadFromUrl);
@@ -32,8 +34,16 @@ export function Workspace() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // 跟踪查看的算法并检查成就
+  useEffect(() => {
+    if (currentAlgo) {
+      trackAlgoView(currentAlgo.id, algorithms);
+    }
+  }, [currentAlgo, algorithms]);
+
   return (
     <>
+      <AchievementToast />
       <Tutorial />
       <CrtOverlay />
       {error && (

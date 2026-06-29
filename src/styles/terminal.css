@@ -1014,6 +1014,61 @@ img {
   font-size: 12px;
 }
 
+/* ===== 成就 Toast ===== */
+.ach-toast {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--bg-panel-raised);
+  border: 1px solid var(--amber);
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(255, 176, 0, 0.25);
+  transform: translateX(120%);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s;
+  opacity: 0;
+}
+
+.ach-toast.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.ach-toast-icon {
+  font-size: 28px;
+  line-height: 1;
+  color: var(--amber);
+  text-shadow: var(--glow-amber);
+}
+
+.ach-toast-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ach-toast-title {
+  font-family: var(--term);
+  font-size: 11px;
+  color: var(--amber);
+  letter-spacing: 1px;
+}
+
+.ach-toast-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--amber);
+}
+
+.ach-toast-desc {
+  font-size: 11px;
+  color: var(--green-dim);
+}
+
 /* ===== 进度条 + 书签 ===== */
 .controls-wrap {
   display: flex;
@@ -1689,6 +1744,84 @@ img {
 
 .shortcut-row span {
   color: var(--green-dim);
+}
+
+/* ===== 成就面板 ===== */
+.ach-panel {
+  background: var(--bg-panel-raised);
+  border: 1px solid var(--border-bright);
+  border-radius: 4px;
+  width: 480px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 0 30px rgba(255, 176, 0, 0.15);
+}
+
+.ach-grid {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 6px;
+}
+
+.ach-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-panel);
+  opacity: 0.4;
+  transition: 0.15s;
+}
+
+.ach-card.unlocked {
+  opacity: 1;
+  border-color: var(--amber);
+}
+
+.ach-card-icon {
+  font-size: 22px;
+  width: 36px;
+  text-align: center;
+  color: var(--txt-dim);
+  flex-shrink: 0;
+}
+
+.ach-card.unlocked .ach-card-icon {
+  color: var(--amber);
+  text-shadow: var(--glow-amber);
+}
+
+.ach-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ach-card-name {
+  font-family: var(--term);
+  font-size: 13px;
+  color: var(--green-dim);
+}
+
+.ach-card.unlocked .ach-card-name {
+  color: var(--green);
+}
+
+.ach-card-desc {
+  font-size: 11px;
+  color: var(--txt-dim);
+}
+
+.ach-card-check {
+  font-size: 14px;
+  color: var(--green);
+  text-shadow: var(--glow-green);
+  flex-shrink: 0;
 }
 
 /* ===== 响应式 ===== */

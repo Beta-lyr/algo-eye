@@ -9,6 +9,8 @@ import { useRef, useCallback, useEffect, useState } from 'react';
 import { useVizStore } from '../store/useVizStore';
 import { useT } from '../i18n';
 import { AnimationController } from '../engine/AnimationController';
+import { dispatchAchievement } from '../lib/achievementEvents';
+import { AchievementsPanel } from './AchievementsPanel';
 
 export function Controls() {
   const steps = useVizStore((s) => s.steps);
@@ -129,6 +131,13 @@ export function Controls() {
 
   // 快捷键帮助
   const [showShortcuts, setShowShortcuts] = useState(false);
+
+  useEffect(() => {
+    if (showShortcuts) dispatchAchievement('shortcut-king');
+  }, [showShortcuts]);
+
+  // 成就面板
+  const [showAchievements, setShowAchievements] = useState(false);
 
   // 键盘快捷键
   useEffect(() => {
@@ -506,6 +515,11 @@ export function Controls() {
           {shareStatus === 'copied' ? '✓ 已复制' : '🔗 分享'}
         </button>
 
+        {/* 成就 */}
+        <button className="btn" onClick={() => setShowAchievements((v) => !v)} title="成就">
+          🏆
+        </button>
+
         {/* 快捷键帮助 */}
         <button className="btn" onClick={() => setShowShortcuts((v) => !v)} title="快捷键">
           ⌨
@@ -516,6 +530,9 @@ export function Controls() {
           {t.controls.reset}
         </button>
       </div>
+
+      {/* 成就面板 */}
+      {showAchievements && <AchievementsPanel onClose={() => setShowAchievements(false)} />}
 
       {/* 快捷键帮助面板 */}
       {showShortcuts && (
