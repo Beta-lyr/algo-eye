@@ -1336,6 +1336,32 @@ img {
   text-shadow: var(--glow-amber);
 }
 
+/* ===== 柱状图悬停 tooltip ===== */
+.bar-tooltip {
+  position: absolute;
+  pointer-events: none;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  font-family: var(--term);
+  font-size: 12px;
+  background: #0d130d;
+  border: 1px solid var(--border-bright);
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.bar-tooltip .tt-index {
+  color: var(--amber);
+}
+
+.bar-tooltip .tt-value {
+  color: var(--green);
+  font-weight: 500;
+}
+
 .focus-btn {
   cursor: pointer;
   user-select: none;

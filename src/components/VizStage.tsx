@@ -4,7 +4,7 @@
 // 支持对比模式分屏显示
 // ============================================================
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useVizStore } from '../store/useVizStore';
 import { useT, useTranslateMessage } from '../i18n';
@@ -193,27 +193,47 @@ export function VizStage() {
   const t = useT();
   const translateMsg = useTranslateMessage();
 
+  // 柱状图悬停 tooltip
+  const [tooltip, setTooltip] = useState<{ visible: boolean; x: number; y: number; index: number; value: number } | null>(null);
+
+  /** 将 canvas 坐标映射为数组下标 */
+  const xyToIndex = useCallback((clientX: number, canvas: HTMLCanvasElement): number | null => {
+    const rect = canvas.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const n = data.length;
+    const paddingX = 40;
+    const barGap = 6;
+    const barWidth = Math.max(4, (rect.width - paddingX * 2 - barGap * (n - 1)) / n);
+    const index = Math.floor((x - paddingX) / (barWidth + barGap));
+    if (index < 0 || index >= n) return null;
+    const barX = paddingX + index * (barWidth + barGap);
+    if (x < barX || x > barX + barWidth) return null;
+    return index;
+  }, [data.length]);
+
+  const handleCanvasMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = mainCanvasRef.current;
+    if (!canvas || !currentAlgo || currentAlgo.dataKind !== 'array') {
+      setTooltip(null);
+      return;
+    }
+    const idx = xyToIndex(e.clientX, canvas);
+    if (idx === null) { setTooltip(null); return; }
+    const rect = canvas.getBoundingClientRect();
+    setTooltip({ visible: true, x: e.clientX - rect.left, y: e.clientY - rect.top, index: idx, value: data[idx] });
+  }, [currentAlgo, data, xyToIndex]);
+
+  const handleCanvasMouseLeave = useCallback(() => {
+    setTooltip(null);
+  }, []);
+
   // 手动模式：canvas 点击 → 映射为数组下标
   const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = mainCanvasRef.current;
     if (!canvas || !manualMode || !currentAlgo || currentAlgo.dataKind !== 'array') return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const n = data.length;
-
-    const paddingX = 40;
-    const barGap = 6;
-    const barWidth = Math.max(4, (rect.width - paddingX * 2 - barGap * (n - 1)) / n);
-
-    const index = Math.floor((x - paddingX) / (barWidth + barGap));
-    if (index < 0 || index >= n) return;
-
-    const barX = paddingX + index * (barWidth + barGap);
-    if (x >= barX && x <= barX + barWidth) {
-      selectIndex(index);
-    }
-  }, [manualMode, currentAlgo, data.length, selectIndex]);
+    const idx = xyToIndex(e.clientX, canvas);
+    if (idx !== null) selectIndex(idx);
+  }, [manualMode, currentAlgo, xyToIndex, selectIndex]);
 
   // 主画布绘制
   useEffect(() => {
@@ -398,8 +418,19 @@ export function VizStage() {
         <canvas
           ref={mainCanvasRef}
           onClick={handleCanvasClick}
+          onMouseMove={handleCanvasMouseMove}
+          onMouseLeave={handleCanvasMouseLeave}
           style={{ cursor: manualMode && currentAlgo?.dataKind === 'array' ? 'crosshair' : undefined }}
         />
+        {tooltip && tooltip.visible && (
+          <div
+            className="bar-tooltip"
+            style={{ left: tooltip.x + 12, top: tooltip.y - 28 }}
+          >
+            <span className="tt-index">[{tooltip.index}]</span>
+            <span className="tt-value">{tooltip.value}</span>
+          </div>
+        )}
         {!isTree && !isGrid && <div className="axis-label">index →</div>}
       </div>
 
