@@ -790,6 +790,58 @@ img {
   text-shadow: var(--glow-amber);
 }
 
+/* ===== 复杂度趋势图 ===== */
+.trend-chart {
+  border-top: 1px solid var(--border);
+  padding: 8px 10px 4px;
+}
+
+.trend-hd {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--green-faint);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.trend-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.trend-legend .sw {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 1px;
+  margin-right: 2px;
+  vertical-align: middle;
+}
+
+.trend-legend .sw.compare {
+  background: #ffb000;
+}
+
+.trend-legend .sw.swap {
+  background: #33ff66;
+}
+
+.trend-canvas {
+  width: 100%;
+  height: 100px;
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: #060906;
+}
+
 /* ===== 底栏控件 ===== */
 .controls {
   display: flex;
