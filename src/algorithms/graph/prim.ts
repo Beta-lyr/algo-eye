@@ -49,6 +49,7 @@ export const prim: Algorithm = {
   complexity: { time: 'O(E log V)', space: 'O(V)' },
   difficulty: 'intermediate',
   tags: ['mst'],
+  relatedAlgorithms: ['kruskal'],
   dataKind: 'grid',
   defaultData: generateDefaultData(),
   codeLines: [

@@ -26,6 +26,7 @@ export const radixSort: Algorithm = {
   complexity: { time: 'O(nk)', space: 'O(n+k)', stable: true },
   difficulty: 'advanced',
   tags: ['non-comparison', 'stable'],
+  relatedAlgorithms: ['counting-sort', 'bucket-sort'],
   dataKind: 'array',
   defaultData: [170, 45, 75, 90, 802, 24, 2, 66],
   codeLines: [

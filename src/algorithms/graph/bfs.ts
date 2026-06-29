@@ -50,6 +50,7 @@ export const bfs: Algorithm = {
   complexity: { time: 'O(V+E)', space: 'O(V)' },
   difficulty: 'beginner',
   tags: ['traversal', 'shortest-path'],
+  relatedAlgorithms: ['dfs', 'dijkstra'],
   dataKind: 'grid',
   defaultData: generateDefaultData(),
   codeLines: [

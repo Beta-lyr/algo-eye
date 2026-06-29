@@ -26,6 +26,7 @@ export const heapSort: Algorithm = {
   complexity: { time: 'O(n log n)', space: 'O(1)', stable: false },
   difficulty: 'intermediate',
   tags: ['comparison-based', 'in-place'],
+  relatedAlgorithms: ['quick-sort', 'merge-sort', 'heap'],
   dataKind: 'array',
   defaultData: [38, 27, 43, 3, 9, 82, 10, 56, 74, 61, 45, 29],
   codeLines: [

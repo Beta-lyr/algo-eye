@@ -46,6 +46,7 @@ export const dfs: Algorithm = {
   complexity: { time: 'O(V+E)', space: 'O(V)' },
   difficulty: 'beginner',
   tags: ['traversal'],
+  relatedAlgorithms: ['bfs'],
   dataKind: 'grid',
   defaultData: generateDefaultData(),
   codeLines: [

@@ -51,6 +51,7 @@ export const linkedList: Algorithm = {
   complexity: { time: 'O(n)', space: 'O(n)' },
   difficulty: 'beginner',
   tags: ['linked'],
+  relatedAlgorithms: ['hash-table'],
   dataKind: 'linked-list',
   defaultData: [10, 20, 30, 40, 50],
   codeLines: [

@@ -26,6 +26,7 @@ export const interpolationSearch: Algorithm = {
   complexity: { time: 'O(log log n)', space: 'O(1)' },
   difficulty: 'intermediate',
   tags: ['ordered'],
+  relatedAlgorithms: ['binary-search'],
   dataKind: 'array',
   defaultData: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
   codeLines: [

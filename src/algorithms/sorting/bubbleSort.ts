@@ -30,6 +30,7 @@ export const bubbleSort: Algorithm = {
   complexity: { time: 'O(n²)', space: 'O(1)', stable: true },
   difficulty: 'beginner',
   tags: ['comparison-based', 'in-place', 'stable'],
+  relatedAlgorithms: ['selection-sort', 'insertion-sort'],
   dataKind: 'array',
   defaultData: [42, 68, 35, 91, 27, 54, 73, 48, 61, 39, 82, 45, 58, 76, 50, 65],
   codeLines: [

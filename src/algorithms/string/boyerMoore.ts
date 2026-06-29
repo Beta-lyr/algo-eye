@@ -30,6 +30,7 @@ export const boyerMoore: Algorithm = {
   complexity: { time: 'O(n/m)', space: 'O(k)' },
   difficulty: 'advanced',
   tags: ['pattern-matching'],
+  relatedAlgorithms: ['kmp', 'rabin-karp'],
   dataKind: 'string',
   defaultData: [],
   codeLines: [

@@ -63,6 +63,7 @@ export const avlTree: Algorithm = {
   complexity: { time: 'O(log n)', space: 'O(n)' },
   difficulty: 'intermediate',
   tags: ['tree-based'],
+  relatedAlgorithms: ['binary-search-tree', 'red-black-tree'],
   dataKind: 'tree',
   defaultData: [50, 30, 70, 20, 40, 80, 35],
   codeLines: [

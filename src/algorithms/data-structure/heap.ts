@@ -59,6 +59,7 @@ export const heap: Algorithm = {
   complexity: { time: 'O(log n)', space: 'O(n)' },
   difficulty: 'intermediate',
   tags: ['tree-based'],
+  relatedAlgorithms: ['heap-sort'],
   dataKind: 'tree',
   defaultData: [40, 30, 20, 15, 10, 25, 18],
   codeLines: [

@@ -55,6 +55,7 @@ export const bellmanFord: Algorithm = {
   complexity: { time: 'O(VE)', space: 'O(V)' },
   difficulty: 'advanced',
   tags: ['shortest-path'],
+  relatedAlgorithms: ['dijkstra', 'floyd-warshall'],
   dataKind: 'grid',
   defaultData: generateDefaultData(),
   codeLines: [

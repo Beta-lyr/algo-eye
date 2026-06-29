@@ -68,4 +68,6 @@ export interface Algorithm {
   difficulty?: AlgorithmDifficulty;
   /** 标签列表 */
   tags?: AlgorithmTag[];
+  /** 关联算法 ID 列表（用于推荐/导航） */
+  relatedAlgorithms?: string[];
 }

@@ -30,6 +30,7 @@ export const editDistance: Algorithm = {
   complexity: { time: 'O(mn)', space: 'O(mn)' },
   difficulty: 'intermediate',
   tags: ['optimization'],
+  relatedAlgorithms: ['lcs'],
   dataKind: 'dp-grid',
   defaultData: [],
   codeLines: [

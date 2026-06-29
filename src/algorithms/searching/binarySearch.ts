@@ -26,6 +26,7 @@ export const binarySearch: Algorithm = {
   complexity: { time: 'O(log n)', space: 'O(1)' },
   difficulty: 'beginner',
   tags: ['ordered', 'divide-conquer'],
+  relatedAlgorithms: ['linear-search', 'jump-search', 'interpolation-search', 'exponential-search'],
   dataKind: 'array',
   defaultData: [3, 9, 10, 27, 29, 38, 43, 45, 56, 61, 74, 82],
   codeLines: [

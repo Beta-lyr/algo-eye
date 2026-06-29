@@ -30,6 +30,7 @@ export const rabinKarp: Algorithm = {
   complexity: { time: 'O(n+m)', space: 'O(1)' },
   difficulty: 'intermediate',
   tags: ['pattern-matching'],
+  relatedAlgorithms: ['kmp', 'boyer-moore'],
   dataKind: 'string',
   defaultData: [],
   codeLines: [

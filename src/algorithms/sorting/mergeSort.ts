@@ -26,6 +26,7 @@ export const mergeSort: Algorithm = {
   complexity: { time: 'O(n log n)', space: 'O(n)', stable: true },
   difficulty: 'intermediate',
   tags: ['comparison-based', 'divide-conquer', 'stable'],
+  relatedAlgorithms: ['quick-sort', 'heap-sort'],
   dataKind: 'array',
   defaultData: [38, 27, 43, 3, 9, 82, 10, 56, 74, 61, 45, 29],
   codeLines: [

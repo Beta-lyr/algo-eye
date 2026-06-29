@@ -56,6 +56,7 @@ export const astar: Algorithm = {
   complexity: { time: 'O(E)', space: 'O(V)' },
   difficulty: 'advanced',
   tags: ['shortest-path'],
+  relatedAlgorithms: ['dijkstra'],
   dataKind: 'grid',
   defaultData: generateDefaultData(),
   codeLines: [

@@ -26,6 +26,7 @@ export const selectionSort: Algorithm = {
   complexity: { time: 'O(n²)', space: 'O(1)', stable: false },
   difficulty: 'beginner',
   tags: ['comparison-based', 'in-place'],
+  relatedAlgorithms: ['bubble-sort', 'insertion-sort'],
   dataKind: 'array',
   defaultData: [64, 25, 12, 22, 11, 90, 45, 78, 33, 56, 87, 42],
   codeLines: [

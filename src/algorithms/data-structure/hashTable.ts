@@ -47,6 +47,7 @@ export const hashTable: Algorithm = {
   complexity: { time: 'O(1)', space: 'O(n)' },
   difficulty: 'intermediate',
   tags: ['hash-based'],
+  relatedAlgorithms: ['linked-list'],
   dataKind: 'linked-list',
   defaultData: [15, 25, 35, 45, 55, 20, 30],
   codeLines: [

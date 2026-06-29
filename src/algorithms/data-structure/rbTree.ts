@@ -68,6 +68,7 @@ export const rbTree: Algorithm = {
   complexity: { time: 'O(log n)', space: 'O(n)' },
   difficulty: 'advanced',
   tags: ['tree-based'],
+  relatedAlgorithms: ['binary-search-tree', 'avl-tree'],
   dataKind: 'tree',
   defaultData: [50, 30, 70, 20, 40, 60, 80, 35],
   codeLines: [

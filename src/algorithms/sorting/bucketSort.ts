@@ -26,6 +26,7 @@ export const bucketSort: Algorithm = {
   complexity: { time: 'O(n+k)', space: 'O(n+k)', stable: true },
   difficulty: 'intermediate',
   tags: ['non-comparison', 'stable'],
+  relatedAlgorithms: ['counting-sort', 'radix-sort'],
   dataKind: 'array',
   defaultData: [42, 32, 63, 71, 85, 24, 15, 96, 57, 38],
   codeLines: [

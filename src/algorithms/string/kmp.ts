@@ -30,6 +30,7 @@ export const kmp: Algorithm = {
   complexity: { time: 'O(n+m)', space: 'O(m)' },
   difficulty: 'advanced',
   tags: ['pattern-matching'],
+  relatedAlgorithms: ['rabin-karp', 'boyer-moore'],
   dataKind: 'string',
   defaultData: [],
   codeLines: [

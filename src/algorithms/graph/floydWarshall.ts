@@ -44,6 +44,7 @@ export const floydWarshall: Algorithm = {
   complexity: { time: 'O(V³)', space: 'O(V²)' },
   difficulty: 'advanced',
   tags: ['shortest-path'],
+  relatedAlgorithms: ['bellman-ford', 'dijkstra'],
   dataKind: 'dp-grid',
   defaultData: genGraph(),
   codeLines: [

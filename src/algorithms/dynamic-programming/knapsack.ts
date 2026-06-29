@@ -30,6 +30,7 @@ export const knapsack: Algorithm = {
   complexity: { time: 'O(nW)', space: 'O(nW)' },
   difficulty: 'intermediate',
   tags: ['optimization'],
+  relatedAlgorithms: [],
   dataKind: 'dp-grid',
   defaultData: [],
   codeLines: [

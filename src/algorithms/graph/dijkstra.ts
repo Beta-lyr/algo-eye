@@ -53,6 +53,7 @@ export const dijkstra: Algorithm = {
   complexity: { time: 'O((V+E)logV)', space: 'O(V)' },
   difficulty: 'intermediate',
   tags: ['shortest-path'],
+  relatedAlgorithms: ['bfs', 'bellman-ford', 'astar'],
   dataKind: 'grid',
   defaultData: generateDefaultData(),
   codeLines: [

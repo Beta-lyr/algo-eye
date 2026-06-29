@@ -90,6 +90,7 @@ export const kruskal: Algorithm = {
   complexity: { time: 'O(E log E)', space: 'O(V)' },
   difficulty: 'intermediate',
   tags: ['mst'],
+  relatedAlgorithms: ['prim'],
   dataKind: 'grid',
   defaultData: generateDefaultData(),
   codeLines: [

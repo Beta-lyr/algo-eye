@@ -26,6 +26,7 @@ export const linearSearch: Algorithm = {
   complexity: { time: 'O(n)', space: 'O(1)' },
   difficulty: 'beginner',
   tags: ['unordered'],
+  relatedAlgorithms: ['binary-search'],
   dataKind: 'array',
   defaultData: [42, 68, 35, 91, 27, 54, 73, 48, 61, 39, 82, 45],
   codeLines: [

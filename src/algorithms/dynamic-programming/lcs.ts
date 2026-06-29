@@ -30,6 +30,7 @@ export const lcs: Algorithm = {
   complexity: { time: 'O(mn)', space: 'O(mn)' },
   difficulty: 'intermediate',
   tags: ['optimization'],
+  relatedAlgorithms: ['edit-distance'],
   dataKind: 'dp-grid',
   defaultData: [],
   codeLines: [
