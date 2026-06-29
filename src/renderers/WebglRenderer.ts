@@ -8,7 +8,7 @@ import type { Snapshot, ElementState } from '../engine/types';
 
 const BAR_COLORS: Record<ElementState, [number, number, number]> = {
   default: [0.2, 0.37, 0.24],
-  comparing: [1, 0.69, 0],
+  compare: [1, 0.69, 0],
   current: [0.2, 1, 0.4],
   visited: [0.7, 0.53, 1],
   swapping: [1, 0.33, 0.33],

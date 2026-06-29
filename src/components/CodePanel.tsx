@@ -185,18 +185,19 @@ function StatsPanel() {
 
     // 绘制折线
     function drawLine(data: number[], color: string) {
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.5;
-      ctx.shadowBlur = 4;
-      ctx.shadowColor = color;
-      ctx.beginPath();
+      const g = ctx!;
+      g.strokeStyle = color;
+      g.lineWidth = 1.5;
+      g.shadowBlur = 4;
+      g.shadowColor = color;
+      g.beginPath();
       for (let i = 0; i < data.length; i++) {
         const x = pad.left + (i / totalSteps) * plotW;
         const y = pad.top + plotH - (data[i] / maxVal) * plotH;
-        if (i === 0) { ctx.moveTo(x, y); } else { ctx.lineTo(x, y); }
+        if (i === 0) { g.moveTo(x, y); } else { g.lineTo(x, y); }
       }
-      ctx.stroke();
-      ctx.shadowBlur = 0;
+      g.stroke();
+      g.shadowBlur = 0;
     }
 
     drawLine(cmp, '#ffb000');

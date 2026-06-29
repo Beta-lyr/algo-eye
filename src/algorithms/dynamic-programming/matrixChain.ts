@@ -26,9 +26,9 @@ function* generate(dims: number[]): Generator<Step> {
   // 初始化 m[i][i] = 0
   for (let i = 0; i < n; i++) {
     m[i][i] = 0;
-    states[`${i},${i}`] = 'visited';
+    states[`${i},${i}`] = 'visit';
     labels[`${i},${i}`] = '0';
-    yield { type: 'compare', indices: [i, i], line: 1, snapshot: dpSnap(m, states, labels, dims), msg: `初始化对角线 m[${i}][${i}]=0` };
+    yield { type: 'compare', indices: [i, i], line: 1, snapshot: dpSnap(m, states, labels, dims), message: `初始化对角线 m[${i}][${i}]=0` };
   }
 
   for (let len = 2; len <= n; len++) {
@@ -37,7 +37,7 @@ function* generate(dims: number[]): Generator<Step> {
       let min = Infinity;
       let bestK = -1;
       labels[`${i},${j}`] = '?';
-      states[`${i},${j}`] = 'comparing';
+      states[`${i},${j}`] = 'compare';
 
       for (let k = i; k < j; k++) {
         const cost = (m[i][k] ?? 0) + (m[k + 1][j] ?? 0) + dims[i] * dims[k + 1] * dims[j + 1];
@@ -47,7 +47,7 @@ function* generate(dims: number[]): Generator<Step> {
           indices: [i, k, j],
           line: 2,
           snapshot: dpSnap(m, states, labels, dims),
-          msg: `计算 m[${i}][${j}]: 尝试 k=${k}, cost=m[${i}][${k}]+m[${k+1}][${j}]+${dims[i]}×${dims[k+1]}×${dims[j+1]}=${m[i][k] ?? 0}+${m[k+1][j] ?? 0}+${dims[i] * dims[k + 1] * dims[j + 1]}=${cost}`,
+          message: `计算 m[${i}][${j}]: 尝试 k=${k}, cost=m[${i}][${k}]+m[${k+1}][${j}]+${dims[i]}×${dims[k+1]}×${dims[j+1]}=${m[i][k] ?? 0}+${m[k+1][j] ?? 0}+${dims[i] * dims[k + 1] * dims[j + 1]}=${cost}`,
         };
 
         if (cost < min) {
@@ -65,7 +65,7 @@ function* generate(dims: number[]): Generator<Step> {
         indices: [i, j, bestK],
         line: 3,
         snapshot: dpSnap(m, states, labels, dims),
-        msg: `m[${i}][${j}] = ${min} (k=${bestK})`,
+        message: `m[${i}][${j}] = ${min} (k=${bestK})`,
       };
     }
   }
@@ -75,7 +75,7 @@ function* generate(dims: number[]): Generator<Step> {
     indices: [0, n - 1],
     line: 4,
     snapshot: dpSnap(m, states, labels, dims),
-    msg: `最优解 = m[0][${n - 1}] = ${m[0][n - 1]} 次标量乘法`,
+    message: `最优解 = m[0][${n - 1}] = ${m[0][n - 1]} 次标量乘法`,
   };
 }
 

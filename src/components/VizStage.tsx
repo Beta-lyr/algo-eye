@@ -18,6 +18,7 @@ import { DPGridRenderer } from '../renderers/DPGridRenderer';
 import { WebglRenderer, shouldUseWebgl } from '../renderers/WebglRenderer';
 import { Tree3DRenderer } from '../renderers/Tree3DRenderer';
 import type { Renderer } from '../renderers/Renderer';
+import type { TreeNode } from '../engine/types';
 import type { Snapshot, Step, ElementState } from '../engine/types';
 import type { Algorithm } from '../algorithms/types';
 
@@ -51,9 +52,10 @@ function getRenderer(snap: Snapshot): Renderer<Snapshot> {
   return pickRenderer(snap.kind);
 }
 
-function countNodes(node: { children?: { children?: any }[] }): number {
+function countNodes(node: TreeNode): number {
   let c = 1;
-  for (const ch of node.children ?? []) c += countNodes(ch);
+  if (node.left) c += countNodes(node.left);
+  if (node.right) c += countNodes(node.right);
   return c;
 }
 

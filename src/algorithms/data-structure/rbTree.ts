@@ -204,7 +204,7 @@ export const rbTree: Algorithm = {
         }
 
         const pIsLeft = p === gp.left;
-        const u = pIsLeft ? gp.right : gp.left;
+        const u = (pIsLeft ? gp.right : gp.left)!;
 
         if (isRed(u)) {
           setCol(p, BLACK);
@@ -241,8 +241,8 @@ export const rbTree: Algorithm = {
           z = p;
         }
 
-        const p2 = findParent(z, root)!;
-        const gp2 = findParent(p2, root)!;
+        const p2: TreeNode = findParent(z, root)!;
+        const gp2: TreeNode = findParent(p2, root)!;
 
         setCol(p2, BLACK);
         setCol(gp2, RED);
