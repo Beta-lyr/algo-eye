@@ -16,7 +16,7 @@ import { LinkedListRenderer } from '../renderers/LinkedListRenderer';
 import { HashTableRenderer } from '../renderers/HashTableRenderer';
 import { DPGridRenderer } from '../renderers/DPGridRenderer';
 import type { Renderer } from '../renderers/Renderer';
-import type { Snapshot, Step } from '../engine/types';
+import type { Snapshot, Step, ElementState } from '../engine/types';
 import type { Algorithm } from '../algorithms/types';
 
 /**
@@ -256,13 +256,34 @@ export function VizStage() {
     setTooltip(null);
   }, []);
 
+  const challengeActive = useVizStore((s) => s.challengeActive);
+  const challengeData = useVizStore((s) => s.challengeData);
+  const challengeSwap = useVizStore((s) => s.challengeSwap);
+
+  // 挑战模式：点击两个下标进行交换
+  const [challengeSel, setChallengeSel] = useState<number | null>(null);
+
   // 手动模式：canvas 点击 → 映射为数组下标
   const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = mainCanvasRef.current;
-    if (!canvas || !manualMode || !currentAlgo || currentAlgo.dataKind !== 'array') return;
+    if (!canvas || !currentAlgo || currentAlgo.dataKind !== 'array') return;
     const idx = xyToIndex(e.clientX, canvas);
-    if (idx !== null) selectIndex(idx);
-  }, [manualMode, currentAlgo, xyToIndex, selectIndex]);
+    if (idx === null) return;
+
+    if (challengeActive) {
+      if (challengeSel === null) {
+        setChallengeSel(idx);
+      } else {
+        challengeSwap(challengeSel, idx);
+        setChallengeSel(null);
+      }
+      return;
+    }
+
+    if (manualMode) {
+      selectIndex(idx);
+    }
+  }, [manualMode, currentAlgo, xyToIndex, selectIndex, challengeActive, challengeSel, challengeSwap]);
 
   // 动画插值 refs
   const prevDataRef = useRef<number[]>([]);
@@ -273,9 +294,26 @@ export function VizStage() {
   // 主画布绘制（含插值动画）
   useEffect(() => {
     const canvas = mainCanvasRef.current;
-    if (!canvas || steps.length === 0) return;
+    if (!canvas) return;
     const step = steps[stepIndex];
-    if (!step) return;
+
+    // 挑战模式：使用 challengeData 直接绘制柱子
+    if (challengeActive && challengeData.length > 0) {
+      const states: Record<number, ElementState> = {};
+      if (challengeSel !== null) {
+        states[challengeSel] = 'pivot';
+      }
+      const fakeStep: Step = {
+        type: 'mark',
+        line: 0,
+        message: '',
+        snapshot: { kind: 'array', data: challengeData, states },
+      };
+      drawCanvas(canvas, fakeStep);
+      return;
+    }
+
+    if (!step || steps.length === 0) return;
 
     const currentData = step.snapshot.data;
 
@@ -309,7 +347,7 @@ export function VizStage() {
     } else {
       drawCanvas(canvas, step, selectedIndices);
     }
-  }, [steps, stepIndex, selectedIndices, currentAlgo]);
+  }, [steps, stepIndex, selectedIndices, currentAlgo, challengeActive, challengeData, challengeSel]);
 
   // 卸载时清理 RAF
   useEffect(() => {
@@ -508,7 +546,7 @@ export function VizStage() {
           onClick={handleCanvasClick}
           onMouseMove={handleCanvasMouseMove}
           onMouseLeave={handleCanvasMouseLeave}
-          style={{ cursor: manualMode && currentAlgo?.dataKind === 'array' ? 'crosshair' : undefined }}
+          style={{ cursor: challengeActive ? 'pointer' : (manualMode && currentAlgo?.dataKind === 'array' ? 'crosshair' : undefined) }}
         />
         {tooltip && tooltip.visible && (
           <div

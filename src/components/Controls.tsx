@@ -38,6 +38,12 @@ export function Controls() {
   const updateBookmarkComment = useVizStore((s) => s.updateBookmarkComment);
   const exportBookmarks = useVizStore((s) => s.exportBookmarks);
   const toggleFocusMode = useVizStore((s) => s.toggleFocusMode);
+  const challengeActive = useVizStore((s) => s.challengeActive);
+  const challengeSwaps = useVizStore((s) => s.challengeSwaps);
+  const challengeStartTime = useVizStore((s) => s.challengeStartTime);
+  const challengeResult = useVizStore((s) => s.challengeResult);
+  const startChallenge = useVizStore((s) => s.startChallenge);
+  const endChallenge = useVizStore((s) => s.endChallenge);
 
   const t = useT();
 
@@ -110,6 +116,16 @@ export function Controls() {
       controllerRef.current?.stop();
     }
   }, [steps]);
+
+  // 挑战模式计时器
+  const [elapsed, setElapsed] = useState(0);
+  useEffect(() => {
+    if (!challengeActive) { setElapsed(0); return; }
+    const id = setInterval(() => {
+      setElapsed(Math.floor((performance.now() - challengeStartTime) / 100) * 100);
+    }, 100);
+    return () => clearInterval(id);
+  }, [challengeActive, challengeStartTime]);
 
   // 快捷键帮助
   const [showShortcuts, setShowShortcuts] = useState(false);
@@ -372,10 +388,36 @@ export function Controls() {
           className={`btn ${manualMode ? 'primary' : ''}`}
           onClick={toggleManualMode}
           title="手动模式"
-          disabled={currentAlgo?.dataKind !== 'array'}
+          disabled={currentAlgo?.dataKind !== 'array' || challengeActive}
         >
           ✋ {manualMode ? '手动' : ''}
         </button>
+
+        {/* 挑战模式 */}
+        {challengeActive ? (
+          <div className="challenge-badge">
+            ⏱ {(elapsed / 1000).toFixed(1)}s · 交换 {challengeSwaps} 次
+            <button className="btn" onClick={endChallenge}>✕ 退出</button>
+          </div>
+        ) : (
+          <button
+            className={`btn ${challengeResult ? 'primary' : ''}`}
+            onClick={startChallenge}
+            title="挑战模式"
+            disabled={currentAlgo?.dataKind !== 'array'}
+          >
+            ⚔ 挑战
+          </button>
+        )}
+
+        {/* 挑战结果 */}
+        {challengeResult && !challengeActive && (
+          <div className="challenge-result">
+            你用时 {(challengeResult.userTimeMs / 1000).toFixed(1)}s · 交换 {challengeResult.userSwaps} 次
+            <span className="vs">vs</span>
+            算法交换 {challengeResult.algoSwaps} 次 · 比较 {challengeResult.algoCompares} 次
+          </div>
+        )}
 
         {/* 播放控制 */}
         <div className="ctrl-group">

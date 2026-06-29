@@ -60,6 +60,18 @@ export interface VizState {
   /** 导出书签为 JSON */
   exportBookmarks: () => string;
 
+  // ===== 挑战模式 =====
+  /** 是否激活挑战模式 */
+  challengeActive: boolean;
+  /** 挑战中用户的数据副本 */
+  challengeData: number[];
+  /** 挑战中用户的交换次数 */
+  challengeSwaps: number;
+  /** 挑战开始时间戳 */
+  challengeStartTime: number;
+  /** 挑战结果 */
+  challengeResult: { userSwaps: number; userTimeMs: number; algoSwaps: number; algoCompares: number } | null;
+
   // ===== 对比模式 =====
   /** 是否启用对比模式 */
   compareMode: boolean;
@@ -98,6 +110,13 @@ export interface VizState {
   toggleFocusMode: () => void;
   /** 清除错误 */
   clearError: () => void;
+  /** 开始挑战 */
+  startChallenge: () => void;
+  /** 挑战中交换两个元素 */
+  challengeSwap: (i: number, j: number) => void;
+  /** 退出挑战 */
+  endChallenge: () => void;
+
   /** 切换对比模式 */
   toggleCompareMode: () => void;
   /** 设置对比算法 */
@@ -145,6 +164,13 @@ export const useVizStore = create<VizState>((set, get) => {
   compareCount: 0,
   swapCount: 0,
 
+  // ===== 挑战模式初始值 =====
+  challengeActive: false,
+  challengeData: [],
+  challengeSwaps: 0,
+  challengeStartTime: 0,
+  challengeResult: null,
+
   // ===== 焦点模式初始值 =====
   focusMode: false,
 
@@ -191,6 +217,65 @@ export const useVizStore = create<VizState>((set, get) => {
   },
 
   toggleFocusMode: () => set((s) => ({ focusMode: !s.focusMode })),
+
+  startChallenge: () => {
+    const { currentAlgo } = get();
+    if (!currentAlgo || currentAlgo.dataKind !== 'array') return;
+    // 生成随机数据
+    const challengeData = randomArray(16);
+    // 重新生成算法步骤以计算参考值
+    const steps = safeGenerate(currentAlgo, challengeData);
+    const algoSwaps = steps.filter((s) => s.type === 'swap').length;
+    const algoCompares = steps.filter((s) => s.type === 'compare').length;
+
+    set({
+      challengeActive: true,
+      challengeData: [...challengeData],
+      challengeSwaps: 0,
+      challengeStartTime: performance.now(),
+      challengeResult: { userSwaps: 0, userTimeMs: 0, algoSwaps, algoCompares },
+      data: challengeData,
+      steps: [],
+      stepIndex: 0,
+      playing: false,
+      compareCount: 0,
+      swapCount: 0,
+      selectedIndices: [],
+      hintMessage: '',
+    });
+  },
+
+  challengeSwap: (i: number, j: number) => {
+    const { challengeData, challengeSwaps } = get();
+    const next = [...challengeData];
+    const tmp = next[i];
+    next[i] = next[j];
+    next[j] = tmp;
+    const newSwaps = challengeSwaps + 1;
+
+    // 检查是否有序
+    const isSorted = next.every((v, idx) => idx === 0 || v >= next[idx - 1]);
+    const newResult = get().challengeResult;
+    const elapsed = performance.now() - get().challengeStartTime;
+
+    set({
+      challengeData: next,
+      data: next,
+      challengeSwaps: newSwaps,
+      challengeResult: newResult ? { ...newResult, userSwaps: newSwaps, userTimeMs: elapsed } : null,
+    });
+
+    if (isSorted) {
+      set({
+        challengeActive: false,
+        challengeResult: newResult ? { ...newResult, userSwaps: newSwaps, userTimeMs: elapsed } : null,
+      });
+    }
+  },
+
+  endChallenge: () => {
+    set({ challengeActive: false });
+  },
 
   toggleManualMode: () => {
     const { manualMode } = get();
