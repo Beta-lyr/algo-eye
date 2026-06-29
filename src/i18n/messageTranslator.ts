@@ -130,6 +130,41 @@ const MESSAGE_PATTERNS: Record<string, Record<Locale, string>> = {
     zh: '坏字符规则',
     en: 'Bad character rule',
   },
+  // 树结构相关
+  '初始化空 AVL 树': {
+    zh: '初始化空 AVL 树',
+    en: 'Initialize empty AVL tree',
+  },
+  'AVL 树构建完成': {
+    zh: 'AVL 树构建完成',
+    en: 'AVL tree construction complete',
+  },
+  '旋转完成，树已恢复平衡': {
+    zh: '旋转完成，树已恢复平衡',
+    en: 'Rotation complete, tree rebalanced',
+  },
+  '旋转完成，树已平衡': {
+    zh: '旋转完成，树已平衡',
+    en: 'Rotation complete, tree balanced',
+  },
+  // 红黑树相关
+  '初始化空红黑树': {
+    zh: '初始化空红黑树',
+    en: 'Initialize empty Red-Black tree',
+  },
+  '红黑树构建完成': {
+    zh: '红黑树构建完成',
+    en: 'Red-Black tree construction complete',
+  },
+  '父节点是根，设为黑色': {
+    zh: '父节点是根，设为黑色',
+    en: 'Parent is root, set to BLACK',
+  },
+  // Floyd-Warshall 相关
+  'Floyd-Warshall 完成：所有节点对最短路径已计算': {
+    zh: 'Floyd-Warshall 完成：所有节点对最短路径已计算',
+    en: 'Floyd-Warshall complete: all-pairs shortest paths computed',
+  },
 };
 
 /** 正则模式翻译 */
@@ -488,6 +523,127 @@ const REGEX_PATTERNS: Array<{
     replacement: {
       zh: '✓ 找到目标！arr[$1] = $2',
       en: '✓ Target found! arr[$1] = $2',
+    },
+  },
+  // ===== AVL 树 =====
+  // 插入根节点：X
+  {
+    pattern: /插入根节点：(\d+)/,
+    replacement: {
+      zh: '插入根节点：$1',
+      en: 'Insert root: $1',
+    },
+  },
+  // 插入 X：从根节点 Y 开始
+  {
+    pattern: /插入 (\d+)，高度 = (\d+)/,
+    replacement: {
+      zh: '插入 $1，高度 = $2',
+      en: 'Insert $1, height = $2',
+    },
+  },
+  // 节点 X 不平衡（|bf| = Y）
+  {
+    pattern: /节点 (\d+) 不平衡（\|bf\| = (\d+)）/,
+    replacement: {
+      zh: '节点 $1 不平衡（|bf| = $2）',
+      en: 'Node $1 unbalanced (|bf| = $2)',
+    },
+  },
+  // 节点 X 不平衡！平衡因子 = Y，执行旋转
+  {
+    pattern: /节点 (\d+) 不平衡！平衡因子 = (-?\d+)，执行旋转/,
+    replacement: {
+      zh: '节点 $1 不平衡！平衡因子 = $2，执行旋转',
+      en: 'Node $1 unbalanced! balance factor = $2, rotating',
+    },
+  },
+  // LL/RR/LR/RL 型：对 X 旋转
+  {
+    pattern: /(LL|RR|LR|RL) 型：对 (\d+) (右|左)旋/,
+    replacement: {
+      zh: '$1 型：对 $2 $3旋',
+      en: '$1 type: $3 rotate at $2',
+    },
+  },
+  // LL/RR/LR/RL 型：对 X 右旋，再对 Y 左旋 (etc)
+  {
+    pattern: /(LR|RL) 型：对 (\d+) (左|右)旋，再对 (\d+) (右|左)旋/,
+    replacement: {
+      zh: '$1 型：对 $2 $3旋，再对 $4 $5旋',
+      en: '$1 type: $3 rotate at $2, then $5 rotate at $4',
+    },
+  },
+  // 节点 X：高度 = Y，平衡因子 = Z
+  {
+    pattern: /节点 (\d+)：高度 = (\d+)，平衡因子 = (-?\d+)/,
+    replacement: {
+      zh: '节点 $1：高度 = $2，平衡因子 = $3',
+      en: 'Node $1: height = $2, balance factor = $3',
+    },
+  },
+  // ===== 红黑树 =====
+  // 插入为左/右子节点（红色）
+  {
+    pattern: /(\d+) < (\d+)，插入为(左|右)子节点（红色）/,
+    replacement: {
+      zh: '$1 < $2，插入为$3子节点（红色）',
+      en: '$1 < $2, insert as $3 child (red)',
+    },
+  },
+  {
+    pattern: /(\d+) ≥ (\d+)，插入为(左|右)子节点（红色）/,
+    replacement: {
+      zh: '$1 ≥ $2，插入为$3子节点（红色）',
+      en: '$1 ≥ $2, insert as $3 child (red)',
+    },
+  },
+  // 叔节点为红色/黑色
+  {
+    pattern: /叔节点为(红色)：父 (\d+) → 黑，叔 (\d+) → 黑，爷 (\d+) → 红/,
+    replacement: {
+      zh: '叔节点为红色：父 $1 → 黑，叔 $2 → 黑，爷 $3 → 红',
+      en: 'Uncle red: parent $1 → BLACK, uncle $2 → BLACK, grandparent $3 → RED',
+    },
+  },
+  {
+    pattern: /叔节点为黑色：在 (\d+) 处旋转/,
+    replacement: {
+      zh: '叔节点为黑色：在 $1 处旋转',
+      en: 'Uncle black: rotate at $1',
+    },
+  },
+  // LL/RR 型：对 X 旋转，变色
+  {
+    pattern: /(LL|RR) 型：对 (\d+) (右|左)旋，变色/,
+    replacement: {
+      zh: '$1 型：对 $2 $3旋，变色',
+      en: '$1 type: $3 rotate at $2, recolor',
+    },
+  },
+  // ===== Floyd-Warshall =====
+  // 以节点 X 为中间点
+  {
+    pattern: /——— 以节点 (\d+) 为中间点 ———/,
+    replacement: {
+      zh: '——— 以节点 $1 为中间点 ———',
+      en: '——— Using node $1 as intermediate ———',
+    },
+  },
+  // k=X：dist[i][j]=Y vs dist[i][k]+dist[k][j]=Z
+  {
+    pattern: /k=(\d+)：dist\[(\d+)\]\[(\d+)\]=([^ ]+) vs dist\[(\d+)\]\[(\d+)\]+dist\[(\d+)\]\[(\d+)\]=(\d+)/,
+    replacement: {
+      zh: 'k=$1：dist[$2][$3]=$4 vs dist[$5][$6]+dist[$7][$8]=$9',
+      en: 'k=$1：dist[$2][$3]=$4 vs dist[$5][$6]+dist[$7][$8]=$9',
+    },
+  },
+  // ✓ 更新 dist[i][j] = X
+  {
+    pattern: /✓ 更新 dist\[(\d+)\]\[(\d+)\] = (\d+)/,
+    replacement: {
+      zh: '✓ 更新 dist[$1][$2] = $3',
+      en: '✓ Update dist[$1][$2] = $3',
     },
   },
 ];

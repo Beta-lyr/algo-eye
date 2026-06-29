@@ -380,6 +380,40 @@ const explanations: Record<string, AlgorithmExplanation> = {
     variants: ['Damerau-Levenshtein（增加换位操作）', '加权编辑距离'],
     keySteps: ['初始化 DP 表格', '第一列 dp[i][0] = i（删除）', '第一行 dp[0][j] = j（插入）', '字符相同则 dp[i][j] = dp[i-1][j-1]', '否则取 min(删除, 插入, 替换) + 1'],
   },
+
+  // ===== 数据结构（新增） =====
+  'avl-tree': {
+    id: 'avl-tree',
+    overview: 'AVL 树是自平衡二叉搜索树，任何节点的左右子树高度差不超过 1（平衡因子 -1, 0, 1）。',
+    coreIdea: '在 BST 插入/删除后，从修改节点向上回溯，检查平衡因子，通过四种旋转（LL/RR/LR/RL）恢复平衡。',
+    complexityAnalysis: '查找/插入/删除均为 O(log n)，空间复杂度 O(n)。',
+    useCases: ['需要频繁查找的有序数据', '数据库索引', '内存中的有序集合'],
+    pitfalls: ['插入/删除需要回溯旋转，常数较大', '红黑树在插入/删除场景通常更优'],
+    variants: ['红黑树', 'AA 树', '替罪羊树'],
+    keySteps: ['BST 插入新节点', '从新节点向上回溯', '更新节点高度', '检查平衡因子', '|bf|>1 时执行对应旋转', 'LL：右旋', 'RR：左旋', 'LR：左旋再右旋', 'RL：右旋再左旋'],
+  },
+  'red-black-tree': {
+    id: 'red-black-tree',
+    overview: '红黑树是自平衡二叉搜索树，通过颜色约束保证最长路径不超过最短路径的两倍。',
+    coreIdea: '红黑性质：根黑、叶黑、红节点子必黑、任一节点到叶子的黑高相同。插入后通过变色和旋转恢复性质。',
+    complexityAnalysis: '查找/插入/删除均为 O(log n)，空间复杂度 O(n)。',
+    useCases: ['标准库中的有序容器（如 TreeMap、TreeSet）', '需要稳定性能的插入/删除场景'],
+    pitfalls: ['实现复杂，尤其是删除操作', '红黑性质的直觉理解需要时间'],
+    variants: ['AVL 树（更严格的平衡）', 'AA 树（简化版红黑树）', 'Treap'],
+    keySteps: ['BST 插入新节点（红色）', '检查父节点颜色', '叔节点为红：父/叔变黑，爷变红，继续向上处理', '叔节点为黑且三角形：旋转为直线型', '叔节点为黑且直线型：爷旋转 + 变色', '根节点强制为黑'],
+  },
+
+  // ===== 图算法（新增） =====
+  'floyd-warshall': {
+    id: 'floyd-warshall',
+    overview: 'Floyd-Warshall 算法求解所有节点对之间的最短路径，适用于带权图（可处理负权边，不能有负权环）。',
+    coreIdea: '动态规划：dist[k][i][j] 表示只使用前 k 个节点作为中间点时 i 到 j 的最短距离。迭代更新 dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])。',
+    complexityAnalysis: '时间复杂度 O(V³)，空间复杂度 O(V²)。',
+    useCases: ['全源最短路径', '检测负权环', '图的闭包传递'],
+    pitfalls: ['不支持负权环', 'V³ 的时间复杂度不适合大规模图', '稀疏图时不如多次调用 Dijkstra'],
+    variants: ['Johnson 算法（稀疏图的全源最短路径）', '动态 Floyd-Warshall'],
+    keySteps: ['初始化距离矩阵', '外层循环遍历每个中间节点 k', '内层两重循环遍历所有 i,j 对', '如果 dist[i][k] + dist[k][j] < dist[i][j] 则更新', '最终矩阵即为所有最短路径距离'],
+  },
 };
 
 /** 获取算法讲解内容 */

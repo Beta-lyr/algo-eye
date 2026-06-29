@@ -23,6 +23,8 @@ import { binarySearchTree } from './data-structure/binarySearchTree';
 import { heap } from './data-structure/heap';
 import { linkedList } from './data-structure/linkedList';
 import { hashTable } from './data-structure/hashTable';
+import { avlTree } from './data-structure/avlTree';
+import { rbTree } from './data-structure/rbTree';
 import { bfs } from './graph/bfs';
 import { dfs } from './graph/dfs';
 import { dijkstra } from './graph/dijkstra';
@@ -30,6 +32,7 @@ import { astar } from './graph/astar';
 import { bellmanFord } from './graph/bellmanFord';
 import { prim } from './graph/prim';
 import { kruskal } from './graph/kruskal';
+import { floydWarshall } from './graph/floydWarshall';
 import { kmp } from './string/kmp';
 import { rabinKarp } from './string/rabinKarp';
 import { boyerMoore } from './string/boyerMoore';
@@ -58,6 +61,8 @@ export const algorithms: Algorithm[] = [
   heap,
   linkedList,
   hashTable,
+  avlTree,
+  rbTree,
   bfs,
   dfs,
   dijkstra,
@@ -65,6 +70,7 @@ export const algorithms: Algorithm[] = [
   bellmanFord,
   prim,
   kruskal,
+  floydWarshall,
   kmp,
   rabinKarp,
   boyerMoore,
