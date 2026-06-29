@@ -15,6 +15,8 @@ import { StringRenderer } from '../renderers/StringRenderer';
 import { LinkedListRenderer } from '../renderers/LinkedListRenderer';
 import { HashTableRenderer } from '../renderers/HashTableRenderer';
 import { DPGridRenderer } from '../renderers/DPGridRenderer';
+import { WebglRenderer, shouldUseWebgl } from '../renderers/WebglRenderer';
+import { Tree3DRenderer } from '../renderers/Tree3DRenderer';
 import type { Renderer } from '../renderers/Renderer';
 import type { Snapshot, Step, ElementState } from '../engine/types';
 import type { Algorithm } from '../algorithms/types';
@@ -44,7 +46,15 @@ function pickRenderer(kind: Snapshot['kind']): Renderer<Snapshot> {
 function getRenderer(snap: Snapshot): Renderer<Snapshot> {
   if (snap.dpGrid !== undefined) return DPGridRenderer;
   if (snap.hashTable !== undefined) return HashTableRenderer;
+  if (snap.kind === 'array' && shouldUseWebgl(snap.data.length)) return WebglRenderer;
+  if (snap.kind === 'tree' && snap.tree && countNodes(snap.tree) > 6) return Tree3DRenderer;
   return pickRenderer(snap.kind);
+}
+
+function countNodes(node: { children?: { children?: any }[] }): number {
+  let c = 1;
+  for (const ch of node.children ?? []) c += countNodes(ch);
+  return c;
 }
 
 /** 缓动函数（平滑减速） */
