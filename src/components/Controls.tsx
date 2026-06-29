@@ -321,7 +321,7 @@ export function Controls() {
           <button
             className="btn bm-btn"
             onClick={() => toggleBookmark(stepIndex)}
-            title={bookmarks[stepIndex] !== undefined ? '移除书签' : '添加书签'}
+            title={bookmarks[stepIndex] !== undefined ? t.controls.bookmarkRemove : t.controls.bookmarkAdd}
             disabled={disabled}
           >
             {bookmarks[stepIndex] !== undefined ? '🔖' : '🏷️'}
@@ -366,7 +366,7 @@ export function Controls() {
                     setEditText(comment);
                   }}
                 >
-                  {comment || '点击添加注释…'}
+                  {comment || t.controls.bookmarkPlaceholder}
                 </span>
               )}
               <button className="btn bm-del" onClick={() => toggleBookmark(step)}>
@@ -376,7 +376,7 @@ export function Controls() {
           ))}
           {bmEntries.length > 0 && (
             <button className="btn bm-export" onClick={handleExportBookmarks}>
-              📋 导出
+              {t.controls.export}
             </button>
           )}
         </div>
@@ -387,44 +387,44 @@ export function Controls() {
         <button
           className={`btn ${compareMode ? 'primary' : ''}`}
           onClick={toggleCompareMode}
-          title="对比模式"
+          title={t.controls.compareMode}
         >
-          {compareMode ? '⇔ 对比' : '⇔'}
+          {compareMode ? `⇔ ${t.controls.compareMode}` : '⇔'}
         </button>
 
         {/* 手动模式开关 */}
         <button
           className={`btn ${manualMode ? 'primary' : ''}`}
           onClick={toggleManualMode}
-          title="手动模式"
+          title={t.controls.manualMode}
           disabled={currentAlgo?.dataKind !== 'array' || challengeActive}
         >
-          ✋ {manualMode ? '手动' : ''}
+          ✋ {manualMode ? t.controls.manualMode : ''}
         </button>
 
         {/* 挑战模式 */}
         {challengeActive ? (
           <div className="challenge-badge">
-            ⏱ {(elapsed / 1000).toFixed(1)}s · 交换 {challengeSwaps} 次
-            <button className="btn" onClick={endChallenge}>✕ 退出</button>
+            {t.controls.challengeResultTime.replace('{t}', (elapsed / 1000).toFixed(1)).replace('{n}', String(challengeSwaps))}
+            <button className="btn" onClick={endChallenge}>✕ {t.controls.challengeExit}</button>
           </div>
         ) : (
           <button
             className={`btn ${challengeResult ? 'primary' : ''}`}
             onClick={startChallenge}
-            title="挑战模式"
+            title={t.controls.challengeMode}
             disabled={currentAlgo?.dataKind !== 'array'}
           >
-            ⚔ 挑战
+            ⚔ {t.controls.challengeMode}
           </button>
         )}
 
         {/* 挑战结果 */}
         {challengeResult && !challengeActive && (
           <div className="challenge-result">
-            你用时 {(challengeResult.userTimeMs / 1000).toFixed(1)}s · 交换 {challengeResult.userSwaps} 次
+            {t.controls.challengeResultTime.replace('{t}', (challengeResult.userTimeMs / 1000).toFixed(1)).replace('{n}', String(challengeResult.userSwaps))}
             <span className="vs">vs</span>
-            算法交换 {challengeResult.algoSwaps} 次 · 比较 {challengeResult.algoCompares} 次
+            {t.controls.challengeResultAlgo.replace('{s}', String(challengeResult.algoSwaps)).replace('{c}', String(challengeResult.algoCompares))}
           </div>
         )}
 
@@ -506,22 +506,22 @@ export function Controls() {
         )}
 
         {/* 截图 */}
-        <button className="btn" onClick={handleScreenshot} title="截图">
-          [截图]
+        <button className="btn" onClick={handleScreenshot} title={t.controls.screenshot}>
+          {t.controls.screenshot}
         </button>
 
         {/* 分享 */}
-        <button className="btn" onClick={handleShare} title="分享链接">
-          {shareStatus === 'copied' ? '[已复制]' : '[链接] 分享'}
+        <button className="btn" onClick={handleShare} title={t.controls.share}>
+          {shareStatus === 'copied' ? t.controls.copied : t.controls.share}
         </button>
 
         {/* 成就 */}
-        <button className="btn" onClick={() => setShowAchievements((v) => !v)} title="成就">
+        <button className="btn" onClick={() => setShowAchievements((v) => !v)} title={t.controls.achievements}>
           [*]
         </button>
 
         {/* 快捷键帮助 */}
-        <button className="btn" onClick={() => setShowShortcuts((v) => !v)} title="快捷键">
+        <button className="btn" onClick={() => setShowShortcuts((v) => !v)} title={t.controls.shortcuts}>
           ⌨
         </button>
 
@@ -539,15 +539,15 @@ export function Controls() {
         <div className="shortcuts-overlay" onClick={() => setShowShortcuts(false)}>
           <div className="shortcuts-panel" onClick={(e) => e.stopPropagation()}>
             <div className="shortcuts-hd">
-              ⌨ 键盘快捷键
+              ⌨ {t.controls.shortcutPanel}
               <span className="close" onClick={() => setShowShortcuts(false)}>✕</span>
             </div>
             <div className="shortcuts-body">
-              <div className="shortcut-row"><kbd>Space</kbd><span>播放 / 暂停</span></div>
-              <div className="shortcut-row"><kbd>←</kbd><span>上一步</span></div>
-              <div className="shortcut-row"><kbd>→</kbd><span>下一步</span></div>
-              <div className="shortcut-row"><kbd>F</kbd><span>焦点模式（全屏画布）</span></div>
-              <div className="shortcut-row"><kbd>?</kbd><span>切换此面板</span></div>
+              <div className="shortcut-row"><kbd>Space</kbd><span>{t.controls.shortcutPlay}</span></div>
+              <div className="shortcut-row"><kbd>←</kbd><span>{t.controls.shortcutPrev}</span></div>
+              <div className="shortcut-row"><kbd>→</kbd><span>{t.controls.shortcutNext}</span></div>
+              <div className="shortcut-row"><kbd>F</kbd><span>{t.controls.shortcutFocus}</span></div>
+              <div className="shortcut-row"><kbd>?</kbd><span>{t.controls.shortcutPanelToggle}</span></div>
             </div>
           </div>
         </div>

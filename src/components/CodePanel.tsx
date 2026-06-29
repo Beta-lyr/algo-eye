@@ -252,10 +252,10 @@ function StatsPanel() {
       </div>
       <div className="trend-chart">
         <div className="trend-hd">
-          复杂度趋势
+          {t.viz.trendTitle}
           <span className="trend-legend">
-            <i className="sw compare" /> 比较
-            <i className="sw swap" /> 交换
+            <i className="sw compare" /> {t.viz.compares}
+            <i className="sw swap" /> {t.viz.swaps}
           </span>
         </div>
         <canvas ref={chartRef} className="trend-canvas" />

@@ -13,6 +13,7 @@ export const en: Record<string, any> = {
     reset: 'Reset',
     cancel: 'Cancel',
     confirm: 'Confirm',
+    switchLang: '切换到中文',
   },
 
   // Topbar
@@ -63,6 +64,11 @@ export const en: Record<string, any> = {
   tree: {
     title: 'Algorithms',
     hint: '/tree',
+    diffAll: 'All',
+    diffBeginner: 'Beginner',
+    diffIntermediate: 'Intermediate',
+    diffAdvanced: 'Advanced',
+    searchPlaceholder: 'Search algorithms…',
   },
 
   // Visualization area
@@ -75,6 +81,17 @@ export const en: Record<string, any> = {
     inPlace: 'In-place',
     yes: 'Y',
     no: 'N',
+    compareMode: '▸ Compare Mode',
+    focusMode: 'Focus Mode',
+    fullscreen: 'Fullscreen',
+    learn: 'Learn',
+    clickHint: '— Click a bar to select',
+    selectedHint: 'Selected [{i}], pick another',
+    mainProgress: 'Main: {a}/{b} · Compare: {c}/{d}',
+    trendTitle: 'Complexity Trend',
+    compares: 'Compares',
+    swaps: 'Swaps',
+    challengeSwapCount: '{n} swaps',
   },
 
   // Legend
@@ -111,6 +128,51 @@ export const en: Record<string, any> = {
     pathLength: 'Path Length',
   },
 
+  // Tutorial
+  tutorial: {
+    skip: 'Skip',
+    next: 'Next',
+    start: 'Get Started',
+    step1Title: 'Welcome to ALGO::VIZ',
+    step1Desc: 'A terminal-style algorithm visualization tool. Watch animations to intuitively understand how algorithms work.',
+    step2Title: 'Left Panel — Select Algorithm',
+    step2Desc: 'Browse 36 algorithms organized by category. Click any algorithm to view its visualization. Supports search and difficulty filtering.',
+    step3Title: 'Bottom Controls — Playback',
+    step3Desc: 'Use ▶ to play, ⏮ ⏭ to step forward/back. Click the progress bar to jump, and add bookmarks to mark key steps.',
+    step4Title: 'Keyboard Shortcuts',
+    step4Desc: 'Space play/pause · ← → step · F focus mode · ? view all shortcuts',
+    step5Title: 'Learn More',
+    step5Desc: 'Click the ▸ Learn button in the header to view detailed explanations, complexity analysis, and pseudocode.',
+  },
+
+  // Learn page
+  learn: {
+    notFound: 'Algorithm Not Found',
+    notFoundDesc: 'The requested algorithm explanation page does not exist',
+    backHome: 'Back to Home',
+    home: 'Home',
+    viz: 'Visualize',
+    sections: {
+      overview: 'Overview',
+      coreIdea: 'Core Idea',
+      keySteps: 'Key Steps',
+      complexity: 'Complexity Analysis',
+      useCases: 'Use Cases',
+      pitfalls: 'Common Pitfalls',
+      variants: 'Variants & Improvements',
+      pseudoCode: 'Pseudocode',
+    },
+    viewViz: '▸ View Visualization',
+  },
+
+  // Manual mode hints
+  hint: {
+    noSelection: 'No selection needed for this step',
+    allDone: 'All steps completed!',
+    correct: '[Y] Correct!',
+    wrong: '[N] Expected indices [{i}], try again',
+  },
+
   // Controls
   controls: {
     prev: 'Previous',
@@ -122,6 +184,28 @@ export const en: Record<string, any> = {
     randomData: 'Random',
     customData: 'Custom: {data} (Enter to apply)',
     reset: 'Reset',
+    bookmarkAdd: 'Add Bookmark',
+    bookmarkRemove: 'Remove Bookmark',
+    bookmarkPlaceholder: 'Click to add note…',
+    export: 'Export',
+    compareMode: 'Compare',
+    manualMode: 'Manual Sort',
+    challengeMode: 'Challenge',
+    challengeExit: 'Exit',
+    swaps: '{n} swaps',
+    screenshot: 'Screenshot',
+    share: 'Share Link',
+    copied: '[Copied]',
+    achievements: 'Achievements',
+    shortcuts: 'Shortcuts',
+    shortcutPanel: 'Keyboard Shortcuts',
+    shortcutPlay: 'Play / Pause',
+    shortcutPrev: 'Previous Step',
+    shortcutNext: 'Next Step',
+    shortcutFocus: 'Focus Mode (full-screen canvas)',
+    shortcutPanelToggle: 'Toggle this panel',
+    challengeResultTime: 'You: {t} · {n} swaps',
+    challengeResultAlgo: 'Algorithm: {s} swaps · {c} comparisons',
   },
 
   // Algorithm names (for display)

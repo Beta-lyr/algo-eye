@@ -13,6 +13,7 @@ export const zh: Record<string, any> = {
     reset: '重置',
     cancel: '取消',
     confirm: '确认',
+    switchLang: 'Switch to English',
   },
 
   // 顶栏
@@ -63,6 +64,11 @@ export const zh: Record<string, any> = {
   tree: {
     title: '算法目录',
     hint: '/tree',
+    diffAll: '全部',
+    diffBeginner: '入门',
+    diffIntermediate: '进阶',
+    diffAdvanced: '高级',
+    searchPlaceholder: '搜索算法…',
   },
 
   // 可视化区域
@@ -75,6 +81,17 @@ export const zh: Record<string, any> = {
     inPlace: '原地',
     yes: '是',
     no: '否',
+    compareMode: '▸ 对比模式',
+    focusMode: '焦点模式',
+    fullscreen: '全屏',
+    learn: '讲解',
+    clickHint: '— 请点击对应的柱体',
+    selectedHint: '已选中 [{i}], 请选择另一个',
+    mainProgress: '主: {a}/{b} · 对比: {c}/{d}',
+    trendTitle: '复杂度趋势',
+    compares: '比较',
+    swaps: '交换',
+    challengeSwapCount: '交换 {n} 次',
   },
 
   // 图例
@@ -111,6 +128,51 @@ export const zh: Record<string, any> = {
     pathLength: '路径长度',
   },
 
+  // 引导教程
+  tutorial: {
+    skip: '跳过',
+    next: '下一步',
+    start: '开始使用',
+    step1Title: '欢迎使用 ALGO::VIZ',
+    step1Desc: '这是一个终端风格的算法可视化学习工具。通过动画演示，帮助你直观理解各种算法的工作原理。',
+    step2Title: '左侧面板 — 选择算法',
+    step2Desc: '左侧目录树按分类排列了 36 种算法。点击任意算法即可切换到对应的可视化。支持搜索和难度过滤。',
+    step3Title: '底部控制栏 — 播放控制',
+    step3Desc: '使用 ▶ 按钮播放动画，⏮ ⏭ 单步前进/后退。进度条可点击跳转，还可以添加书签标记关键步骤。',
+    step4Title: '键盘快捷键',
+    step4Desc: 'Space 播放/暂停 · ← → 步进 · F 焦点模式 · ? 查看全部快捷键',
+    step5Title: '深入理解',
+    step5Desc: '点击标题栏的 ▸ 讲解按钮，查看算法的详细说明、复杂度分析和伪代码。',
+  },
+
+  // 讲解页
+  learn: {
+    notFound: '算法未找到',
+    notFoundDesc: '请求的算法讲解页面不存在',
+    backHome: '返回首页',
+    home: '首页',
+    viz: '可视化',
+    sections: {
+      overview: '概述',
+      coreIdea: '核心思想',
+      keySteps: '关键步骤',
+      complexity: '复杂度分析',
+      useCases: '适用场景',
+      pitfalls: '常见误用',
+      variants: '变体与改进',
+      pseudoCode: '伪代码',
+    },
+    viewViz: '▸ 查看可视化演示',
+  },
+
+  // 手动模式提示
+  hint: {
+    noSelection: '该步骤无需选择下标',
+    allDone: '已完成所有步骤！',
+    correct: '[是] 正确！',
+    wrong: '[否] 应为下标 [{i}] 的操作，请重试',
+  },
+
   // 控制栏
   controls: {
     prev: '上一步',
@@ -122,6 +184,28 @@ export const zh: Record<string, any> = {
     randomData: '随机数据',
     customData: '自定义数据: {data} (回车应用)',
     reset: '重置',
+    bookmarkAdd: '添加书签',
+    bookmarkRemove: '移除书签',
+    bookmarkPlaceholder: '点击添加注释…',
+    export: '导出',
+    compareMode: '对比模式',
+    manualMode: '手动模式',
+    challengeMode: '挑战模式',
+    challengeExit: '退出',
+    swaps: '交换 {n} 次',
+    screenshot: '截图',
+    share: '分享链接',
+    copied: '[已复制]',
+    achievements: '成就',
+    shortcuts: '快捷键',
+    shortcutPanel: '键盘快捷键',
+    shortcutPlay: '播放 / 暂停',
+    shortcutPrev: '上一步',
+    shortcutNext: '下一步',
+    shortcutFocus: '焦点模式（全屏画布）',
+    shortcutPanelToggle: '切换此面板',
+    challengeResultTime: '你用时 {t} · 交换 {n} 次',
+    challengeResultAlgo: '算法交换 {s} 次 · 比较 {c} 次',
   },
 
   // 算法名称（用于显示）

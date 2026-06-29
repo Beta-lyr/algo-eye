@@ -91,7 +91,7 @@ export const HashTableRenderer: Renderer<Snapshot> = {
     ctx.fillStyle = '#5cb574';
     ctx.font = '12px "JetBrains Mono", monospace';
     ctx.textAlign = 'left';
-    ctx.fillText('Hash Table (拉链法)', 20, 25);
+    ctx.fillText('Hash Table', 20, 25);
 
     // 计算布局
     const bucketCount = hashTable.length;

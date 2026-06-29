@@ -14,12 +14,14 @@ const CATEGORY_ORDER: AlgorithmCategory[] = [
 
 type AlgorithmCategory = Algorithm['category'];
 
-const DIFFICULTIES: { key: AlgorithmDifficulty | 'all'; label: string }[] = [
-  { key: 'all', label: '全部' },
-  { key: 'beginner', label: '入门' },
-  { key: 'intermediate', label: '进阶' },
-  { key: 'advanced', label: '高级' },
-];
+function getDifficulties(t: ReturnType<typeof useT>): { key: AlgorithmDifficulty | 'all'; label: string }[] {
+  return [
+    { key: 'all', label: t.tree.diffAll },
+    { key: 'beginner', label: t.tree.diffBeginner },
+    { key: 'intermediate', label: t.tree.diffIntermediate },
+    { key: 'advanced', label: t.tree.diffAdvanced },
+  ];
+}
 
 export function AlgorithmTree() {
   const algorithms = useVizStore((s) => s.algorithms);
@@ -29,6 +31,7 @@ export function AlgorithmTree() {
 
   const [search, setSearch] = useState('');
   const [diffFilter, setDiffFilter] = useState<AlgorithmDifficulty | 'all'>('all');
+  const DIFFICULTIES = getDifficulties(t);
 
   const grouped = useMemo(() => {
     const g: Record<string, Algorithm[]> = {};
@@ -66,7 +69,7 @@ export function AlgorithmTree() {
       </div>
       <input
         className="tree-search"
-        placeholder="搜索算法…"
+        placeholder={t.tree.searchPlaceholder}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />

@@ -40,10 +40,10 @@ export function Learn() {
   ╚██████╔╝██║  ██║ ██║
    ╚═════╝ ╚═╝  ╚═╝ ╚═╝
             `}</pre>
-            <h2>算法未找到</h2>
-            <p>请求的算法讲解页面不存在</p>
+            <h2>{t.learn.notFound}</h2>
+            <p>{t.learn.notFoundDesc}</p>
             <button className="btn primary" onClick={() => navigate('/')}>
-              返回首页
+              {t.learn.backHome}
             </button>
           </div>
         </div>
@@ -56,8 +56,8 @@ export function Learn() {
       {/* 头部 */}
       <div className="learn-header">
         <div className="learn-nav">
-          <Link to="/" className="back-link">← 首页</Link>
-          <Link to={`/algo/${id}`} className="back-link">▸ 可视化</Link>
+          <Link to="/" className="back-link">← {t.learn.home}</Link>
+          <Link to={`/algo/${id}`} className="back-link">▸ {t.learn.viz}</Link>
         </div>
         <div className="learn-title">
           <h1>{algo.name}</h1>
@@ -84,7 +84,7 @@ export function Learn() {
         <section className="learn-section">
           <h2 className="section-title">
             <span className="section-icon">◆</span>
-            概述
+            {t.learn.sections.overview}
           </h2>
           <div className="section-body">
             <p>{explanation.overview}</p>
@@ -95,7 +95,7 @@ export function Learn() {
         <section className="learn-section">
           <h2 className="section-title">
             <span className="section-icon">◇</span>
-            核心思想
+            {t.learn.sections.coreIdea}
           </h2>
           <div className="section-body">
             <p className="core-idea">{explanation.coreIdea}</p>
@@ -106,7 +106,7 @@ export function Learn() {
         <section className="learn-section">
           <h2 className="section-title">
             <span className="section-icon">▸</span>
-            关键步骤
+            {t.learn.sections.keySteps}
           </h2>
           <div className="section-body">
             <ol className="steps-list">
@@ -124,7 +124,7 @@ export function Learn() {
         <section className="learn-section">
           <h2 className="section-title">
             <span className="section-icon">◈</span>
-            复杂度分析
+            {t.learn.sections.complexity}
           </h2>
           <div className="section-body">
             <p>{explanation.complexityAnalysis}</p>
@@ -135,7 +135,7 @@ export function Learn() {
         <section className="learn-section">
           <h2 className="section-title">
             <span className="section-icon">是</span>
-            适用场景
+            {t.learn.sections.useCases}
           </h2>
           <div className="section-body">
             <ul className="use-cases-list">
@@ -150,7 +150,7 @@ export function Learn() {
         <section className="learn-section">
           <h2 className="section-title">
             <span className="section-icon">否</span>
-            常见误用
+            {t.learn.sections.pitfalls}
           </h2>
           <div className="section-body">
             <ul className="pitfalls-list">
@@ -165,7 +165,7 @@ export function Learn() {
         <section className="learn-section">
           <h2 className="section-title">
             <span className="section-icon">◎</span>
-            变体与改进
+            {t.learn.sections.variants}
           </h2>
           <div className="section-body">
             <ul className="variants-list">
@@ -180,7 +180,7 @@ export function Learn() {
         <section className="learn-section">
           <h2 className="section-title">
             <span className="section-icon">⌘</span>
-            伪代码
+            {t.learn.sections.pseudoCode}
           </h2>
           <div className="section-body">
             <pre className="code-block">
@@ -195,7 +195,7 @@ export function Learn() {
             className="btn primary"
             onClick={() => navigate(`/algo/${id}`)}
           >
-            ▸ 查看可视化演示
+            {t.learn.viewViz}
           </button>
         </div>
       </div>

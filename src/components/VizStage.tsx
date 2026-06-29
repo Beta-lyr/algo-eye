@@ -203,6 +203,17 @@ function AlgorithmPanel({
   );
 }
 
+/** 解析 store hint message 中的 i18n key 模式 @key|param1,param2 */
+function resolveHint(msg: string, t: ReturnType<typeof useT>): string {
+  if (!msg.startsWith('@')) return msg;
+  const pipeIdx = msg.indexOf('|');
+  const key = pipeIdx > 0 ? msg.slice(1, pipeIdx) : msg.slice(1);
+  const params = pipeIdx > 0 ? msg.slice(pipeIdx + 1).split(',') : [];
+  const val = key.split('.').reduce((acc: any, k: string) => acc?.[k], t as any) as string | undefined;
+  if (!val) return msg;
+  return val.replace('{i}', params.join(', '));
+}
+
 export function VizStage() {
   const mainCanvasRef = useRef<HTMLCanvasElement>(null);
   const compareCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -415,7 +426,7 @@ export function VizStage() {
       <section className="pane center">
         {/* 标题栏 */}
         <div className="viz-hd">
-          <div className="viz-title">▸ 对比模式</div>
+          <div className="viz-title">▸ {t.viz.compareMode}</div>
           <div className="badges">
             <span className="badge">
               {t.viz.time} <b>{complexity.time}</b>
@@ -439,14 +450,14 @@ export function VizStage() {
           <span
             className="badge focus-btn"
             onClick={toggleFocusMode}
-            title="焦点模式"
+            title={t.viz.focusMode}
           >
             {focusMode ? '⊞' : '⊟'}
           </span>
           <span
             className="badge focus-btn"
             onClick={() => { if (document.fullscreenElement) { document.exitFullscreen(); } else { document.documentElement.requestFullscreen(); } }}
-            title="全屏"
+            title={t.viz.fullscreen}
           >
             ⛶
           </span>
@@ -493,7 +504,7 @@ export function VizStage() {
             {t.legend.sorted}
           </span>
           <span style={{ marginLeft: 'auto', color: 'var(--txt-dim)' }}>
-            主: {stepIndex + 1}/{steps.length} · 对比: {compareStepIndex + 1}/{compareSteps.length}
+            {t.viz.mainProgress.replace('{a}', String(stepIndex + 1)).replace('{b}', String(steps.length)).replace('{c}', String(compareStepIndex + 1)).replace('{d}', String(compareSteps.length))}
           </span>
         </div>
       </section>
@@ -533,19 +544,19 @@ export function VizStage() {
             {t.viz.inPlace} <b>{t.viz.yes}</b>
           </span>
           <Link to={`/algo/${currentAlgo.id}/learn`} className="badge learn-link">
-            ▸ 讲解
+            ▸ {t.viz.learn}
           </Link>
           <span
             className="badge focus-btn"
             onClick={toggleFocusMode}
-            title="焦点模式"
+            title={t.viz.focusMode}
           >
             {focusMode ? '⊞' : '⊟'}
           </span>
           <span
             className="badge focus-btn"
             onClick={() => { if (document.fullscreenElement) { document.exitFullscreen(); } else { document.documentElement.requestFullscreen(); } }}
-            title="全屏"
+            title={t.viz.fullscreen}
           >
             ⛶
           </span>
@@ -576,10 +587,10 @@ export function VizStage() {
       {/* 手动模式提示 */}
       {manualMode && (
         <div className="manual-hint">
-          {hintMessage || (
+          {hintMessage ? resolveHint(hintMessage, t) : (
             selectedIndices.length === 0
-              ? `⌕ ${translateMsg(steps[stepIndex]?.message ?? '').slice(0, 36)} — 请点击对应的柱体`
-              : `已选中 [${selectedIndices.join(', ')}]，请选择另一个`
+              ? `⌕ ${translateMsg(steps[stepIndex]?.message ?? '').slice(0, 36)} — ${t.viz.clickHint}`
+              : `${t.viz.selectedHint.replace('{i}', selectedIndices.join(', '))}`
           )}
         </div>
       )}
