@@ -327,6 +327,7 @@ img {
   background: var(--bg-panel);
   border-right: 1px solid var(--border);
   min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }
@@ -357,6 +358,7 @@ img {
   padding: 8px 6px;
   overflow: auto;
   flex: 1;
+  min-height: 0;
 }
 
 .grp {
@@ -573,6 +575,7 @@ img {
   overflow: auto;
   padding: 10px 0;
   font-size: 13px;
+  min-height: 0;
 }
 
 .code .ln {
