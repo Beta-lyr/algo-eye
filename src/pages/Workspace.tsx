@@ -12,6 +12,7 @@ import { VizStage } from '../components/VizStage';
 import { CodePanel } from '../components/CodePanel';
 import { Controls } from '../components/Controls';
 import { CrtOverlay } from '../components/crt/CrtOverlay';
+import { Tutorial } from '../components/Tutorial';
 
 export function Workspace() {
   const loadFromUrl = useVizStore((s) => s.loadFromUrl);
@@ -33,6 +34,7 @@ export function Workspace() {
 
   return (
     <>
+      <Tutorial />
       <CrtOverlay />
       {error && (
         <div className="error-banner">
