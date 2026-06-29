@@ -98,3 +98,6 @@ export function usePrevious<T>(value: T): T | undefined {
 
   return ref.current;
 }
+
+export { usePlaybackClock } from './usePlaybackClock';
+export { useKeyboardShortcuts } from './useKeyboardShortcuts';

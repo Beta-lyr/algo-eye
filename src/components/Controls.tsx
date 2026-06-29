@@ -1,557 +1,96 @@
 // ============================================================
-// Controls — 底栏控制栏
-// 播放/暂停/单步/速度/数据量/随机/重置
-// store 是唯一状态源，AnimationController 仅负责播放时钟
-// 支持对比模式
+// Controls — 底栏控制栏（组合子组件）
+// 职责：协调引擎时钟 + 键盘快捷键，子组件负责展示
 // ============================================================
 
-import { useRef, useCallback, useEffect, useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useVizStore } from '../store/useVizStore';
 import { useT } from '../i18n';
-import { AnimationController } from '../engine/AnimationController';
-import { dispatchAchievement } from '../lib/achievementEvents';
-import { AchievementsPanel } from './AchievementsPanel';
+import { usePlaybackClock, useKeyboardShortcuts } from '../hooks';
+import { BookmarkBar } from './controls/BookmarkBar';
+import { PlaybackControls } from './controls/PlaybackControls';
+import { DataControls } from './controls/DataControls';
+import { CompareToggle, CompareProgress } from './controls/CompareControls';
+import { ChallengeControls } from './controls/ChallengeControls';
+import { MetaControls } from './controls/MetaControls';
 
 export function Controls() {
   const steps = useVizStore((s) => s.steps);
   const stepIndex = useVizStore((s) => s.stepIndex);
   const playing = useVizStore((s) => s.playing);
-  const speed = useVizStore((s) => s.speed);
-  const data = useVizStore((s) => s.data);
-  const compareMode = useVizStore((s) => s.compareMode);
-  const compareSteps = useVizStore((s) => s.compareSteps);
-  const compareStepIndex = useVizStore((s) => s.compareStepIndex);
-
   const setStepIndex = useVizStore((s) => s.setStepIndex);
   const setPlaying = useVizStore((s) => s.setPlaying);
-  const setSpeed = useVizStore((s) => s.setSpeed);
-  const setData = useVizStore((s) => s.setData);
-  const randomizeData = useVizStore((s) => s.randomizeData);
-  const reset = useVizStore((s) => s.reset);
-  const toggleCompareMode = useVizStore((s) => s.toggleCompareMode);
-  const syncCompareStep = useVizStore((s) => s.syncCompareStep);
-  const getShareUrl = useVizStore((s) => s.getShareUrl);
-  const currentAlgo = useVizStore((s) => s.currentAlgo);
   const manualMode = useVizStore((s) => s.manualMode);
   const toggleManualMode = useVizStore((s) => s.toggleManualMode);
-
-  const bookmarks = useVizStore((s) => s.bookmarks);
-  const toggleBookmark = useVizStore((s) => s.toggleBookmark);
-  const updateBookmarkComment = useVizStore((s) => s.updateBookmarkComment);
-  const exportBookmarks = useVizStore((s) => s.exportBookmarks);
+  const compareMode = useVizStore((s) => s.compareMode);
+  const syncCompareStep = useVizStore((s) => s.syncCompareStep);
   const toggleFocusMode = useVizStore((s) => s.toggleFocusMode);
-  const challengeActive = useVizStore((s) => s.challengeActive);
-  const challengeSwaps = useVizStore((s) => s.challengeSwaps);
-  const challengeStartTime = useVizStore((s) => s.challengeStartTime);
-  const challengeResult = useVizStore((s) => s.challengeResult);
-  const startChallenge = useVizStore((s) => s.startChallenge);
-  const endChallenge = useVizStore((s) => s.endChallenge);
-
   const t = useT();
 
-  // 进度条相关
-  const progressRef = useRef<HTMLDivElement>(null);
-  const seekStep = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const el = progressRef.current;
-    if (!el || steps.length === 0) return;
-    const rect = el.getBoundingClientRect();
-    const ratio = (e.clientX - rect.left) / rect.width;
-    const idx = Math.round(ratio * (steps.length - 1));
-    setStepIndex(Math.max(0, Math.min(steps.length - 1, idx)));
-  }, [steps.length, setStepIndex]);
-
-  const handleExportBookmarks = useCallback(() => {
-    const json = exportBookmarks();
-    navigator.clipboard.writeText(json).then(() => {
-      /* silently succeed */
-    });
-  }, [exportBookmarks]);
-
-  // 书签编辑状态
-  const [editingBookmark, setEditingBookmark] = useState<number | null>(null);
-  const [editText, setEditText] = useState('');
-
-  // AnimationController ref — 仅用于播放时钟
-  const controllerRef = useRef<AnimationController | null>(null);
-  if (!controllerRef.current) {
-    controllerRef.current = new AnimationController();
-  }
-
-  // 同步速度
-  useEffect(() => {
-    controllerRef.current?.setSpeed(speed);
-  }, [speed]);
-
-  // 设置时钟回调：每一步推进 stepIndex
-  useEffect(() => {
-    const ctrl = controllerRef.current;
-    if (!ctrl) return;
-
-    ctrl.onTick(() => {
-      const state = useVizStore.getState();
-
-      // 推进主算法
-      if (state.stepIndex < state.steps.length - 1) {
-        state.setStepIndex(state.stepIndex + 1);
-
-        // 如果是对比模式，同步推进对比算法
-        if (state.compareMode) {
-          state.syncCompareStep();
-        }
-      } else {
-        // 到达末尾，停止播放
-        ctrl.pause();
-        state.setPlaying(false);
-      }
-    });
-
-    return () => {
-      ctrl.onTick(() => {});
-    };
-  }, []);
-
-  // 当 steps 变化时（算法/数据切换），停止播放并重置
-  const stepsRef = useRef(steps);
-  useEffect(() => {
-    if (stepsRef.current !== steps) {
-      stepsRef.current = steps;
-      controllerRef.current?.stop();
-    }
-  }, [steps]);
-
-  // 挑战模式计时器
-  const [elapsed, setElapsed] = useState(0);
-  useEffect(() => {
-    if (!challengeActive) { setElapsed(0); return; }
-    const id = setInterval(() => {
-      setElapsed(Math.floor((performance.now() - challengeStartTime) / 100) * 100);
-    }, 100);
-    return () => clearInterval(id);
-  }, [challengeActive, challengeStartTime]);
-
-  // 快捷键帮助
   const [showShortcuts, setShowShortcuts] = useState(false);
 
-  useEffect(() => {
-    if (showShortcuts) dispatchAchievement('shortcut-king');
-  }, [showShortcuts]);
+  const { stop, controllerRef } = usePlaybackClock();
 
-  // 成就面板
-  const [showAchievements, setShowAchievements] = useState(false);
-
-  // 播放/暂停
   const togglePlay = useCallback(() => {
     const ctrl = controllerRef.current;
     if (!ctrl || steps.length === 0) return;
-
     if (playing) {
       ctrl.pause();
       setPlaying(false);
     } else {
-      // 退出手动模式
       if (manualMode) toggleManualMode();
-      // 如果在末尾，从头开始
-      if (stepIndex >= steps.length - 1) {
-        setStepIndex(0);
-      }
+      if (stepIndex >= steps.length - 1) setStepIndex(0);
       ctrl.play();
       setPlaying(true);
     }
-  }, [playing, steps, stepIndex, setPlaying, setStepIndex, manualMode, toggleManualMode]);
+  }, [playing, steps, stepIndex, setStepIndex, setPlaying, manualMode, toggleManualMode, controllerRef]);
 
-  // 单步前进
   const stepForward = useCallback(() => {
     if (stepIndex < steps.length - 1) {
       setStepIndex(stepIndex + 1);
-      if (compareMode) {
-        syncCompareStep();
-      }
+      if (compareMode) syncCompareStep();
     }
   }, [stepIndex, steps.length, setStepIndex, compareMode, syncCompareStep]);
 
-  // 单步后退
   const stepBack = useCallback(() => {
-    if (stepIndex > 0) {
-      setStepIndex(stepIndex - 1);
-    }
+    if (stepIndex > 0) setStepIndex(stepIndex - 1);
   }, [stepIndex, setStepIndex]);
 
-  // 重置
+  useKeyboardShortcuts({
+    togglePlay,
+    stepBack,
+    stepForward,
+    toggleFocusMode,
+    toggleShortcuts: () => setShowShortcuts((v) => !v),
+  });
+
   const handleReset = useCallback(() => {
-    controllerRef.current?.stop();
+    stop();
     setPlaying(false);
-    reset();
-  }, [reset, setPlaying]);
-
-  // 随机数据
-  const handleRandom = useCallback(() => {
-    controllerRef.current?.stop();
-    setPlaying(false);
-    randomizeData(data.length);
-  }, [randomizeData, data.length, setPlaying]);
-
-  // 速度变更
-  const handleSpeedChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSpeed(Number(e.target.value));
-    },
-    [setSpeed],
-  );
-
-  // 数据量变更
-  const handleCountChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const val = Number(e.target.value);
-      if (val >= 4 && val <= 64) {
-        controllerRef.current?.stop();
-        setPlaying(false);
-        randomizeData(val);
-      }
-    },
-    [randomizeData, setPlaying],
-  );
-
-  // 自定义数据输入
-  const [customInput, setCustomInput] = useState('');
-  const handleCustomData = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key !== 'Enter') return;
-      const raw = customInput.trim();
-      if (!raw) return;
-
-      const parts = raw.split(/[,\s]+/);
-      const nums = parts.map(Number).filter((n) => !isNaN(n));
-
-      if (nums.length >= 4 && nums.length <= 64) {
-        controllerRef.current?.stop();
-        setPlaying(false);
-        setData(nums);
-        setCustomInput('');
-      }
-    },
-    [customInput, setData, setPlaying],
-  );
-
-  // 分享链接
-  const [shareStatus, setShareStatus] = useState<'idle' | 'copied'>('idle');
-  const handleShare = useCallback(() => {
-    const url = getShareUrl();
-    if (url) {
-      navigator.clipboard.writeText(url).then(() => {
-        setShareStatus('copied');
-        setTimeout(() => setShareStatus('idle'), 2000);
-      });
-    }
-  }, [getShareUrl]);
-
-  // 截图
-  const handleScreenshot = useCallback(() => {
-    const canvas = document.querySelector('.viz-stage canvas') as HTMLCanvasElement;
-    if (canvas) {
-      const link = document.createElement('a');
-      link.download = `algo-eye-${currentAlgo?.id ?? 'screenshot'}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    }
-  }, [currentAlgo]);
-
-  const disabled = steps.length === 0;
-  const isAtEnd = stepIndex >= steps.length - 1;
-  const isAtStart = stepIndex === 0;
-
-  // 对比模式进度
-  const compareProgress = compareMode && compareSteps.length > 0
-    ? `${compareStepIndex + 1}/${compareSteps.length}`
-    : '';
-
-  const bmEntries = Object.entries(bookmarks)
-    .map(([s, c]) => ({ step: Number(s), comment: c }))
-    .sort((a, b) => a.step - b.step);
-
-  const pct = steps.length > 1 ? (stepIndex / (steps.length - 1)) * 100 : 0;
-
-  // 键盘快捷键（必须放在所有 useCallback 之后，避免暂时性死区）
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement).tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-
-      if (e.code === 'Space') {
-        e.preventDefault();
-        togglePlay();
-      } else if (e.code === 'ArrowLeft') {
-        e.preventDefault();
-        stepBack();
-      } else if (e.code === 'ArrowRight') {
-        e.preventDefault();
-        stepForward();
-      } else if (e.code === 'KeyF') {
-        e.preventDefault();
-        toggleFocusMode();
-      } else if (e.code === 'Slash' && e.shiftKey) {
-        e.preventDefault();
-        setShowShortcuts((v) => !v);
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [togglePlay, stepBack, stepForward, toggleFocusMode]);
+    useVizStore.getState().reset();
+  }, [stop, setPlaying]);
 
   return (
     <footer className="controls-wrap">
-      {/* 进度条 */}
-      {steps.length > 1 && (
-        <div className="progress-row">
-          <div className="progress-bar" ref={progressRef} onClick={seekStep}>
-            <div className="progress-fill" style={{ width: `${pct}%` }} />
-            {Object.keys(bookmarks).length > 0 && (
-              <div className="bookmark-marks">
-                {bmEntries.map(({ step }) => (
-                  <div
-                    key={step}
-                    className="bm-dot"
-                    style={{ left: `${(step / (steps.length - 1)) * 100}%` }}
-                    title={`Step ${step + 1}${bookmarks[step] ? ': ' + bookmarks[step] : ''}`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-          <span className="progress-label">{stepIndex + 1}/{steps.length}</span>
-          <button
-            className="btn bm-btn"
-            onClick={() => toggleBookmark(stepIndex)}
-            title={bookmarks[stepIndex] !== undefined ? t.controls.bookmarkRemove : t.controls.bookmarkAdd}
-            disabled={disabled}
-          >
-            {bookmarks[stepIndex] !== undefined ? '🔖' : '🏷️'}
-          </button>
-        </div>
-      )}
-
-      {/* 书签列表 */}
-      {bmEntries.length > 0 && (
-        <div className="bookmark-list">
-          {bmEntries.map(({ step, comment }) => (
-            <div key={step} className="bm-item">
-              <span
-                className="bm-step"
-                onClick={() => setStepIndex(step)}
-              >
-                #{step + 1}
-              </span>
-              {editingBookmark === step ? (
-                <input
-                  className="bm-input"
-                  value={editText}
-                  onChange={(e) => setEditText(e.target.value)}
-                  onBlur={() => {
-                    updateBookmarkComment(step, editText);
-                    setEditingBookmark(null);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      updateBookmarkComment(step, editText);
-                      setEditingBookmark(null);
-                    }
-                    if (e.key === 'Escape') setEditingBookmark(null);
-                  }}
-                  autoFocus
-                />
-              ) : (
-                <span
-                  className="bm-comment"
-                  onClick={() => {
-                    setEditingBookmark(step);
-                    setEditText(comment);
-                  }}
-                >
-                  {comment || t.controls.bookmarkPlaceholder}
-                </span>
-              )}
-              <button className="btn bm-del" onClick={() => toggleBookmark(step)}>
-                ✕
-              </button>
-            </div>
-          ))}
-          {bmEntries.length > 0 && (
-            <button className="btn bm-export" onClick={handleExportBookmarks}>
-              {t.controls.export}
-            </button>
-          )}
-        </div>
-      )}
+      <BookmarkBar />
 
       <div className="controls">
-        {/* 对比模式开关 */}
-        <button
-          className={`btn ${compareMode ? 'primary' : ''}`}
-          onClick={toggleCompareMode}
-          title={t.controls.compareMode}
-        >
-          {compareMode ? `⇔ ${t.controls.compareMode}` : '⇔'}
-        </button>
+        <CompareToggle />
 
-        {/* 手动模式开关 */}
-        <button
-          className={`btn ${manualMode ? 'primary' : ''}`}
-          onClick={toggleManualMode}
-          title={t.controls.manualMode}
-          disabled={currentAlgo?.dataKind !== 'array' || challengeActive}
-        >
-          ✋ {manualMode ? t.controls.manualMode : ''}
-        </button>
+        <ChallengeControls />
 
-        {/* 挑战模式 */}
-        {challengeActive ? (
-          <div className="challenge-badge">
-            {t.controls.challengeResultTime.replace('{t}', (elapsed / 1000).toFixed(1)).replace('{n}', String(challengeSwaps))}
-            <button className="btn" onClick={endChallenge}>✕ {t.controls.challengeExit}</button>
-          </div>
-        ) : (
-          <button
-            className={`btn ${challengeResult ? 'primary' : ''}`}
-            onClick={startChallenge}
-            title={t.controls.challengeMode}
-            disabled={currentAlgo?.dataKind !== 'array'}
-          >
-            ⚔ {t.controls.challengeMode}
-          </button>
-        )}
+        <PlaybackControls togglePlay={togglePlay} stepForward={stepForward} stepBack={stepBack} />
 
-        {/* 挑战结果 */}
-        {challengeResult && !challengeActive && (
-          <div className="challenge-result">
-            {t.controls.challengeResultTime.replace('{t}', (challengeResult.userTimeMs / 1000).toFixed(1)).replace('{n}', String(challengeResult.userSwaps))}
-            <span className="vs">vs</span>
-            {t.controls.challengeResultAlgo.replace('{s}', String(challengeResult.algoSwaps)).replace('{c}', String(challengeResult.algoCompares))}
-          </div>
-        )}
+        <DataControls />
 
-        {/* 播放控制 */}
-        <div className="ctrl-group">
-          <button
-            className="btn"
-            disabled={disabled || isAtStart}
-            onClick={stepBack}
-            title={t.controls.prev}
-          >
-            ⏮
-          </button>
-          <button
-            className="btn primary"
-            disabled={disabled}
-            onClick={togglePlay}
-            title={playing ? t.controls.pause : t.controls.play}
-          >
-            {playing ? '⏸' : '▶'}
-          </button>
-          <button
-            className="btn"
-            disabled={disabled || isAtEnd}
-            onClick={stepForward}
-            title={t.controls.next}
-          >
-            ⏭
-          </button>
-        </div>
+        <CompareProgress />
 
-        {/* 速度 */}
-        <div className="speed">
-          <label>{t.controls.speed}</label>
-          <input
-            type="range"
-            min={1}
-            max={10}
-            value={speed}
-            onChange={handleSpeedChange}
-          />
-          <span className="val">{speed}×</span>
-        </div>
+        <MetaControls showShortcuts={showShortcuts} setShowShortcuts={setShowShortcuts} />
 
-        {/* 数据量 */}
-        <div className="ctrl-group">
-          <label>{t.controls.dataSize}</label>
-          <input
-            className="num-input"
-            type="number"
-            value={data.length}
-            min={4}
-            max={64}
-            onChange={handleCountChange}
-          />
-        </div>
-
-        {/* 随机数据 */}
-        <button className="btn" onClick={handleRandom}>
-          {t.controls.randomData}
-        </button>
-
-        {/* 自定义数据 */}
-        <input
-          className="data-input"
-          placeholder={t.controls.customData.replace('{data}', data.join(','))}
-          value={customInput}
-          onChange={(e) => setCustomInput(e.target.value)}
-          onKeyDown={handleCustomData}
-        />
-
-        <div className="spacer" />
-
-        {/* 对比模式进度 */}
-        {compareMode && compareProgress && (
-          <span className="compare-progress">
-            vs: {compareProgress}
-          </span>
-        )}
-
-        {/* 截图 */}
-        <button className="btn" onClick={handleScreenshot} title={t.controls.screenshot}>
-          {t.controls.screenshot}
-        </button>
-
-        {/* 分享 */}
-        <button className="btn" onClick={handleShare} title={t.controls.share}>
-          {shareStatus === 'copied' ? t.controls.copied : t.controls.share}
-        </button>
-
-        {/* 成就 */}
-        <button className="btn" onClick={() => setShowAchievements((v) => !v)} title={t.controls.achievements}>
-          [*]
-        </button>
-
-        {/* 快捷键帮助 */}
-        <button className="btn" onClick={() => setShowShortcuts((v) => !v)} title={t.controls.shortcuts}>
-          ⌨
-        </button>
-
-        {/* 重置 */}
         <button className="btn" onClick={handleReset}>
           {t.controls.reset}
         </button>
       </div>
-
-      {/* 成就面板 */}
-      {showAchievements && <AchievementsPanel onClose={() => setShowAchievements(false)} />}
-
-      {/* 快捷键帮助面板 */}
-      {showShortcuts && (
-        <div className="shortcuts-overlay" onClick={() => setShowShortcuts(false)}>
-          <div className="shortcuts-panel" onClick={(e) => e.stopPropagation()}>
-            <div className="shortcuts-hd">
-              ⌨ {t.controls.shortcutPanel}
-              <span className="close" onClick={() => setShowShortcuts(false)}>✕</span>
-            </div>
-            <div className="shortcuts-body">
-              <div className="shortcut-row"><kbd>Space</kbd><span>{t.controls.shortcutPlay}</span></div>
-              <div className="shortcut-row"><kbd>←</kbd><span>{t.controls.shortcutPrev}</span></div>
-              <div className="shortcut-row"><kbd>→</kbd><span>{t.controls.shortcutNext}</span></div>
-              <div className="shortcut-row"><kbd>F</kbd><span>{t.controls.shortcutFocus}</span></div>
-              <div className="shortcut-row"><kbd>?</kbd><span>{t.controls.shortcutPanelToggle}</span></div>
-            </div>
-          </div>
-        </div>
-      )}
     </footer>
   );
 }
