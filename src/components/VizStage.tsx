@@ -318,6 +318,13 @@ export function VizStage() {
           >
             {focusMode ? '⊞' : '⊟'}
           </span>
+          <span
+            className="badge focus-btn"
+            onClick={() => { if (document.fullscreenElement) { document.exitFullscreen(); } else { document.documentElement.requestFullscreen(); } }}
+            title="全屏"
+          >
+            ⛶
+          </span>
         </div>
 
         {/* 分屏画布 */}
@@ -409,6 +416,13 @@ export function VizStage() {
             title="焦点模式"
           >
             {focusMode ? '⊞' : '⊟'}
+          </span>
+          <span
+            className="badge focus-btn"
+            onClick={() => { if (document.fullscreenElement) { document.exitFullscreen(); } else { document.documentElement.requestFullscreen(); } }}
+            title="全屏"
+          >
+            ⛶
           </span>
         </div>
       </div>
