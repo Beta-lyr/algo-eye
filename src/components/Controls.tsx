@@ -139,33 +139,6 @@ export function Controls() {
   // 成就面板
   const [showAchievements, setShowAchievements] = useState(false);
 
-  // 键盘快捷键
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement).tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-
-      if (e.code === 'Space') {
-        e.preventDefault();
-        togglePlay();
-      } else if (e.code === 'ArrowLeft') {
-        e.preventDefault();
-        stepBack();
-      } else if (e.code === 'ArrowRight') {
-        e.preventDefault();
-        stepForward();
-      } else if (e.code === 'KeyF') {
-        e.preventDefault();
-        toggleFocusMode();
-      } else if (e.code === 'Slash' && e.shiftKey) {
-        e.preventDefault();
-        setShowShortcuts((v) => !v);
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [togglePlay, stepBack, stepForward, toggleFocusMode]);
-
   // 播放/暂停
   const togglePlay = useCallback(() => {
     const ctrl = controllerRef.current;
@@ -296,6 +269,33 @@ export function Controls() {
     .sort((a, b) => a.step - b.step);
 
   const pct = steps.length > 1 ? (stepIndex / (steps.length - 1)) * 100 : 0;
+
+  // 键盘快捷键（必须放在所有 useCallback 之后，避免暂时性死区）
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement).tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePlay();
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        stepBack();
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        stepForward();
+      } else if (e.code === 'KeyF') {
+        e.preventDefault();
+        toggleFocusMode();
+      } else if (e.code === 'Slash' && e.shiftKey) {
+        e.preventDefault();
+        setShowShortcuts((v) => !v);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [togglePlay, stepBack, stepForward, toggleFocusMode]);
 
   return (
     <footer className="controls-wrap">
