@@ -3,7 +3,7 @@
 // 用 Prism.js 高亮代码，当前执行行琥珀高亮
 // ============================================================
 
-import { useMemo } from 'react';
+import { useMemo, useRef, useEffect } from 'react';
 import Prism from 'prismjs';
 import { useVizStore } from '../store/useVizStore';
 import { useT, useTranslateMessage } from '../i18n';
@@ -31,6 +31,25 @@ export function CodePanel() {
     return highlightCode(currentAlgo.codeLines);
   }, [currentAlgo]);
 
+  const codeRef = useRef<HTMLDivElement>(null);
+  const currentStep = steps[stepIndex];
+  const currentLine = currentStep?.line ?? 0;
+
+  // 自动滚动到当前行
+  useEffect(() => {
+    const el = codeRef.current;
+    if (!el || currentLine === 0) return;
+    const target = el.querySelector(`.ln.cur`) as HTMLElement | null;
+    if (!target) return;
+    const containerTop = el.scrollTop;
+    const containerBottom = containerTop + el.clientHeight;
+    const targetTop = target.offsetTop;
+    const targetBottom = targetTop + target.offsetHeight;
+    if (targetTop < containerTop || targetBottom > containerBottom) {
+      target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  }, [currentLine]);
+
   if (!currentAlgo || steps.length === 0) {
     return (
       <aside className="pane right">
@@ -52,15 +71,12 @@ export function CodePanel() {
     );
   }
 
-  const currentStep = steps[stepIndex];
-  const currentLine = currentStep?.line ?? 0;
-
   return (
     <aside className="pane right">
       <div className="pane-hd">
         {t.code.title} <span className="hint">{t.code.line} {currentLine || '—'}</span>
       </div>
-      <div className="code">
+      <div className="code" ref={codeRef}>
         {highlightedLines.map((html, i) => {
           const lineNum = i + 1; // 1-based
           const isCurrent = lineNum === currentLine;
