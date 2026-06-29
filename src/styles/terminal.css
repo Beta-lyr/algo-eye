@@ -323,6 +323,15 @@ img {
   min-height: 0;
 }
 
+.main.focus > .pane:first-child,
+.main.focus > .pane:last-child {
+  display: none;
+}
+
+.main.focus {
+  grid-template-columns: 0 1fr 0;
+}
+
 .pane {
   background: var(--bg-panel);
   border-right: 1px solid var(--border);
@@ -1325,6 +1334,17 @@ img {
   color: var(--amber);
   border-color: var(--amber);
   text-shadow: var(--glow-amber);
+}
+
+.focus-btn {
+  cursor: pointer;
+  user-select: none;
+}
+
+.focus-btn:hover {
+  color: var(--amber);
+  border-color: var(--amber);
+  box-shadow: var(--glow-amber);
 }
 
 /* ===== 响应式 ===== */

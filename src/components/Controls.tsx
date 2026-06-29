@@ -37,6 +37,7 @@ export function Controls() {
   const toggleBookmark = useVizStore((s) => s.toggleBookmark);
   const updateBookmarkComment = useVizStore((s) => s.updateBookmarkComment);
   const exportBookmarks = useVizStore((s) => s.exportBookmarks);
+  const toggleFocusMode = useVizStore((s) => s.toggleFocusMode);
 
   const t = useT();
 
@@ -125,11 +126,14 @@ export function Controls() {
       } else if (e.code === 'ArrowRight') {
         e.preventDefault();
         stepForward();
+      } else if (e.code === 'KeyF') {
+        e.preventDefault();
+        toggleFocusMode();
       }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [togglePlay, stepBack, stepForward]);
+  }, [togglePlay, stepBack, stepForward, toggleFocusMode]);
 
   // 播放/暂停
   const togglePlay = useCallback(() => {

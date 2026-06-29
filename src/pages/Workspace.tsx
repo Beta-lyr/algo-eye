@@ -20,6 +20,7 @@ export function Workspace() {
   const algorithms = useVizStore((s) => s.algorithms);
   const error = useVizStore((s) => s.error);
   const clearError = useVizStore((s) => s.clearError);
+  const focusMode = useVizStore((s) => s.focusMode);
 
   // 从 URL 参数加载状态
   useEffect(() => {
@@ -41,7 +42,7 @@ export function Workspace() {
       )}
       <div className="app">
         <Topbar />
-        <div className="main">
+        <div className={`main${focusMode ? ' focus' : ''}`}>
           <AlgorithmTree />
           <VizStage />
           <CodePanel />

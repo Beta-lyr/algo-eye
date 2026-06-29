@@ -177,6 +177,9 @@ export function VizStage() {
   const selectIndex = useVizStore((s) => s.selectIndex);
   const data = useVizStore((s) => s.data);
 
+  const focusMode = useVizStore((s) => s.focusMode);
+  const toggleFocusMode = useVizStore((s) => s.toggleFocusMode);
+
   const compareMode = useVizStore((s) => s.compareMode);
   const compareAlgo = useVizStore((s) => s.compareAlgo);
   const compareSteps = useVizStore((s) => s.compareSteps);
@@ -288,6 +291,13 @@ export function VizStage() {
               </option>
             ))}
           </select>
+          <span
+            className="badge focus-btn"
+            onClick={toggleFocusMode}
+            title="焦点模式"
+          >
+            {focusMode ? '⊞' : '⊟'}
+          </span>
         </div>
 
         {/* 分屏画布 */}
@@ -373,6 +383,13 @@ export function VizStage() {
           <Link to={`/algo/${currentAlgo.id}/learn`} className="badge learn-link">
             📖 讲解
           </Link>
+          <span
+            className="badge focus-btn"
+            onClick={toggleFocusMode}
+            title="焦点模式"
+          >
+            {focusMode ? '⊞' : '⊟'}
+          </span>
         </div>
       </div>
 

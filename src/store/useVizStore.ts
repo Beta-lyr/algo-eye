@@ -34,6 +34,10 @@ export interface VizState {
   compareCount: number;
   swapCount: number;
 
+  // ===== 焦点模式 =====
+  /** 是否隐藏侧栏和代码面板 */
+  focusMode: boolean;
+
   // ===== 错误状态 =====
   /** 算法执行错误信息 */
   error: string | null;
@@ -90,6 +94,8 @@ export interface VizState {
   randomizeData: (count: number) => void;
   /** 重置到初始状态 */
   reset: () => void;
+  /** 切换焦点模式 */
+  toggleFocusMode: () => void;
   /** 清除错误 */
   clearError: () => void;
   /** 切换对比模式 */
@@ -139,6 +145,9 @@ export const useVizStore = create<VizState>((set, get) => {
   compareCount: 0,
   swapCount: 0,
 
+  // ===== 焦点模式初始值 =====
+  focusMode: false,
+
   // ===== 错误状态初始值 =====
   error: null,
 
@@ -180,6 +189,8 @@ export const useVizStore = create<VizState>((set, get) => {
     const { bookmarks, currentAlgo, data } = get();
     return JSON.stringify({ algorithm: currentAlgo?.id, data, bookmarks }, null, 2);
   },
+
+  toggleFocusMode: () => set((s) => ({ focusMode: !s.focusMode })),
 
   toggleManualMode: () => {
     const { manualMode } = get();
