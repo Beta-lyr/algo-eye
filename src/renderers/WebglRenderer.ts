@@ -11,9 +11,10 @@ const BAR_COLORS: Record<ElementState, [number, number, number]> = {
   compare: [1, 0.69, 0],
   current: [0.2, 1, 0.4],
   visit: [0.7, 0.53, 1],
-  swapping: [1, 0.33, 0.33],
+  swap: [1, 0.33, 0.33],
   sorted: [0, 0.9, 0.46],
   path: [0, 0.9, 0.46],
+  pivot: [1, 0.69, 0],
 };
 
 const VS = `#version 100
