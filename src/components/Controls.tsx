@@ -507,17 +507,17 @@ export function Controls() {
 
         {/* 截图 */}
         <button className="btn" onClick={handleScreenshot} title="截图">
-          📷
+          [截图]
         </button>
 
         {/* 分享 */}
         <button className="btn" onClick={handleShare} title="分享链接">
-          {shareStatus === 'copied' ? '✓ 已复制' : '🔗 分享'}
+          {shareStatus === 'copied' ? '[已复制]' : '[链接] 分享'}
         </button>
 
         {/* 成就 */}
         <button className="btn" onClick={() => setShowAchievements((v) => !v)} title="成就">
-          🏆
+          [*]
         </button>
 
         {/* 快捷键帮助 */}

@@ -196,7 +196,7 @@ export const bellmanFord: Algorithm = {
       yield {
         type: 'done',
         line: 17,
-        message: `✓ 最短路径距离 = ${targetDist}`,
+        message: `是 最短路径距离 = ${targetDist}`,
         snapshot: gridSnap(gridData, cols, states, start, target),
       };
     } else {

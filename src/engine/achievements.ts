@@ -21,8 +21,8 @@ export const ALL_ACHIEVEMENTS: Achievement[] = [
   { id: 'ds-expert', name: '数据结构专家', desc: '查看全部 6 个数据结构算法', icon: '⎔' },
   { id: 'string-theorist', name: '字符串理论家', desc: '查看全部 3 个字符串算法', icon: '⌨' },
   { id: 'dp-wizard', name: 'DP 魔法师', desc: '查看全部 3 个动态规划算法', icon: '▤' },
-  { id: 'speed-runner', name: '竞速者', desc: '完成一次挑战模式', icon: '⚡' },
-  { id: 'bookworm', name: '书虫', desc: '查看任意算法的讲解页面', icon: '📖' },
+  { id: 'speed-runner', name: '竞速者', desc: '完成一次挑战模式', icon: '!' },
+  { id: 'bookworm', name: '书虫', desc: '查看任意算法的讲解页面', icon: '▸' },
   { id: 'shortcut-king', name: '快捷键之王', desc: '打开快捷键帮助面板', icon: '⌨' },
   { id: 'all-seeing', name: '全视之眼', desc: '查看全部 36 个算法', icon: '◎' },
 ];

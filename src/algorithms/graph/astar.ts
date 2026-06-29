@@ -164,7 +164,7 @@ export const astar: Algorithm = {
         yield {
           type: 'done',
           line: 11,
-          message: `✓ 找到最短路径！长度 ${pathIndices.length} 步，f=${minF}`,
+          message: `是 找到最短路径！长度 ${pathIndices.length} 步，f=${minF}`,
           snapshot: gridSnap(gridData, cols, states, start, target),
         };
         return;

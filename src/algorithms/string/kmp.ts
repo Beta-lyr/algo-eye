@@ -187,7 +187,7 @@ export const kmp: Algorithm = {
             type: 'mark',
             indices: [matchIdx],
             line: 8,
-            message: `✓ 找到匹配！位置=${matchIdx}`,
+            message: `是 找到匹配！位置=${matchIdx}`,
             snapshot: snap(text, pattern, matchTextStates, (() => {
               const s: Record<number, ElementState> = {};
               for (let k = 0; k < m; k++) s[k] = 'path';

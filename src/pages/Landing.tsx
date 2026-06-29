@@ -21,11 +21,11 @@ const CATEGORY_KEYS: AlgorithmCategory[] = [
 
 const CATEGORY_ICONS: Record<AlgorithmCategory, string> = {
   sorting: '↕',
-  searching: '🔍',
+  searching: '⌕',
   graph: '◈',
   'data-structure': '⊞',
   string: 'Aa',
-  'dynamic-programming': '📊',
+  'dynamic-programming': '▤',
 };
 
 export function Landing() {

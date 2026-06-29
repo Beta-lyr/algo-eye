@@ -70,7 +70,7 @@ export const exponentialSearch: Algorithm = {
         type: 'mark',
         indices: [0],
         line: 2,
-        message: `✓ 找到目标！arr[0] = ${target}`,
+        message: `是 找到目标！arr[0] = ${target}`,
         snapshot: snap(arr, { [0]: 'path' }, { [0]: 'found' }),
       };
 
@@ -136,7 +136,7 @@ export const exponentialSearch: Algorithm = {
           type: 'mark',
           indices: [mid],
           line: 13,
-          message: `✓ 找到目标！arr[${mid}] = ${target}`,
+          message: `是 找到目标！arr[${mid}] = ${target}`,
           snapshot: snap(arr, { [mid]: 'path' }, { [mid]: 'found' }),
         };
 

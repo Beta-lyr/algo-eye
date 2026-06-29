@@ -127,7 +127,7 @@ export const floydWarshall: Algorithm = {
             yield {
               type: 'set',
               line: 6,
-              message: `✓ 更新 dist[${i}][${j}] = ${newDist}`,
+              message: `是 更新 dist[${i}][${j}] = ${newDist}`,
               snapshot: dpSnap(dist, s, labels),
             };
           }

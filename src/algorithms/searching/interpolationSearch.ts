@@ -86,7 +86,7 @@ export const interpolationSearch: Algorithm = {
           type: 'mark',
           indices: [pos],
           line: 7,
-          message: `✓ 找到目标！arr[${pos}] = ${target}`,
+          message: `是 找到目标！arr[${pos}] = ${target}`,
           snapshot: snap(arr, { [pos]: 'path' }, { [pos]: 'found' }),
         };
 

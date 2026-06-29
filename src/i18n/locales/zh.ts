@@ -73,8 +73,8 @@ export const zh: Record<string, any> = {
     space: '空间',
     stable: '稳定',
     inPlace: '原地',
-    yes: '✓',
-    no: '✗',
+    yes: '是',
+    no: '否',
   },
 
   // 图例

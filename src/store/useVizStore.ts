@@ -343,15 +343,15 @@ export const useVizStore = create<VizState>((set, get) => {
           compareCount,
           swapCount,
           selectedIndices: [],
-          hintMessage: newIndex >= steps.length - 1 ? '🎉 已完成所有步骤！' : '✓ 正确！',
+          hintMessage: newIndex >= steps.length - 1 ? '已完成所有步骤！' : '是 正确！',
         });
       } else {
-        set({ selectedIndices: [], hintMessage: '🎉 已完成所有步骤！' });
+        set({ selectedIndices: [], hintMessage: '已完成所有步骤！' });
       }
     } else {
       set({
         selectedIndices: [],
-        hintMessage: `✗ 应为下标 [${sortedStep.join(', ')}] 的操作，请重试`,
+        hintMessage: `否 应为下标 [${sortedStep.join(', ')}] 的操作，请重试`,
       });
     }
   },

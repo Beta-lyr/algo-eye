@@ -360,7 +360,7 @@ export function VizStage() {
     } else {
       drawCanvas(canvas, step, selectedIndices);
     }
-  }, [steps, stepIndex, selectedIndices, currentAlgo, challengeActive, challengeData, challengeSel]);
+  }, [steps, stepIndex, selectedIndices, currentAlgo, challengeActive, challengeData, challengeSel, compareMode]);
 
   // 卸载时清理 RAF
   useEffect(() => {
@@ -533,7 +533,7 @@ export function VizStage() {
             {t.viz.inPlace} <b>{t.viz.yes}</b>
           </span>
           <Link to={`/algo/${currentAlgo.id}/learn`} className="badge learn-link">
-            📖 讲解
+            ▸ 讲解
           </Link>
           <span
             className="badge focus-btn"
@@ -578,7 +578,7 @@ export function VizStage() {
         <div className="manual-hint">
           {hintMessage || (
             selectedIndices.length === 0
-              ? `🔍 ${translateMsg(steps[stepIndex]?.message ?? '').slice(0, 36)} — 请点击对应的柱体`
+              ? `⌕ ${translateMsg(steps[stepIndex]?.message ?? '').slice(0, 36)} — 请点击对应的柱体`
               : `已选中 [${selectedIndices.join(', ')}]，请选择另一个`
           )}
         </div>

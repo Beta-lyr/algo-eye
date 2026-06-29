@@ -183,7 +183,7 @@ export const rabinKarp: Algorithm = {
             type: 'mark',
             indices: [i],
             line: 18,
-            message: `✓ 找到匹配！位置=${i}`,
+            message: `是 找到匹配！位置=${i}`,
             snapshot: snap(text, pattern, matchTextStates, (() => {
               const s: Record<number, ElementState> = {};
               for (let k = 0; k < m; k++) s[k] = 'path';

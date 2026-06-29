@@ -136,7 +136,7 @@ export const jumpSearch: Algorithm = {
         type: 'mark',
         indices: [prev],
         line: 13,
-        message: `✓ 找到目标！arr[${prev}] = ${target}`,
+        message: `是 找到目标！arr[${prev}] = ${target}`,
         snapshot: snap(arr, { [prev]: 'path' }, { [prev]: 'found' }),
       };
 

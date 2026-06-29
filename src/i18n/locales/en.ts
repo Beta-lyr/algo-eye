@@ -73,8 +73,8 @@ export const en: Record<string, any> = {
     space: 'Space',
     stable: 'Stable',
     inPlace: 'In-place',
-    yes: '✓',
-    no: '✗',
+    yes: 'Y',
+    no: 'N',
   },
 
   // Legend

@@ -70,7 +70,7 @@ export const linearSearch: Algorithm = {
           type: 'mark',
           indices: [i],
           line: 3,
-          message: `✓ 找到目标！arr[${i}] = ${target}`,
+          message: `是 找到目标！arr[${i}] = ${target}`,
           snapshot: snap(arr, { [i]: 'path' }, { [i]: 'found' }),
         };
 

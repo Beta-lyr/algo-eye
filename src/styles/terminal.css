@@ -1824,6 +1824,125 @@ img {
   flex-shrink: 0;
 }
 
+/* ===== About 页面 ===== */
+.about-page {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--green);
+  display: flex;
+  flex-direction: column;
+}
+
+.about-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: var(--bg-panel-raised);
+  border-bottom: 1px solid var(--border);
+}
+
+.about-title {
+  font-family: var(--term);
+  font-size: 16px;
+  color: var(--green);
+  text-shadow: var(--glow-green);
+}
+
+.about-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.about-sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding: 16px 0;
+  background: var(--bg-panel);
+}
+
+.about-nav-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--green-dim);
+  transition: 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.about-nav-item:hover {
+  color: var(--green);
+  background: rgba(51, 255, 102, 0.04);
+}
+
+.about-nav-item.active {
+  color: var(--green);
+  border-left-color: var(--green);
+  background: rgba(51, 255, 102, 0.06);
+  text-shadow: var(--glow-green);
+}
+
+.about-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 48px;
+  max-width: 800px;
+}
+
+.about-article h1 {
+  font-family: var(--term);
+  font-size: 22px;
+  color: var(--green);
+  text-shadow: var(--glow-green);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.about-article h2 {
+  font-family: var(--term);
+  font-size: 16px;
+  color: var(--amber);
+  margin-top: 28px;
+  margin-bottom: 12px;
+}
+
+.about-article h3 {
+  font-family: var(--term);
+  font-size: 14px;
+  color: var(--green);
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+.about-article p {
+  font-size: 13px;
+  color: var(--green-dim);
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+
+.about-article .about-li {
+  font-size: 13px;
+  color: var(--green-dim);
+  line-height: 1.6;
+  margin-left: 20px;
+  list-style: none;
+}
+
+.about-article .about-li::before {
+  content: '› ';
+  color: var(--amber);
+}
+
+.about-article br {
+  display: block;
+  content: '';
+  margin: 4px 0;
+}
+
 /* ===== 响应式 ===== */
 @media (max-width: 980px) {
   .main {
@@ -2007,14 +2126,14 @@ img {
 }
 
 .use-cases-list li::before {
-  content: '✓';
+  content: '+';
   position: absolute;
   left: 0;
   color: var(--green-soft);
 }
 
 .pitfalls-list li::before {
-  content: '✗';
+  content: '-';
   position: absolute;
   left: 0;
   color: var(--red);

@@ -7,7 +7,7 @@ export function AchievementsPanel({ onClose }: { onClose: () => void }) {
     <div className="shortcuts-overlay" onClick={onClose}>
       <div className="ach-panel" onClick={(e) => e.stopPropagation()}>
         <div className="shortcuts-hd">
-          <span>🏆 成就 ({unlocked.size}/{ALL_ACHIEVEMENTS.length})</span>
+          <span>[*] 成就 ({unlocked.size}/{ALL_ACHIEVEMENTS.length})</span>
           <span className="close" onClick={onClose}>✕</span>
         </div>
         <div className="ach-grid">

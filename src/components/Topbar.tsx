@@ -2,6 +2,7 @@
 // Topbar — 顶栏（logo + 导航 + 状态）
 // ============================================================
 
+import { Link } from 'react-router-dom';
 import { useVizStore } from '../store/useVizStore';
 import { useT } from '../i18n';
 import { LanguageSwitch } from './LanguageSwitch';
@@ -44,7 +45,7 @@ export function Topbar() {
             {t.nav[key]}
           </a>
         ))}
-        <a href="#">{t.common.about}</a>
+        <Link to="/about">{t.common.about}</Link>
       </nav>
       <div className="status">
         <span className="dot" />

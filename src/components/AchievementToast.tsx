@@ -41,7 +41,7 @@ function ToastInner({
     <div className={`ach-toast${visible ? ' show' : ''}`}>
       <div className="ach-toast-icon">{achievement.icon}</div>
       <div className="ach-toast-body">
-        <div className="ach-toast-title">🏆 成就解锁！</div>
+        <div className="ach-toast-title">[*] 成就解锁！</div>
         <div className="ach-toast-name">{achievement.name}</div>
         <div className="ach-toast-desc">{achievement.desc}</div>
       </div>

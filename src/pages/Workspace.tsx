@@ -48,7 +48,7 @@ export function Workspace() {
       <CrtOverlay />
       {error && (
         <div className="error-banner">
-          <span>⚠ {error}</span>
+          <span>! {error}</span>
           <button className="btn" onClick={clearError}>✕</button>
         </div>
       )}

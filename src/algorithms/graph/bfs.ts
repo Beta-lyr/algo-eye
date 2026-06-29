@@ -133,7 +133,7 @@ export const bfs: Algorithm = {
         yield {
           type: 'done',
           line: 8,
-          message: `✓ 找到最短路径！长度 ${pathIndices.length} 步`,
+          message: `是 找到最短路径！长度 ${pathIndices.length} 步`,
           snapshot: gridSnap(gridData, cols, states, start, target),
         };
         return;

@@ -150,7 +150,7 @@ export const dijkstra: Algorithm = {
         yield {
           type: 'done',
           line: 10,
-          message: `✓ 找到最短路径！总权重 ${d}，长度 ${pathIndices.length} 步`,
+          message: `是 找到最短路径！总权重 ${d}，长度 ${pathIndices.length} 步`,
           snapshot: gridSnap(gridData, cols, states, start, target),
         };
         return;

@@ -178,7 +178,7 @@ export const binarySearchTree: Algorithm = {
         yield {
           type: 'mark',
           line: 17,
-          message: `✓ 找到目标！节点值 = ${searchTarget}`,
+          message: `是 找到目标！节点值 = ${searchTarget}`,
           snapshot: treeSnap(root, { ...nodeStates, [curr.id]: 'path' }, insertedValues),
         };
         break;

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Landing } from './pages/Landing';
 import { Workspace } from './pages/Workspace';
 import { Learn } from './pages/Learn';
+import { About } from './pages/About';
 
 function App() {
   return (
@@ -13,6 +14,8 @@ function App() {
         <Route path="/algo/:id" element={<Workspace />} />
         {/* 算法讲解页面 */}
         <Route path="/algo/:id/learn" element={<Learn />} />
+        {/* 关于页面 */}
+        <Route path="/about" element={<About />} />
         {/* 默认路由 */}
         <Route path="*" element={<Workspace />} />
       </Routes>

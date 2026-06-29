@@ -185,7 +185,7 @@ export const hashTable: Algorithm = {
         yield {
           type: 'mark',
           line: 20,
-          message: `✓ 找到！key=${searchTarget}，value=${curr.value}`,
+          message: `是 找到！key=${searchTarget}，value=${curr.value}`,
           snapshot: hashSnap(table, hashTableStates, insertedKeys),
         };
         break;

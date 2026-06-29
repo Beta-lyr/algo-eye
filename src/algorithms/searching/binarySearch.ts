@@ -82,7 +82,7 @@ export const binarySearch: Algorithm = {
           type: 'mark',
           indices: [mid],
           line: 4,
-          message: `✓ 找到目标！arr[${mid}] = ${target}`,
+          message: `是 找到目标！arr[${mid}] = ${target}`,
           snapshot: snap(arr, { [mid]: 'path' }, { [mid]: 'found' }),
         };
 

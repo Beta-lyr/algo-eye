@@ -125,7 +125,7 @@ export const boyerMoore: Algorithm = {
           type: 'mark',
           indices: [shift],
           line: 9,
-          message: `✓ 找到匹配！位置=${shift}`,
+          message: `是 找到匹配！位置=${shift}`,
           snapshot: snap(text, pattern, matchTextStates, (() => {
             const s: Record<number, ElementState> = {};
             for (let k = 0; k < m; k++) s[k] = 'path';

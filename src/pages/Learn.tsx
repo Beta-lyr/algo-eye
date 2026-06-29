@@ -134,7 +134,7 @@ export function Learn() {
         {/* 适用场景 */}
         <section className="learn-section">
           <h2 className="section-title">
-            <span className="section-icon">✓</span>
+            <span className="section-icon">是</span>
             适用场景
           </h2>
           <div className="section-body">
@@ -149,7 +149,7 @@ export function Learn() {
         {/* 常见误用 */}
         <section className="learn-section">
           <h2 className="section-title">
-            <span className="section-icon">✗</span>
+            <span className="section-icon">否</span>
             常见误用
           </h2>
           <div className="section-body">

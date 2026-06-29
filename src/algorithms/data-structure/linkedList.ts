@@ -208,7 +208,7 @@ export const linkedList: Algorithm = {
         yield {
           type: 'mark',
           line: 25,
-          message: `✓ 找到目标！${searchTarget} 在索引 ${index}`,
+          message: `是 找到目标！${searchTarget} 在索引 ${index}`,
           snapshot: listSnap(head, nodeStates, values),
         };
         break;

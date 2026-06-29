@@ -517,12 +517,12 @@ const REGEX_PATTERNS: Array<{
       en: 'arr[$1] = $2 > $3, search left half',
     },
   },
-  // ✓ 找到目标！arr[X] = Y
+  // 是 找到目标！arr[X] = Y
   {
-    pattern: /✓ 找到目标！arr\[(\d+)\] = (\d+)/,
+    pattern: /是 找到目标！arr\[(\d+)\] = (\d+)/,
     replacement: {
-      zh: '✓ 找到目标！arr[$1] = $2',
-      en: '✓ Target found! arr[$1] = $2',
+      zh: '是 找到目标！arr[$1] = $2',
+      en: '是 Target found! arr[$1] = $2',
     },
   },
   // ===== AVL 树 =====
@@ -638,12 +638,12 @@ const REGEX_PATTERNS: Array<{
       en: 'k=$1：dist[$2][$3]=$4 vs dist[$5][$6]+dist[$7][$8]=$9',
     },
   },
-  // ✓ 更新 dist[i][j] = X
+  // 是 更新 dist[i][j] = X
   {
-    pattern: /✓ 更新 dist\[(\d+)\]\[(\d+)\] = (\d+)/,
+    pattern: /是 更新 dist\[(\d+)\]\[(\d+)\] = (\d+)/,
     replacement: {
-      zh: '✓ 更新 dist[$1][$2] = $3',
-      en: '✓ Update dist[$1][$2] = $3',
+      zh: '是 更新 dist[$1][$2] = $3',
+      en: '是 Update dist[$1][$2] = $3',
     },
   },
 ];
