@@ -51,6 +51,8 @@ export const dijkstra: Algorithm = {
   name: 'Dijkstra 算法',
   category: 'graph',
   complexity: { time: 'O((V+E)logV)', space: 'O(V)' },
+  difficulty: 'intermediate',
+  tags: ['shortest-path'],
   dataKind: 'grid',
   defaultData: generateDefaultData(),
   codeLines: [

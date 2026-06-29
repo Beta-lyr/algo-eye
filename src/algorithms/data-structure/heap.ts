@@ -57,6 +57,8 @@ export const heap: Algorithm = {
   name: '堆',
   category: 'data-structure',
   complexity: { time: 'O(log n)', space: 'O(n)' },
+  difficulty: 'intermediate',
+  tags: ['tree-based'],
   dataKind: 'tree',
   defaultData: [40, 30, 20, 15, 10, 25, 18],
   codeLines: [

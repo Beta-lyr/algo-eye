@@ -24,6 +24,8 @@ export const radixSort: Algorithm = {
   name: '基数排序',
   category: 'sorting',
   complexity: { time: 'O(nk)', space: 'O(n+k)', stable: true },
+  difficulty: 'advanced',
+  tags: ['non-comparison', 'stable'],
   dataKind: 'array',
   defaultData: [170, 45, 75, 90, 802, 24, 2, 66],
   codeLines: [

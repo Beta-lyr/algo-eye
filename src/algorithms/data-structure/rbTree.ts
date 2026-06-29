@@ -66,6 +66,8 @@ export const rbTree: Algorithm = {
   name: '红黑树',
   category: 'data-structure',
   complexity: { time: 'O(log n)', space: 'O(n)' },
+  difficulty: 'advanced',
+  tags: ['tree-based'],
   dataKind: 'tree',
   defaultData: [50, 30, 70, 20, 40, 60, 80, 35],
   codeLines: [

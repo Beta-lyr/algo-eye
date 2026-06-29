@@ -14,6 +14,27 @@ export type AlgorithmCategory =
   | 'string'
   | 'dynamic-programming';
 
+/** 算法难度 */
+export type AlgorithmDifficulty = 'beginner' | 'intermediate' | 'advanced';
+
+/** 算法标签 */
+export type AlgorithmTag =
+  | 'comparison-based'
+  | 'non-comparison'
+  | 'in-place'
+  | 'stable'
+  | 'divide-conquer'
+  | 'ordered'
+  | 'unordered'
+  | 'shortest-path'
+  | 'mst'
+  | 'traversal'
+  | 'tree-based'
+  | 'hash-based'
+  | 'linked'
+  | 'pattern-matching'
+  | 'optimization';
+
 /** 复杂度信息 */
 export interface Complexity {
   time: string;
@@ -43,4 +64,8 @@ export interface Algorithm {
   generate(data: number[]): Generator<Step>;
   /** 默认数据集（可选） */
   defaultData?: number[];
+  /** 难度等级 */
+  difficulty?: AlgorithmDifficulty;
+  /** 标签列表 */
+  tags?: AlgorithmTag[];
 }

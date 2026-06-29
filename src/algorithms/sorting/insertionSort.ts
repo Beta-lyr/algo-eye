@@ -24,6 +24,8 @@ export const insertionSort: Algorithm = {
   name: '插入排序',
   category: 'sorting',
   complexity: { time: 'O(n²)', space: 'O(1)', stable: true },
+  difficulty: 'beginner',
+  tags: ['comparison-based', 'in-place', 'stable'],
   dataKind: 'array',
   defaultData: [42, 68, 35, 91, 27, 54, 73, 48, 61, 39, 82, 45],
   codeLines: [

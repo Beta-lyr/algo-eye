@@ -28,6 +28,8 @@ export const boyerMoore: Algorithm = {
   name: 'Boyer-Moore',
   category: 'string',
   complexity: { time: 'O(n/m)', space: 'O(k)' },
+  difficulty: 'advanced',
+  tags: ['pattern-matching'],
   dataKind: 'string',
   defaultData: [],
   codeLines: [

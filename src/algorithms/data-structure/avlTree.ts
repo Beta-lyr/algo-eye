@@ -61,6 +61,8 @@ export const avlTree: Algorithm = {
   name: 'AVL 树',
   category: 'data-structure',
   complexity: { time: 'O(log n)', space: 'O(n)' },
+  difficulty: 'intermediate',
+  tags: ['tree-based'],
   dataKind: 'tree',
   defaultData: [50, 30, 70, 20, 40, 80, 35],
   codeLines: [

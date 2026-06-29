@@ -24,6 +24,8 @@ export const linearSearch: Algorithm = {
   name: '线性搜索',
   category: 'searching',
   complexity: { time: 'O(n)', space: 'O(1)' },
+  difficulty: 'beginner',
+  tags: ['unordered'],
   dataKind: 'array',
   defaultData: [42, 68, 35, 91, 27, 54, 73, 48, 61, 39, 82, 45],
   codeLines: [

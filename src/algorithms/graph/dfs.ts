@@ -44,6 +44,8 @@ export const dfs: Algorithm = {
   name: '深度优先搜索',
   category: 'graph',
   complexity: { time: 'O(V+E)', space: 'O(V)' },
+  difficulty: 'beginner',
+  tags: ['traversal'],
   dataKind: 'grid',
   defaultData: generateDefaultData(),
   codeLines: [

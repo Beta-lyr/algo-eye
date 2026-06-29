@@ -24,6 +24,8 @@ export const bucketSort: Algorithm = {
   name: '桶排序',
   category: 'sorting',
   complexity: { time: 'O(n+k)', space: 'O(n+k)', stable: true },
+  difficulty: 'intermediate',
+  tags: ['non-comparison', 'stable'],
   dataKind: 'array',
   defaultData: [42, 32, 63, 71, 85, 24, 15, 96, 57, 38],
   codeLines: [

@@ -28,6 +28,8 @@ export const rabinKarp: Algorithm = {
   name: 'Rabin-Karp',
   category: 'string',
   complexity: { time: 'O(n+m)', space: 'O(1)' },
+  difficulty: 'intermediate',
+  tags: ['pattern-matching'],
   dataKind: 'string',
   defaultData: [],
   codeLines: [

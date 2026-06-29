@@ -53,6 +53,8 @@ export const bellmanFord: Algorithm = {
   name: 'Bellman-Ford',
   category: 'graph',
   complexity: { time: 'O(VE)', space: 'O(V)' },
+  difficulty: 'advanced',
+  tags: ['shortest-path'],
   dataKind: 'grid',
   defaultData: generateDefaultData(),
   codeLines: [

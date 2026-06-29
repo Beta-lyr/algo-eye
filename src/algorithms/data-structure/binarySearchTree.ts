@@ -43,6 +43,8 @@ export const binarySearchTree: Algorithm = {
   name: '二叉搜索树',
   category: 'data-structure',
   complexity: { time: 'O(log n)', space: 'O(n)' },
+  difficulty: 'beginner',
+  tags: ['tree-based'],
   dataKind: 'tree',
   defaultData: [50, 30, 70, 20, 40, 60, 80],
   codeLines: [

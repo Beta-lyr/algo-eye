@@ -24,6 +24,8 @@ export const countingSort: Algorithm = {
   name: '计数排序',
   category: 'sorting',
   complexity: { time: 'O(n+k)', space: 'O(k)', stable: true },
+  difficulty: 'intermediate',
+  tags: ['non-comparison', 'stable'],
   dataKind: 'array',
   defaultData: [4, 2, 2, 8, 3, 3, 1],
   codeLines: [

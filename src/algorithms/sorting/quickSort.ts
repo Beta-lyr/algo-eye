@@ -24,6 +24,8 @@ export const quickSort: Algorithm = {
   name: '快速排序',
   category: 'sorting',
   complexity: { time: 'O(n log n)', space: 'O(log n)', stable: false },
+  difficulty: 'intermediate',
+  tags: ['comparison-based', 'in-place', 'divide-conquer'],
   dataKind: 'array',
   defaultData: [38, 27, 43, 3, 9, 82, 10, 56, 74, 61, 45, 29],
   codeLines: [

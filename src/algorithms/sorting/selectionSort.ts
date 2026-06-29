@@ -24,6 +24,8 @@ export const selectionSort: Algorithm = {
   name: '选择排序',
   category: 'sorting',
   complexity: { time: 'O(n²)', space: 'O(1)', stable: false },
+  difficulty: 'beginner',
+  tags: ['comparison-based', 'in-place'],
   dataKind: 'array',
   defaultData: [64, 25, 12, 22, 11, 90, 45, 78, 33, 56, 87, 42],
   codeLines: [

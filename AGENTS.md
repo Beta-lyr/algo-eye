@@ -44,6 +44,28 @@ npm run preview      # vite preview
 2. 在 `src/renderers/` 创建 `Renderer<Snapshot>` 实现
 3. 在 `src/components/VizStage.tsx` 导入并注册到 `getRenderer()` 函数
 
+## Keyboard shortcuts (Workspace)
+
+| Key | Action |
+|-----|--------|
+| `Space` | 播放 / 暂停 |
+| `←` | 上一步 |
+| `→` | 下一步 |
+| `F` | 焦点模式（隐藏侧栏/代码面板） |
+| `?` | 快捷键帮助面板 |
+
+## Features added after V2
+
+- **键盘快捷键** — `Controls.tsx` 全局 keydown 监听
+- **CodePanel 自动滚动** — `CodePanel.tsx:61` useEffect + scrollIntoView
+- **侧边栏搜索过滤** — `AlgorithmTree.tsx` 搜索输入框，匹配算法名/id
+- **异常安全** — `useVizStore.ts` 内 `safeGenerate()` 包装所有 `algo.generate()`，失败时设置 `error` 状态 + 底部横幅
+- **Focus mode** — `Workspace.tsx` 的 `.main.focus` CSS 隐藏首尾 pane，快捷键 F
+- **柱状图悬停 tooltip** — `VizStage.tsx` 的 `xyToIndex` 映射函数 + `.bar-tooltip` CSS
+- **全屏按钮** — Fullscreen API，按钮在 viz-hd badges 区域
+- **书签 UI** — 进度条（点击跳转）+ 书签标记 + 列表（注释编辑）+ 导出 JSON
+- **首次加载修复** — store `currentAlgo: null` 确保 Workspace effect 触发 `selectAlgorithm`
+
 ## Design constraints
 
 - 只做暗色模式，主色磷光绿 `#33ff66` + 琥珀 `#ffb000`

@@ -54,6 +54,8 @@ export const astar: Algorithm = {
   name: 'A* 算法',
   category: 'graph',
   complexity: { time: 'O(E)', space: 'O(V)' },
+  difficulty: 'advanced',
+  tags: ['shortest-path'],
   dataKind: 'grid',
   defaultData: generateDefaultData(),
   codeLines: [

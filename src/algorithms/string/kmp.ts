@@ -28,6 +28,8 @@ export const kmp: Algorithm = {
   name: 'KMP',
   category: 'string',
   complexity: { time: 'O(n+m)', space: 'O(m)' },
+  difficulty: 'advanced',
+  tags: ['pattern-matching'],
   dataKind: 'string',
   defaultData: [],
   codeLines: [

@@ -49,6 +49,8 @@ export const linkedList: Algorithm = {
   name: '链表',
   category: 'data-structure',
   complexity: { time: 'O(n)', space: 'O(n)' },
+  difficulty: 'beginner',
+  tags: ['linked'],
   dataKind: 'linked-list',
   defaultData: [10, 20, 30, 40, 50],
   codeLines: [

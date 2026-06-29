@@ -24,6 +24,8 @@ export const exponentialSearch: Algorithm = {
   name: '指数搜索',
   category: 'searching',
   complexity: { time: 'O(log n)', space: 'O(1)' },
+  difficulty: 'intermediate',
+  tags: ['ordered'],
   dataKind: 'array',
   defaultData: [3, 9, 10, 27, 29, 38, 43, 45, 56, 61, 74, 82],
   codeLines: [

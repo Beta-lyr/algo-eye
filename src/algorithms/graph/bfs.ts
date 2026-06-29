@@ -48,6 +48,8 @@ export const bfs: Algorithm = {
   name: '广度优先搜索',
   category: 'graph',
   complexity: { time: 'O(V+E)', space: 'O(V)' },
+  difficulty: 'beginner',
+  tags: ['traversal', 'shortest-path'],
   dataKind: 'grid',
   defaultData: generateDefaultData(),
   codeLines: [

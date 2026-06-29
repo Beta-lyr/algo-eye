@@ -394,6 +394,36 @@ img {
   color: var(--txt-dim);
 }
 
+.diff-filters {
+  display: flex;
+  gap: 4px;
+  padding: 0 6px 4px;
+}
+
+.diff-pill {
+  flex: 1;
+  text-align: center;
+  padding: 3px 0;
+  font-size: 11px;
+  color: var(--txt-dim);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+  user-select: none;
+  transition: 0.12s;
+}
+
+.diff-pill:hover {
+  border-color: var(--green-faint);
+  color: var(--green-dim);
+}
+
+.diff-pill.active {
+  border-color: var(--green);
+  color: var(--green);
+  text-shadow: var(--glow-green);
+}
+
 .grp {
   margin-bottom: 6px;
 }
@@ -446,7 +476,7 @@ img {
 .leaf {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   padding: 5px 10px;
   font-size: 13px;
   color: var(--green-dim);
@@ -466,9 +496,30 @@ img {
   text-shadow: var(--glow-amber);
 }
 
-.leaf::before {
-  content: '·';
-  color: var(--green-faint);
+.leaf-name {
+  flex: 1;
+}
+
+.leaf-diff {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.leaf-diff.beginner {
+  background: #33ff66;
+  box-shadow: 0 0 4px #33ff66;
+}
+
+.leaf-diff.intermediate {
+  background: #ffb000;
+  box-shadow: 0 0 4px #ffb000;
+}
+
+.leaf-diff.advanced {
+  background: #ff5555;
+  box-shadow: 0 0 4px #ff5555;
 }
 
 .leaf.active::before {

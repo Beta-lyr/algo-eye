@@ -88,6 +88,8 @@ export const kruskal: Algorithm = {
   name: 'Kruskal',
   category: 'graph',
   complexity: { time: 'O(E log E)', space: 'O(V)' },
+  difficulty: 'intermediate',
+  tags: ['mst'],
   dataKind: 'grid',
   defaultData: generateDefaultData(),
   codeLines: [

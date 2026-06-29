@@ -28,6 +28,8 @@ export const knapsack: Algorithm = {
   name: '0-1 背包',
   category: 'dynamic-programming',
   complexity: { time: 'O(nW)', space: 'O(nW)' },
+  difficulty: 'intermediate',
+  tags: ['optimization'],
   dataKind: 'dp-grid',
   defaultData: [],
   codeLines: [

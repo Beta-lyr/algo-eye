@@ -47,6 +47,8 @@ export const prim: Algorithm = {
   name: 'Prim',
   category: 'graph',
   complexity: { time: 'O(E log V)', space: 'O(V)' },
+  difficulty: 'intermediate',
+  tags: ['mst'],
   dataKind: 'grid',
   defaultData: generateDefaultData(),
   codeLines: [

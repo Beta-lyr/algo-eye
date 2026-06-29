@@ -28,6 +28,8 @@ export const editDistance: Algorithm = {
   name: '编辑距离',
   category: 'dynamic-programming',
   complexity: { time: 'O(mn)', space: 'O(mn)' },
+  difficulty: 'intermediate',
+  tags: ['optimization'],
   dataKind: 'dp-grid',
   defaultData: [],
   codeLines: [

@@ -24,6 +24,8 @@ export const shellSort: Algorithm = {
   name: '希尔排序',
   category: 'sorting',
   complexity: { time: 'O(n^1.3)', space: 'O(1)', stable: false },
+  difficulty: 'intermediate',
+  tags: ['comparison-based', 'in-place'],
   dataKind: 'array',
   defaultData: [42, 68, 35, 91, 27, 54, 73, 48, 61, 39, 82, 45],
   codeLines: [

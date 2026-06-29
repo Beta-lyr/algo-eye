@@ -28,6 +28,8 @@ export const lcs: Algorithm = {
   name: 'LCS',
   category: 'dynamic-programming',
   complexity: { time: 'O(mn)', space: 'O(mn)' },
+  difficulty: 'intermediate',
+  tags: ['optimization'],
   dataKind: 'dp-grid',
   defaultData: [],
   codeLines: [
