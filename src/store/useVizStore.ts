@@ -34,6 +34,10 @@ export interface VizState {
   compareCount: number;
   swapCount: number;
 
+  // ===== 错误状态 =====
+  /** 算法执行错误信息 */
+  error: string | null;
+
   // ===== 手动模式 =====
   /** 是否启用手动操作模式 */
   manualMode: boolean;
@@ -86,6 +90,8 @@ export interface VizState {
   randomizeData: (count: number) => void;
   /** 重置到初始状态 */
   reset: () => void;
+  /** 清除错误 */
+  clearError: () => void;
   /** 切换对比模式 */
   toggleCompareMode: () => void;
   /** 设置对比算法 */
@@ -107,7 +113,21 @@ function randomArray(count: number): number[] {
   return arr;
 }
 
-export const useVizStore = create<VizState>((set, get) => ({
+export const useVizStore = create<VizState>((set, get) => {
+  /** 安全执行算法生成器，失败时设置 error */
+  function safeGenerate(algo: Algorithm, data: number[]): Step[] {
+    try {
+      const steps = Array.from(algo.generate(data));
+      if (get().error) set({ error: null });
+      return steps;
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      set({ error: `算法「${algo.name}」执行失败: ${msg}`, steps: [], stepIndex: 0, playing: false });
+      return [];
+    }
+  }
+
+  return ({
   // ===== 初始值 =====
   algorithms,
   currentAlgo: algorithms[0] ?? null,
@@ -118,6 +138,9 @@ export const useVizStore = create<VizState>((set, get) => ({
   speed: 4,
   compareCount: 0,
   swapCount: 0,
+
+  // ===== 错误状态初始值 =====
+  error: null,
 
   // ===== 手动模式初始值 =====
   manualMode: false,
@@ -244,7 +267,7 @@ export const useVizStore = create<VizState>((set, get) => ({
     if (!algo) return;
     const state = get();
     const data = algo.defaultData ?? state.data;
-    const steps = Array.from(algo.generate(data));
+    const steps = safeGenerate(algo, data);
 
     const updates: Partial<VizState> = {
       currentAlgo: algo,
@@ -260,7 +283,7 @@ export const useVizStore = create<VizState>((set, get) => ({
 
     // 如果是对比模式，也更新对比算法
     if (state.compareMode && state.compareAlgo) {
-      const compareSteps = Array.from(state.compareAlgo.generate(data));
+      const compareSteps = safeGenerate(state.compareAlgo, data);
       updates.compareSteps = compareSteps;
       updates.compareStepIndex = 0;
       updates.compareCompareCount = 0;
@@ -273,7 +296,7 @@ export const useVizStore = create<VizState>((set, get) => ({
   setData: (data: number[]) => {
     const { currentAlgo, compareMode, compareAlgo } = get();
     if (!currentAlgo) return;
-    const steps = Array.from(currentAlgo.generate(data));
+    const steps = safeGenerate(currentAlgo, data);
 
     const updates: Partial<VizState> = {
       data,
@@ -317,7 +340,7 @@ export const useVizStore = create<VizState>((set, get) => ({
     const { currentAlgo, compareMode, compareAlgo } = get();
     if (!currentAlgo) return;
     const data = randomArray(n);
-    const steps = Array.from(currentAlgo.generate(data));
+    const steps = safeGenerate(currentAlgo, data);
 
     const updates: Partial<VizState> = {
       data,
@@ -329,7 +352,7 @@ export const useVizStore = create<VizState>((set, get) => ({
     };
 
     if (compareMode && compareAlgo) {
-      const compareSteps = Array.from(compareAlgo.generate(data));
+      const compareSteps = safeGenerate(compareAlgo, data);
       updates.compareSteps = compareSteps;
       updates.compareStepIndex = 0;
       updates.compareCompareCount = 0;
@@ -342,7 +365,7 @@ export const useVizStore = create<VizState>((set, get) => ({
   reset: () => {
     const { currentAlgo, data, compareMode, compareAlgo } = get();
     if (!currentAlgo) return;
-    const steps = Array.from(currentAlgo.generate(data));
+    const steps = safeGenerate(currentAlgo, data);
 
     const updates: Partial<VizState> = {
       steps,
@@ -353,7 +376,7 @@ export const useVizStore = create<VizState>((set, get) => ({
     };
 
     if (compareMode && compareAlgo) {
-      const compareSteps = Array.from(compareAlgo.generate(data));
+      const compareSteps = safeGenerate(compareAlgo, data);
       updates.compareSteps = compareSteps;
       updates.compareStepIndex = 0;
       updates.compareCompareCount = 0;
@@ -363,6 +386,8 @@ export const useVizStore = create<VizState>((set, get) => ({
     set(updates as VizState);
   },
 
+  clearError: () => set({ error: null }),
+
   toggleCompareMode: () => {
     const { compareMode, compareAlgo, data } = get();
     if (!compareMode) {
@@ -370,7 +395,7 @@ export const useVizStore = create<VizState>((set, get) => ({
       if (!compareAlgo) {
         const firstAlgo = algorithms.find((a) => a.id !== get().currentAlgo?.id);
         if (firstAlgo) {
-          const compareSteps = Array.from(firstAlgo.generate(data));
+          const compareSteps = safeGenerate(firstAlgo, data);
           set({
             compareMode: true,
             compareAlgo: firstAlgo,
@@ -382,7 +407,7 @@ export const useVizStore = create<VizState>((set, get) => ({
           return;
         }
       } else {
-        const compareSteps = Array.from(compareAlgo.generate(data));
+        const compareSteps = safeGenerate(compareAlgo, data);
         set({
           compareMode: true,
           compareSteps,
@@ -400,7 +425,7 @@ export const useVizStore = create<VizState>((set, get) => ({
     const algo = getAlgorithmById(id);
     if (!algo) return;
     const { data } = get();
-    const compareSteps = Array.from(algo.generate(data));
+    const compareSteps = safeGenerate(algo, data);
     set({
       compareAlgo: algo,
       compareSteps,
@@ -458,7 +483,7 @@ export const useVizStore = create<VizState>((set, get) => ({
           : algo.defaultData ?? [];
 
         if (data.length >= 4 && data.length <= 64) {
-          const steps = Array.from(algo.generate(data));
+          const steps = safeGenerate(algo, data);
           const stepIndex = stepStr ? Math.min(Number(stepStr), steps.length - 1) : 0;
 
           set({
@@ -476,4 +501,5 @@ export const useVizStore = create<VizState>((set, get) => ({
     }
     return false;
   },
-}));
+  });
+});

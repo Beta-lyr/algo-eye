@@ -870,6 +870,38 @@ img {
   flex: 1;
 }
 
+/* ===== 错误提示 ===== */
+.error-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 18px;
+  background: rgba(60, 10, 10, 0.95);
+  border-top: 1px solid var(--red);
+  color: var(--red);
+  font-family: var(--mono);
+  font-size: 13px;
+  animation: errorSlideUp 0.2s ease-out;
+}
+
+@keyframes errorSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.error-banner .btn {
+  border-color: var(--red);
+  color: var(--red);
+  padding: 2px 10px;
+  font-size: 12px;
+}
+
 /* ===== 进度条 + 书签 ===== */
 .controls-wrap {
   display: flex;

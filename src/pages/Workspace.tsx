@@ -18,6 +18,8 @@ export function Workspace() {
   const selectAlgorithm = useVizStore((s) => s.selectAlgorithm);
   const currentAlgo = useVizStore((s) => s.currentAlgo);
   const algorithms = useVizStore((s) => s.algorithms);
+  const error = useVizStore((s) => s.error);
+  const clearError = useVizStore((s) => s.clearError);
 
   // 从 URL 参数加载状态
   useEffect(() => {
@@ -31,6 +33,12 @@ export function Workspace() {
   return (
     <>
       <CrtOverlay />
+      {error && (
+        <div className="error-banner">
+          <span>⚠ {error}</span>
+          <button className="btn" onClick={clearError}>✕</button>
+        </div>
+      )}
       <div className="app">
         <Topbar />
         <div className="main">
