@@ -1,20 +1,18 @@
-// ============================================================
-// AlgorithmTree — 算法目录树（左侧面板）
-// 按分类展示所有可用算法，支持折叠/展开
-// ============================================================
-
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useVizStore } from '../store/useVizStore';
 import { useT } from '../i18n';
-import type { Algorithm, AlgorithmCategory } from '../algorithms/types';
+import type { Algorithm } from '../algorithms/types';
 
-/** 分类排序 */
 const CATEGORY_ORDER: AlgorithmCategory[] = [
   'sorting',
   'searching',
   'graph',
   'data-structure',
+  'string',
+  'dynamic-programming',
 ];
+
+type AlgorithmCategory = Algorithm['category'];
 
 export function AlgorithmTree() {
   const algorithms = useVizStore((s) => s.algorithms);
@@ -22,13 +20,18 @@ export function AlgorithmTree() {
   const selectAlgorithm = useVizStore((s) => s.selectAlgorithm);
   const t = useT();
 
-  // 按分类分组
-  const grouped: Record<string, Algorithm[]> = {};
-  for (const algo of algorithms) {
-    (grouped[algo.category] ??= []).push(algo);
-  }
+  const [search, setSearch] = useState('');
 
-  // 默认展开排序分类
+  const grouped = useMemo(() => {
+    const g: Record<string, Algorithm[]> = {};
+    const q = search.toLowerCase().trim();
+    for (const algo of algorithms) {
+      if (q && !algo.name.toLowerCase().includes(q) && !algo.id.toLowerCase().includes(q)) continue;
+      (g[algo.category] ??= []).push(algo);
+    }
+    return g;
+  }, [algorithms, search]);
+
   const [openCategories, setOpenCategories] = useState<Set<string>>(
     new Set(['sorting']),
   );
@@ -50,17 +53,23 @@ export function AlgorithmTree() {
       <div className="pane-hd">
         {t.tree.title} <span className="hint">{t.tree.hint}</span>
       </div>
+      <input
+        className="tree-search"
+        placeholder="搜索算法…"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
       <div className="tree">
         {CATEGORY_ORDER.map((cat) => {
           const list = grouped[cat];
           if (!list || list.length === 0) return null;
-          const isOpen = openCategories.has(cat);
+          const isOpen = search ? true : openCategories.has(cat);
 
           return (
             <div key={cat} className={`grp${isOpen ? ' open' : ''}`}>
               <div
                 className="grp-hd"
-                onClick={() => toggleCategory(cat)}
+                onClick={() => !search && toggleCategory(cat)}
               >
                 <span className="chev" />
                 {t.category[cat]}

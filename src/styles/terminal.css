@@ -361,6 +361,30 @@ img {
   min-height: 0;
 }
 
+.tree-search {
+  display: block;
+  width: calc(100% - 12px);
+  margin: 6px;
+  padding: 6px 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  background: #060906;
+  border: 1px solid var(--border-bright);
+  color: var(--green);
+  border-radius: 2px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.tree-search:focus {
+  border-color: var(--green);
+  box-shadow: var(--glow-green);
+}
+
+.tree-search::placeholder {
+  color: var(--txt-dim);
+}
+
 .grp {
   margin-bottom: 6px;
 }
