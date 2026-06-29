@@ -26,9 +26,9 @@ export function trackAlgoView(
   if (!firstView) return;
 
   // 检查分类成就
+  const viewed = getViewedAlgos();
   for (const cat of CATEGORIES) {
     const catAlgos = algorithms.filter((a) => a.category === cat.id);
-    const viewed = getViewedAlgos();
     const allSeen = catAlgos.every((a) => viewed.has(a.id));
     if (allSeen) {
       dispatchAchievement(cat.achId);
