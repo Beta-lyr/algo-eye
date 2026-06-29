@@ -161,6 +161,7 @@ export const zh: Record<string, any> = {
     'lcs': '最长公共子序列',
     'knapsack': '0-1 背包',
     'edit-distance': '编辑距离',
+    'matrix-chain': '矩阵链乘法',
   },
 
   // 步骤消息模板

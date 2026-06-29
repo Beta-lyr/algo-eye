@@ -161,6 +161,7 @@ export const en: Record<string, any> = {
     'lcs': 'Longest Common Subsequence',
     'knapsack': '0-1 Knapsack',
     'edit-distance': 'Edit Distance',
+    'matrix-chain': 'Matrix Chain',
   },
 
   // Step message templates

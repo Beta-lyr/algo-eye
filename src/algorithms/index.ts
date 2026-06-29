@@ -39,6 +39,7 @@ import { boyerMoore } from './string/boyerMoore';
 import { lcs } from './dynamic-programming/lcs';
 import { knapsack } from './dynamic-programming/knapsack';
 import { editDistance } from './dynamic-programming/editDistance';
+import { matrixChain } from './dynamic-programming/matrixChain';
 
 /** 所有已注册的算法 */
 export const algorithms: Algorithm[] = [
@@ -77,6 +78,7 @@ export const algorithms: Algorithm[] = [
   lcs,
   knapsack,
   editDistance,
+  matrixChain,
 ];
 
 /** 按 ID 查找算法 */
