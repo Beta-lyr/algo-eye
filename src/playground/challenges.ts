@@ -25,7 +25,8 @@ function isSorted(data: number[]): boolean {
 }
 
 function lastSnapshot(steps: Step[]) {
-  return steps[steps.length - 1]?.snapshot;
+  if (steps.length === 0) return undefined;
+  return steps[steps.length - 1].snapshot;
 }
 
 const BUBBLE_STARTER = `const n = viz.length;

@@ -16,6 +16,7 @@ export function DraftList({ onLoadDraft, currentCode, currentInput }: Props) {
   const [autoSaved, setAutoSaved] = useState<PlaygroundDraft | null>(null);
   const [showSaveInput, setShowSaveInput] = useState(false);
   const [saveTitle, setSaveTitle] = useState('');
+  const [savedConfirm, setSavedConfirm] = useState(false);
 
   const refresh = useCallback(() => {
     setDrafts(listDrafts());
@@ -30,6 +31,8 @@ export function DraftList({ onLoadDraft, currentCode, currentInput }: Props) {
     saveDraft({ id: `draft-${now}`, title, code: currentCode, input: currentInput, createdAt: now, updatedAt: now });
     setShowSaveInput(false);
     setSaveTitle('');
+    setSavedConfirm(true);
+    setTimeout(() => setSavedConfirm(false), 1500);
     refresh();
   }, [saveTitle, currentCode, currentInput, refresh]);
 
@@ -58,6 +61,14 @@ export function DraftList({ onLoadDraft, currentCode, currentInput }: Props) {
             <button className="btn sm" onClick={handleClearAuto}>✕</button>
           </div>
         </div>
+      )}
+
+      {drafts.length === 0 && !autoSaved && (
+        <div className="empty-hint">{t.playground.noDrafts}</div>
+      )}
+
+      {savedConfirm && (
+        <div className="saved-confirm">{t.playground.saved}</div>
       )}
 
       {drafts.map((d) => (

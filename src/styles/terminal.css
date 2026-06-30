@@ -2608,6 +2608,44 @@ img {
 }
 
 /* 编辑器 controls */
+.filter-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--txt-dim);
+  font-family: var(--mono);
+  cursor: pointer;
+}
+
+.filter-tag.active {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(51, 255, 102, 0.08);
+}
+
+.empty-hint {
+  font-size: 11px;
+  color: var(--txt-dim);
+  padding: 8px 10px;
+  font-family: var(--mono);
+}
+
+.saved-confirm {
+  font-size: 11px;
+  color: var(--green);
+  padding: 4px 10px;
+  font-family: var(--mono);
+}
+
 .btn-row {
   display: flex;
   gap: 8px;

@@ -111,6 +111,11 @@ export const zh: Record<string, any> = {
     statDuration: '耗时',
     passed: '✓ 通过',
     failed: '✕ 失败',
+    noExamples: '暂无示例',
+    noChallenges: '暂无挑战题',
+    noDrafts: '暂无草稿',
+    saved: '✓ 已保存',
+    diffAll: '全部',
     // V3.4 Batch 1
     examples: '示例库',
     drafts: '草稿',

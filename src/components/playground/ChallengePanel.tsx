@@ -25,21 +25,25 @@ export function ChallengePanel({ activeChallengeId, onSelect, onExit }: Props) {
           <button className="btn sm" onClick={onExit}>{t.playground.exitChallenge}</button>
         )}
       </div>
-      {CHALLENGES.map((ch) => (
-        <div
-          key={ch.id}
-          className={`challenge-item${ch.id === activeChallengeId ? ' active' : ''}`}
-          onClick={() => onSelect(ch)}
-        >
-          <div className="challenge-item-hd">
-            <span className="challenge-title">{ch.title}</span>
-            <span className={`diff-badge diff-${ch.difficulty}`}>
-              {DIFFICULTY_LABEL[ch.difficulty]}
-            </span>
+      {CHALLENGES.length === 0 ? (
+        <div className="empty-hint">{t.playground.noChallenges}</div>
+      ) : (
+        CHALLENGES.map((ch) => (
+          <div
+            key={ch.id}
+            className={`challenge-item${ch.id === activeChallengeId ? ' active' : ''}`}
+            onClick={() => onSelect(ch)}
+          >
+            <div className="challenge-item-hd">
+              <span className="challenge-title">{ch.title}</span>
+              <span className={`diff-badge diff-${ch.difficulty}`}>
+                {DIFFICULTY_LABEL[ch.difficulty]}
+              </span>
+            </div>
+            <div className="challenge-desc">{ch.description}</div>
           </div>
-          <div className="challenge-desc">{ch.description}</div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }

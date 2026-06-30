@@ -111,6 +111,11 @@ export const en: Record<string, any> = {
     statDuration: 'Duration',
     passed: '✓ PASSED',
     failed: '✕ FAILED',
+    noExamples: 'No examples',
+    noChallenges: 'No challenges',
+    noDrafts: 'No drafts',
+    saved: '✓ Saved',
+    diffAll: 'All',
     // V3.4 Batch 1
     examples: 'Examples',
     drafts: 'Drafts',

@@ -208,6 +208,19 @@ export function Playground() {
     setChallengeId(null);
   }, []);
 
+  // Ctrl+Enter 运行
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && !running) {
+      e.preventDefault();
+      void runCode(code);
+    }
+  }, [code, runCode, running]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
+
   // 重置网格
   const handleRegenerateGrid = useCallback(() => {
     setGridData(generateGridData(gridRows, gridCols, gridWallRatio));
@@ -230,7 +243,10 @@ export function Playground() {
     return () => { if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current); };
   }, [code, buildInput]);
 
-  // 从 URL hash 加载
+  const runCodeRef = useRef(runCode);
+  runCodeRef.current = runCode;
+
+  // 从 URL hash 加载 + 自动运行
   useEffect(() => {
     const shareData = parseShareHash();
     if (shareData) {
@@ -238,6 +254,8 @@ export function Playground() {
       setDataKind(shareData.input.kind);
       applyInput(shareData.input);
       window.history.replaceState(null, '', window.location.pathname);
+      const timer = setTimeout(() => runCodeRef.current(shareData.code), 100);
+      return () => clearTimeout(timer);
     }
   }, [applyInput]);
 
@@ -347,7 +365,9 @@ export function Playground() {
             <div className="pane-hd">
               <span>{t.playground.editor}</span>
               {challengeId && (
-                <span className="challenge-badge">{t.playground.challengeMode}</span>
+                <span className="challenge-badge">
+                  {CHALLENGES.find((c) => c.id === challengeId)?.title ?? t.playground.challengeMode}
+                </span>
               )}
             </div>
             <CodeEditor value={code} onChange={setCode} />
