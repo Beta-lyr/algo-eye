@@ -63,6 +63,8 @@ export const zh: Record<string, any> = {
     lengthDesc: '数据长度',
     errorLength: '数据长度须在 2-64 之间',
     errorNumber: '数据含非数字',
+    trace: '执行轨迹',
+    traceEmpty: '暂无步骤，点运行执行代码',
   },
 
   // Landing 页

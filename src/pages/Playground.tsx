@@ -13,6 +13,8 @@ import { CrtOverlay } from '../components/crt/CrtOverlay';
 import { useT } from '../i18n';
 import { WorkerClient } from '../playground/workerClient';
 import { BUBBLE_TEMPLATE } from '../playground/templates';
+import { CodeEditor } from '../components/CodeEditor';
+import { TracePanel } from '../components/TracePanel';
 import type { Step } from '../engine/types';
 
 const DEFAULT_DATA = [42, 68, 35, 91, 27, 54, 73, 48];
@@ -117,13 +119,8 @@ export function Playground() {
           {/* 右：代码编辑器 + 运行 */}
           <section className="pane">
             <div className="pane-hd">{t.playground.editor}</div>
-            <textarea
-              className="code-editor"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              spellCheck={false}
-              wrap="off"
-            />
+            <CodeEditor value={code} onChange={setCode} />
+            <TracePanel />
             <div className="editor-controls">
               <label className="data-label">{t.playground.data}</label>
               <input

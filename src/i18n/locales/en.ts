@@ -63,6 +63,8 @@ export const en: Record<string, any> = {
     lengthDesc: 'data length',
     errorLength: 'Data length must be 2-64',
     errorNumber: 'Data contains non-number',
+    trace: 'Execution Trace',
+    traceEmpty: 'No steps yet, click Run',
   },
 
   // Landing page
