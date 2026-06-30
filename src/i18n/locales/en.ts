@@ -31,6 +31,7 @@ export const en: Record<string, any> = {
     'data-structure': 'Structure',
     string: 'String',
     'dynamic-programming': 'DP',
+    playground: 'Playground',
   },
 
   // Algorithm categories (detailed)
@@ -41,6 +42,27 @@ export const en: Record<string, any> = {
     'data-structure': 'Data Structure',
     string: 'String Matching',
     'dynamic-programming': 'Dynamic Programming',
+  },
+
+  // V3 Playground custom code page
+  playground: {
+    apiRef: 'viz API Reference',
+    editor: 'Code Editor',
+    data: 'Data',
+    run: '▸ Run',
+    running: 'Running...',
+    compareDesc: 'compare i,j',
+    swapDesc: 'swap i,j',
+    setDesc: 'assign [i]=v',
+    markDesc: 'mark persistent state',
+    pointerDesc: 'pointer label',
+    visitDesc: 'visit i',
+    logDesc: 'free text step',
+    doneDesc: 'done (all sorted)',
+    valueDesc: 'read [i]',
+    lengthDesc: 'data length',
+    errorLength: 'Data length must be 2-64',
+    errorNumber: 'Data contains non-number',
   },
 
   // Landing page

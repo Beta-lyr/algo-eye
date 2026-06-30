@@ -31,6 +31,7 @@ export const zh: Record<string, any> = {
     'data-structure': '数据结构',
     string: '字符串',
     'dynamic-programming': '动态规划',
+    playground: '自定义代码',
   },
 
   // 算法分类（详细）
@@ -41,6 +42,27 @@ export const zh: Record<string, any> = {
     'data-structure': '数据结构',
     string: '字符串匹配',
     'dynamic-programming': '动态规划',
+  },
+
+  // V3 Playground 自定义代码页
+  playground: {
+    apiRef: 'viz API 速查',
+    editor: '代码编辑器',
+    data: '数据',
+    run: '▸ 运行',
+    running: '运行中...',
+    compareDesc: '比较 i,j',
+    swapDesc: '交换 i,j',
+    setDesc: '赋值 [i]=v',
+    markDesc: '标记持久状态',
+    pointerDesc: '打指针标签',
+    visitDesc: '访问 i',
+    logDesc: '自由文本步骤',
+    doneDesc: '完成（全标记 sorted）',
+    valueDesc: '读取 [i]',
+    lengthDesc: '数据长度',
+    errorLength: '数据长度须在 2-64 之间',
+    errorNumber: '数据含非数字',
   },
 
   // Landing 页

@@ -891,6 +891,84 @@ img {
   cursor: not-allowed;
 }
 
+/* ===== V3 Playground 自定义代码页 ===== */
+.api-ref {
+  padding: 10px 14px;
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+  font-size: 12px;
+}
+.api-ref > div {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.api-ref code {
+  color: var(--green);
+  font-size: 12px;
+  text-shadow: var(--glow-green);
+}
+.api-ref span {
+  color: var(--txt-dim);
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.code-editor {
+  flex: 1;
+  min-height: 0;
+  background: var(--bg);
+  color: var(--green);
+  border: none;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.5;
+  resize: none;
+  outline: none;
+  white-space: pre;
+  overflow: auto;
+}
+.code-editor:focus {
+  border-color: var(--green-faint);
+  box-shadow: var(--glow-green);
+}
+
+.editor-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+}
+.data-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--green-faint);
+  white-space: nowrap;
+}
+.data-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg);
+  color: var(--green);
+  border: 1px solid var(--border-bright);
+  border-radius: 2px;
+  padding: 6px 10px;
+  font-family: var(--mono);
+  font-size: 13px;
+  outline: none;
+}
+.data-input:focus {
+  border-color: var(--green-faint);
+  box-shadow: var(--glow-green);
+}
+
 .ctrl-group {
   display: flex;
   align-items: center;

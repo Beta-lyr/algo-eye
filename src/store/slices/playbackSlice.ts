@@ -2,7 +2,9 @@ import { algorithms, getAlgorithmById } from '../../algorithms';
 import { computeStats } from '../../lib/stats';
 import { buildShareUrl, parseShareUrl } from '../../lib/shareUrl';
 import { randomArray, rebuildSteps } from './shared';
+import { CUSTOM_ALGO } from '../../playground/customAlgo';
 import type { VizState } from '../useVizStore';
+import type { Step } from '../../engine/types';
 
 export function createPlaybackSlice(set: (partial: Partial<VizState>) => void, get: () => VizState): Partial<VizState> {
   return {
@@ -59,6 +61,24 @@ export function createPlaybackSlice(set: (partial: Partial<VizState>) => void, g
     toggleFocusMode: () => set((s) => ({ focusMode: !s.focusMode })),
 
     clearError: () => set({ error: null }),
+
+    // V3：接收 Worker 产出的 steps，用虚拟算法占位 currentAlgo，
+    // 让 VizStage/Controls 零改动复用（它们依赖 currentAlgo.dataKind 选渲染器）
+    loadCustomSteps: (steps: Step[], data: number[]) => {
+      set({
+        currentAlgo: CUSTOM_ALGO,
+        data,
+        steps,
+        stepIndex: 0,
+        playing: false,
+        compareCount: 0,
+        swapCount: 0,
+        selectedIndices: [],
+        hintMessage: '',
+        compareMode: false,
+        error: null,
+      });
+    },
 
     getShareUrl: () => {
       const { currentAlgo, data, stepIndex } = get();

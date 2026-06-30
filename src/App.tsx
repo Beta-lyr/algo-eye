@@ -3,6 +3,7 @@ import { Landing } from './pages/Landing';
 import { Workspace } from './pages/Workspace';
 import { Learn } from './pages/Learn';
 import { About } from './pages/About';
+import { Playground } from './pages/Playground';
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
         <Route path="/algo/:id/learn" element={<Learn />} />
         {/* 关于页面 */}
         <Route path="/about" element={<About />} />
+        {/* V3 自定义代码可视化 */}
+        <Route path="/playground" element={<Playground />} />
         {/* 默认路由 */}
         <Route path="*" element={<Workspace />} />
       </Routes>

@@ -83,6 +83,8 @@ export interface VizState {
   syncCompareStep: () => void;
   getShareUrl: () => string;
   loadFromUrl: () => boolean;
+  /** V3：接收用户代码（Worker 产出）的 steps，灌入 store 供 VizStage/Controls 播放 */
+  loadCustomSteps: (steps: import('../engine/types').Step[], data: number[]) => void;
 }
 
 export const useVizStore = create<VizState>((set, get) => ({

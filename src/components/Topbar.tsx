@@ -45,6 +45,7 @@ export function Topbar() {
             {t.nav[key]}
           </a>
         ))}
+        <Link to="/playground">{t.nav.playground}</Link>
         <Link to="/about">{t.common.about}</Link>
       </nav>
       <div className="status">
