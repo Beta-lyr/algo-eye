@@ -17,6 +17,8 @@ const STATE_COLORS: Record<ElementState, string> = {
   current: '#ffb000',
   path: '#00e676',
   pivot: '#ff79c6',
+  match: '#00e5ff',
+  mismatch: '#ff5555',
 };
 
 /** 性能阈值：数据量超过此值时关闭辉光效果 */

@@ -84,7 +84,7 @@ export interface VizState {
   getShareUrl: () => string;
   loadFromUrl: () => boolean;
   /** V3：接收用户代码（Worker 产出）的 steps，灌入 store 供 VizStage/Controls 播放 */
-  loadCustomSteps: (steps: import('../engine/types').Step[], data: number[]) => void;
+  loadCustomSteps: (steps: import('../engine/types').Step[], input: import('../playground/protocol').PlaygroundInput) => void;
   /** V3.2：流式追加步骤（不影响当前播放位置） */
   appendSteps: (steps: import('../engine/types').Step[]) => void;
 }

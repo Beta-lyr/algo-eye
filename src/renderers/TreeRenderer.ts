@@ -18,6 +18,8 @@ const STATE_COLORS: Record<ElementState, string> = {
   current: '#ffb000',
   path: '#00e676',
   pivot: '#ff79c6',
+  match: '#00e5ff',
+  mismatch: '#ff5555',
 };
 
 /** 节点半径 */

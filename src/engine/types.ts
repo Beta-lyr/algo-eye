@@ -20,6 +20,9 @@ export type ElementState =
   | 'swap'
   | 'sorted'
   | 'visit'
+  | 'match'
+  | 'path'
+  | 'mismatch'
   | 'current'
   | 'path'
   | 'pivot';

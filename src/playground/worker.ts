@@ -1,14 +1,8 @@
-// ============================================================
-// V3 Web Worker 入口——在主线程外执行用户代码
-// 死循环不会冻死 UI；Worker 天然无 DOM/localStorage 访问
-// ============================================================
-
 import { createViz } from './vizApi';
 import { instrumentLines } from './lineInstrument';
 import type { Step } from '../engine/types';
 import type { RunRequest, RunResponse } from './protocol';
 
-/** 每批发送的步数 */
 const BATCH_SIZE = 50;
 
 (self as unknown as Worker).onmessage = (e: MessageEvent<RunRequest>) => {
@@ -18,10 +12,11 @@ const BATCH_SIZE = 50;
   const steps: Step[] = [];
   let batch: Step[] = [];
   const post = (msg: RunResponse) => { (self as unknown as Worker).postMessage(msg); };
+  const dataKind = req.input.kind;
 
   const flushBatch = () => {
     if (batch.length === 0) return;
-    post({ type: 'progress', steps: batch, dataKind: req.dataKind });
+    post({ type: 'progress', steps: batch, dataKind });
     batch = [];
   };
 
@@ -31,13 +26,12 @@ const BATCH_SIZE = 50;
       batch.push(step);
       if (batch.length >= BATCH_SIZE) flushBatch();
     };
-    const viz = createViz(req.data, steps, onStep);
+    const viz = createViz(req.input, steps, onStep);
     const fn = new Function('viz', `"use strict";\n${code}`);
     fn(viz);
     flushBatch();
-    post({ type: 'done', dataKind: req.dataKind });
+    post({ type: 'done', dataKind });
   } catch (err) {
-    // 异常时先刷残余步骤（如 StepLimitError 前已录制的步骤）
     flushBatch();
     const line = err instanceof SyntaxError && (err as any).loc?.line
       ? (err as any).loc.line

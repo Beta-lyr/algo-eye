@@ -72,4 +72,44 @@ describe('instrumentLines', () => {
     const result = instrumentLines('viz.compare(i, j + 1)');
     expect(result).toBe('viz.compare(i, j + 1, 1)');
   });
+
+  // V3.3 string methods
+  it('instruments setText and setPattern', () => {
+    expect(instrumentLines('viz.setText("abc")')).toBe('viz.setText("abc", 1)');
+    expect(instrumentLines('viz.setPattern("xyz")')).toBe('viz.setPattern("xyz", 1)');
+  });
+
+  it('instruments markText and markPattern', () => {
+    expect(instrumentLines('viz.markText(0, "compare")')).toBe('viz.markText(0, "compare", 1)');
+    expect(instrumentLines('viz.markPattern(1, "match")')).toBe('viz.markPattern(1, "match", 1)');
+  });
+
+  it('skips textCharAt and patternCharAt (read-only)', () => {
+    const result = instrumentLines('const c = viz.textCharAt(0); viz.markText(0, "m")');
+    expect(result).toBe('const c = viz.textCharAt(0); viz.markText(0, "m", 1)');
+  });
+
+  it('skips textLength and patternLength getters', () => {
+    const result = instrumentLines('const n = viz.textLength; const m = viz.patternLength; viz.markText(0, "c")');
+    // textLength and patternLength are property accesses, not calls - acorn won't parse them as CallExpression
+    expect(result).toContain('viz.markText(0, "c", 1)');
+  });
+
+  // V3.3 grid methods
+  it('instruments setCols, setStart, setTarget', () => {
+    expect(instrumentLines('viz.setCols(8)')).toBe('viz.setCols(8, 1)');
+    expect(instrumentLines('viz.setStart(0, 0)')).toBe('viz.setStart(0, 0, 1)');
+    expect(instrumentLines('viz.setTarget(7, 7)')).toBe('viz.setTarget(7, 7, 1)');
+  });
+
+  it('instruments markCell, visitCell, setCell', () => {
+    expect(instrumentLines('viz.markCell(1, 2, "path")')).toBe('viz.markCell(1, 2, "path", 1)');
+    expect(instrumentLines('viz.visitCell(3, 4)')).toBe('viz.visitCell(3, 4, 1)');
+    expect(instrumentLines('viz.setCell(0, 0, 5)')).toBe('viz.setCell(0, 0, 5, 1)');
+  });
+
+  it('skips index, row, col, inBounds, cellValue (read-only)', () => {
+    const result = instrumentLines('const idx = viz.index(1, 2); viz.markCell(1, 2, "path")');
+    expect(result).toBe('const idx = viz.index(1, 2); viz.markCell(1, 2, "path", 1)');
+  });
 });

@@ -3,15 +3,14 @@
 // 生命周期由 Playground 组件持有（useEffect 创建+卸载销毁）
 // ============================================================
 
-import type { RunRequest, RunResponse, DataKind } from './protocol';
+import type { RunRequest, RunResponse, PlaygroundInput } from './protocol';
 import type { Step } from '../engine/types';
 
 export interface RunOptions {
   /** 用户代码 */
   code: string;
-  /** 初始数据 */
-  data: number[];
-  dataKind: DataKind;
+  /** V3.3: 按 kind 区分的输入数据 */
+  input: PlaygroundInput;
   /** 超时毫秒，默认 5000 */
   timeoutMs?: number;
   /** V3.2 流式回调：每批步骤到达时调用 */
@@ -73,8 +72,7 @@ export class WorkerClient {
       const req: RunRequest = {
         type: 'run',
         code: opts.code,
-        data: opts.data,
-        dataKind: opts.dataKind,
+        input: opts.input,
       };
       worker.postMessage(req);
     });

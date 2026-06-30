@@ -15,6 +15,8 @@ const COLORS: Record<string, string> = {
   current: '#ffb000',
   path: '#33ff66',
   pivot: '#ff79c6',
+  match: '#00e5ff',
+  mismatch: '#ff5555',
 };
 
 export const StringRenderer: Renderer<Snapshot> = {

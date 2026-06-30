@@ -15,6 +15,8 @@ const BAR_COLORS: Record<ElementState, [number, number, number]> = {
   sorted: [0, 0.9, 0.46],
   path: [0, 0.9, 0.46],
   pivot: [1, 0.69, 0],
+  match: [0, 0.9, 0.46],
+  mismatch: [1, 0.33, 0.33],
 };
 
 const VS = `#version 100

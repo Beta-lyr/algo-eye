@@ -3,6 +3,8 @@ import type { CallExpression, Node } from 'acorn';
 
 const VIZ_METHODS = new Set([
   'compare', 'swap', 'set', 'mark', 'pointer', 'visit', 'log', 'done',
+  'setText', 'setPattern', 'markText', 'markPattern',
+  'setCols', 'setStart', 'setTarget', 'markCell', 'visitCell', 'setCell',
 ]);
 
 interface InjectPoint {

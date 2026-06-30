@@ -5,6 +5,8 @@ import { randomArray, rebuildSteps } from './shared';
 import { CUSTOM_ALGO } from '../../playground/customAlgo';
 import type { VizState } from '../useVizStore';
 import type { Step } from '../../engine/types';
+import type { PlaygroundInput } from '../../playground/protocol';
+import type { Algorithm } from '../../algorithms/types';
 
 type SetFn = (partial: Partial<VizState> | ((state: VizState) => Partial<VizState>)) => void;
 
@@ -66,9 +68,13 @@ export function createPlaybackSlice(set: SetFn, get: () => VizState): Partial<Vi
 
     // V3：接收 Worker 产出的 steps，用虚拟算法占位 currentAlgo，
     // 让 VizStage/Controls 零改动复用（它们依赖 currentAlgo.dataKind 选渲染器）
-    loadCustomSteps: (steps: Step[], data: number[]) => {
+    loadCustomSteps: (steps: Step[], input: PlaygroundInput) => {
+      const dataKind = steps.length > 0 ? steps[0].snapshot.kind : 'array';
+      const data = input.kind === 'array' ? input.data
+        : input.kind === 'grid' ? input.data
+        : [];
       set({
-        currentAlgo: CUSTOM_ALGO,
+        currentAlgo: { ...CUSTOM_ALGO, dataKind } as Algorithm,
         data,
         steps,
         stepIndex: 0,
