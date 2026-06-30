@@ -98,6 +98,18 @@ export const en: Record<string, any> = {
     setTargetDesc: 'set target',
     rowsDesc: 'grid rows',
     colsDesc: 'grid cols',
+    // V3.4
+    examples: 'Examples',
+    drafts: 'Drafts',
+    autoSaved: 'Auto-saved',
+    restore: 'Restore',
+    saveDraft: 'Save Draft',
+    draftPlaceholder: 'Enter draft name…',
+    load: 'Load',
+    share: 'Share',
+    shareTitle: 'Share Code',
+    copy: 'Copy',
+    copied: 'Copied!',
     // common
     trace: 'Execution Trace',
     traceEmpty: 'No steps yet, click Run',

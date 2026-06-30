@@ -98,6 +98,18 @@ export const zh: Record<string, any> = {
     setTargetDesc: '设置终点',
     rowsDesc: '网格行数',
     colsDesc: '网格列数',
+    // V3.4
+    examples: '示例库',
+    drafts: '草稿',
+    autoSaved: '自动保存',
+    restore: '恢复',
+    saveDraft: '保存草稿',
+    draftPlaceholder: '输入草稿名称…',
+    load: '加载',
+    share: '分享',
+    shareTitle: '分享代码',
+    copy: '复制',
+    copied: '已复制',
     // common
     trace: '执行轨迹',
     traceEmpty: '暂无步骤，点运行执行代码',

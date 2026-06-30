@@ -6,23 +6,19 @@ import { Controls } from '../components/Controls';
 import { CrtOverlay } from '../components/crt/CrtOverlay';
 import { useT } from '../i18n';
 import { WorkerClient } from '../playground/workerClient';
-import { TEMPLATES, BUBBLE_TEMPLATE } from '../playground/templates';
+import { EXAMPLES, BUBBLE_TEMPLATE, generateGridData } from '../playground/examples';
+import type { PlaygroundExample } from '../playground/examples';
 import { CodeEditor } from '../components/CodeEditor';
 import { TracePanel } from '../components/TracePanel';
+import { ExampleLibrary } from '../components/playground/ExampleLibrary';
+import { DraftList } from '../components/playground/DraftList';
+import { ShareDialog } from '../components/playground/ShareDialog';
+import { autoSaveDraft, loadAutoSaved } from '../playground/storage';
+import { parseShareHash } from '../playground/share';
 import type { PlaygroundInput } from '../playground/protocol';
+import type { PlaygroundDraft } from '../playground/storage';
 
 type DataKindTab = 'array' | 'string' | 'grid';
-
-function generateGridData(rows: number, cols: number, wallRatio: number): number[] {
-  const data: number[] = [];
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const isBorder = r === 0 || r === rows - 1 || c === 0 || c === cols - 1;
-      data.push(isBorder ? 0 : Math.random() < wallRatio ? -1 : 0);
-    }
-  }
-  return data;
-}
 
 const DEFAULT_GRID = { rows: 8, cols: 8, wallRatio: 0.2 };
 
@@ -32,14 +28,13 @@ export function Playground() {
   const [code, setCode] = useState(BUBBLE_TEMPLATE);
   const [running, setRunning] = useState(false);
   const [errMsg, setErrMsg] = useState<string | null>(null);
+  const [showShare, setShowShare] = useState(false);
 
   // array input
   const [dataStr, setDataStr] = useState('42, 68, 35, 91, 27, 54, 73, 48');
-
   // string input
   const [textStr, setTextStr] = useState('ABABDABACDABABCABAB');
   const [patternStr, setPatternStr] = useState('ABABCABAB');
-
   // grid input
   const [gridRows, setGridRows] = useState(DEFAULT_GRID.rows);
   const [gridCols, setGridCols] = useState(DEFAULT_GRID.cols);
@@ -85,6 +80,20 @@ export function Playground() {
     }
   }, [dataKind, dataStr, textStr, patternStr, gridData, gridCols, gridStartR, gridStartC, gridTargetR, gridTargetC, t]);
 
+  const applyInput = useCallback((inp: PlaygroundInput) => {
+    if (inp.kind === 'array') {
+      setDataStr(inp.data.join(', '));
+    } else if (inp.kind === 'string') {
+      setTextStr(inp.text);
+      setPatternStr(inp.pattern);
+    } else if (inp.kind === 'grid') {
+      setGridData([...inp.data]);
+      setGridCols(inp.cols);
+      if (inp.start) { setGridStartR(inp.start[0]); setGridStartC(inp.start[1]); }
+      if (inp.target) { setGridTargetR(inp.target[0]); setGridTargetC(inp.target[1]); }
+    }
+  }, []);
+
   const runCode = useCallback(async (src: string) => {
     let input: PlaygroundInput;
     try {
@@ -122,50 +131,32 @@ export function Playground() {
     void runCode(code);
   }, [code, runCode]);
 
-  // 切换 dataKind → 找第一个匹配的模板，否则保持代码
+  // 切换 dataKind
   const handleKindChange = useCallback((kind: DataKindTab) => {
     setDataKind(kind);
     setErrMsg(null);
-    const template = TEMPLATES.find((t) => t.input.kind === kind);
-    if (template) {
-      setCode(template.code);
-      // 初始化输入
-      if (kind === 'array' && template.input.kind === 'array') {
-        setDataStr(template.input.data.join(', '));
-      } else if (kind === 'string' && template.input.kind === 'string') {
-        setTextStr(template.input.text);
-        setPatternStr(template.input.pattern);
-      } else if (kind === 'grid' && template.input.kind === 'grid') {
-        setGridData([...template.input.data]);
-        setGridCols(template.input.cols);
-        if (template.input.start) { setGridStartR(template.input.start[0]); setGridStartC(template.input.start[1]); }
-        if (template.input.target) { setGridTargetR(template.input.target[0]); setGridTargetC(template.input.target[1]); }
-      }
+    const example = EXAMPLES.find((ex) => ex.dataKind === kind);
+    if (example) {
+      setCode(example.code);
+      applyInput(example.input);
     }
-  }, []);
+  }, [applyInput]);
 
-  // 选模板
-  const handleSelectTemplate = useCallback((templateId: string) => {
-    const tpl = TEMPLATES.find((t) => t.id === templateId);
-    if (!tpl) return;
-    setCode(tpl.code);
-    const inp = tpl.input;
-    if (inp.kind === 'array') {
-      setDataStr(inp.data.join(', '));
-      handleKindChange('array');
-    } else if (inp.kind === 'string') {
-      setTextStr(inp.text);
-      setPatternStr(inp.pattern);
-      handleKindChange('string');
-    } else if (inp.kind === 'grid') {
-      setGridData([...inp.data]);
-      setGridCols(inp.cols);
-      if (inp.start) { setGridStartR(inp.start[0]); setGridStartC(inp.start[1]); }
-      if (inp.target) { setGridTargetR(inp.target[0]); setGridTargetC(inp.target[1]); }
-      handleKindChange('grid');
-    }
-  }, [handleKindChange]);
+  // 选示例
+  const handleSelectExample = useCallback((example: PlaygroundExample) => {
+    setDataKind(example.dataKind);
+    setCode(example.code);
+    applyInput(example.input);
+  }, [applyInput]);
 
+  // 加载草稿
+  const handleLoadDraft = useCallback((draft: PlaygroundDraft) => {
+    setDataKind(draft.input.kind);
+    setCode(draft.code);
+    applyInput(draft.input);
+  }, [applyInput]);
+
+  // 重置网格
   const handleRegenerateGrid = useCallback(() => {
     setGridData(generateGridData(gridRows, gridCols, gridWallRatio));
     setGridStartR(0);
@@ -174,18 +165,51 @@ export function Playground() {
     setGridTargetC(gridCols - 1);
   }, [gridRows, gridCols, gridWallRatio]);
 
-  // 自动跑模板（store 无 currentAlgo 时）
+  // 自动保存 (500ms debounce)
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    let input: PlaygroundInput;
+    try { input = buildInput(); } catch { return; }
+    autoSaveTimerRef.current = setTimeout(() => {
+      const now = Date.now();
+      autoSaveDraft({ id: 'autosave', title: '', code, input, createdAt: now, updatedAt: now });
+    }, 500);
+    return () => { if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current); };
+  }, [code, buildInput]);
+
+  // 从 URL hash 加载
+  useEffect(() => {
+    const shareData = parseShareHash();
+    if (shareData) {
+      setCode(shareData.code);
+      setDataKind(shareData.input.kind);
+      applyInput(shareData.input);
+      // 清除 hash，防止刷新后重复加载
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  }, [applyInput]);
+
+  // 自动跑第一个示例（无 currentAlgo 时）
   useEffect(() => {
     if (useVizStore.getState().currentAlgo) return;
-    const first = TEMPLATES.find((t) => t.id === 'bubble')!;
+    const first = EXAMPLES.find((ex) => ex.id === 'bubble')!;
     setCode(first.code);
     if (first.input.kind === 'array') {
       setDataStr(first.input.data.join(', '));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const filteredTemplates = TEMPLATES.filter((t) => t.input.kind === dataKind);
+  // 自动恢复草稿（仅在首次加载且无 share hash 时）
+  useEffect(() => {
+    if (parseShareHash()) return; // share hash 优先
+    const autoSaved = loadAutoSaved();
+    if (autoSaved && autoSaved.code !== BUBBLE_TEMPLATE) {
+      setCode(autoSaved.code);
+      setDataKind(autoSaved.input.kind);
+      applyInput(autoSaved.input);
+    }
+  }, [applyInput]);
 
   return (
     <>
@@ -199,17 +223,15 @@ export function Playground() {
       <div className="app">
         <Topbar />
         <div className="main">
-          {/* 左：viz API 速查 + 模板 */}
+          {/* 左：API 速查 + 示例库 + 草稿 */}
           <section className="pane">
             <div className="pane-hd">{t.playground.apiRef}</div>
             <div className="api-ref">
-              {/* dataKind 切换 */}
               <div className="kind-tabs">
                 <button className={`kind-tab${dataKind === 'array' ? ' active' : ''}`} onClick={() => handleKindChange('array')}>{t.playground.tabArray}</button>
                 <button className={`kind-tab${dataKind === 'string' ? ' active' : ''}`} onClick={() => handleKindChange('string')}>{t.playground.tabString}</button>
                 <button className={`kind-tab${dataKind === 'grid' ? ' active' : ''}`} onClick={() => handleKindChange('grid')}>{t.playground.tabGrid}</button>
               </div>
-              {/* API 列表按 dataKind 过滤 */}
               {dataKind === 'array' && (
                 <>
                   <div><code>viz.compare(i, j)</code><span>{t.playground.compareDesc}</span></div>
@@ -257,17 +279,8 @@ export function Playground() {
               )}
             </div>
 
-            {/* 模板列表 */}
-            <div className="pane-hd" style={{ marginTop: 16 }}>{t.tree.title}</div>
-            {filteredTemplates.map((tpl) => (
-              <div
-                key={tpl.id}
-                className="template-item"
-                onClick={() => handleSelectTemplate(tpl.id)}
-              >
-                {tpl.label}
-              </div>
-            ))}
+            <ExampleLibrary dataKind={dataKind} onSelect={handleSelectExample} />
+            <DraftList onLoadDraft={handleLoadDraft} currentCode={code} currentInput={buildInput()} />
           </section>
 
           {/* 中：画布 */}
@@ -279,7 +292,6 @@ export function Playground() {
             <CodeEditor value={code} onChange={setCode} />
             <TracePanel />
             <div className="editor-controls">
-              {/* 输入区按 dataKind 切换 */}
               {dataKind === 'array' && (
                 <>
                   <label className="data-label">{t.playground.data}</label>
@@ -321,14 +333,22 @@ export function Playground() {
                   <button className="btn" onClick={handleRegenerateGrid}>{t.playground.regenerate}</button>
                 </div>
               )}
-              <button className="btn primary" onClick={handleRun} disabled={running}>
-                {running ? t.playground.running : t.playground.run}
-              </button>
+              <div className="btn-row">
+                <button className="btn primary" onClick={handleRun} disabled={running}>
+                  {running ? t.playground.running : t.playground.run}
+                </button>
+                <button className="btn" onClick={() => setShowShare(true)} disabled={running}>
+                  {t.playground.share}
+                </button>
+              </div>
             </div>
           </section>
         </div>
         <Controls />
       </div>
+      {showShare && (
+        <ShareDialog code={code} input={buildInput()} onClose={() => setShowShare(false)} />
+      )}
     </>
   );
 }
