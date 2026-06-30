@@ -85,14 +85,17 @@ export interface VizState {
   loadFromUrl: () => boolean;
   /** V3：接收用户代码（Worker 产出）的 steps，灌入 store 供 VizStage/Controls 播放 */
   loadCustomSteps: (steps: import('../engine/types').Step[], data: number[]) => void;
+  /** V3.2：流式追加步骤（不影响当前播放位置） */
+  appendSteps: (steps: import('../engine/types').Step[]) => void;
 }
 
-export const useVizStore = create<VizState>((set, get) => ({
-  algorithms,
-
-  ...createPlaybackSlice(set, get),
-  ...createCompareSlice(set, get),
-  ...createChallengeSlice(set, get),
-  ...createBookmarkSlice(set, get),
-  ...createManualSlice(set, get),
-}));
+export const useVizStore = create<VizState>((set, get) => {
+  const slices = {
+    ...createPlaybackSlice(set, get),
+    ...createCompareSlice(set, get),
+    ...createChallengeSlice(set, get),
+    ...createBookmarkSlice(set, get),
+    ...createManualSlice(set, get),
+  };
+  return { algorithms, ...slices } as VizState;
+});

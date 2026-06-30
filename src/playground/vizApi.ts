@@ -26,21 +26,21 @@ export class StepLimitError extends Error {
  */
 export interface VizApi {
   /** 比较 i,j（标记 compare） */
-  compare(i: number, j: number): void;
+  compare(i: number, j: number, __line?: number): void;
   /** 交换 i,j（交换并标记 swap） */
-  swap(i: number, j: number): void;
+  swap(i: number, j: number, __line?: number): void;
   /** 赋值 [i]=v（标记 current） */
-  set(i: number, value: number): void;
+  set(i: number, value: number, __line?: number): void;
   /** 标记持久状态（如 'sorted'，后续步骤保留） */
-  mark(i: number, state: ElementState): void;
+  mark(i: number, state: ElementState, __line?: number): void;
   /** 打指针标签（如 'pivot'） */
-  pointer(i: number, label: string): void;
+  pointer(i: number, label: string, __line?: number): void;
   /** 访问 i（标记 visit，搜索/图场景） */
-  visit(i: number): void;
+  visit(i: number, __line?: number): void;
   /** 自由文本步骤（不改数据，不计入 compare/swap 统计） */
-  log(message: string): void;
+  log(message: string, __line?: number): void;
   /** 完成，全部标记 sorted */
-  done(): void;
+  done(__line?: number): void;
   /** 读取 [i]（不录制） */
   value(i: number): number;
   /** 数据长度（不录制） */
@@ -51,8 +51,9 @@ export interface VizApi {
  * 创建一个 viz 录制实例。
  * @param data 初始数据（会被复制，不污染入参）
  * @param steps 录制目标数组（由调用方持有，worker 产出后 postMessage 回主线程）
+ * @param onStep V3.2 流式回调，每录制一步调用一次
  */
-export function createViz(data: number[], steps: Step[]): VizApi {
+export function createViz(data: number[], steps: Step[], onStep?: (step: Step) => void): VizApi {
   const arr = [...data];
   /** 持久状态（如 sorted），与 bubbleSort 的 sortedIndices 同理 */
   const persist: Record<number, ElementState> = {};
@@ -74,10 +75,13 @@ export function createViz(data: number[], steps: Step[]): VizApi {
     indices: number[],
     message: string,
     states: Record<number, ElementState>,
+    line?: number,
     pointers?: Record<number, string>,
   ) => {
     if (steps.length >= MAX_STEPS) throw new StepLimitError();
-    steps.push({ type, indices, message, snapshot: snap(states, pointers) });
+    const step: Step = { type, indices, line, message, snapshot: snap(states, pointers) };
+    steps.push(step);
+    onStep?.(step);
   };
 
   /** 下标越界校验，给用户友好报错而非静默 NaN */
@@ -88,44 +92,43 @@ export function createViz(data: number[], steps: Step[]): VizApi {
   };
 
   return {
-    compare(i, j) {
+    compare(i, j, __line) {
       guard(i, 'compare');
       guard(j, 'compare');
       rec('compare', [i, j], `比较 [${i}]=${arr[i]} 与 [${j}]=${arr[j]}`,
-        { [i]: 'compare', [j]: 'compare' }, { [i]: 'i', [j]: 'j' });
+        { [i]: 'compare', [j]: 'compare' }, __line, { [i]: 'i', [j]: 'j' });
     },
-    swap(i, j) {
+    swap(i, j, __line) {
       guard(i, 'swap');
       guard(j, 'swap');
       [arr[i], arr[j]] = [arr[j], arr[i]];
-      rec('swap', [i, j], `交换 [${i}] ↔ [${j}]`, { [i]: 'swap', [j]: 'swap' });
+      rec('swap', [i, j], `交换 [${i}] ↔ [${j}]`, { [i]: 'swap', [j]: 'swap' }, __line);
     },
-    set(i, v) {
+    set(i, v, __line) {
       guard(i, 'set');
       arr[i] = v;
-      rec('set', [i], `设置 [${i}] = ${v}`, { [i]: 'current' });
+      rec('set', [i], `设置 [${i}] = ${v}`, { [i]: 'current' }, __line);
     },
-    mark(i, s) {
+    mark(i, s, __line) {
       guard(i, 'mark');
       persist[i] = s;
-      rec('mark', [i], `标记 [${i}] → ${s}`, { [i]: s });
+      rec('mark', [i], `标记 [${i}] → ${s}`, { [i]: s }, __line);
     },
-    pointer(i, l) {
+    pointer(i, l, __line) {
       guard(i, 'pointer');
-      rec('pointer', [i], `指针 [${i}] = ${l}`, {}, { [i]: l });
+      rec('pointer', [i], `指针 [${i}] = ${l}`, {}, __line, { [i]: l });
     },
-    visit(i) {
+    visit(i, __line) {
       guard(i, 'visit');
       persist[i] = 'visit';
-      rec('visit', [i], `访问 [${i}]`, { [i]: 'visit' });
+      rec('visit', [i], `访问 [${i}]`, { [i]: 'visit' }, __line);
     },
-    log(m) {
-      // 自由文本：用 'mark' type + 空 states，不计入 compare/swap 统计，画面保持当前持久状态
-      rec('mark', [], m, {});
+    log(m, __line) {
+      rec('mark', [], m, {}, __line);
     },
-    done() {
+    done(__line) {
       for (let k = 0; k < arr.length; k++) persist[k] = 'sorted';
-      rec('done', [], '完成', {});
+      rec('done', [], '完成', {}, __line);
     },
     value(i) {
       guard(i, 'value');

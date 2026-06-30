@@ -4,6 +4,7 @@
 // ============================================================
 
 import type { RunRequest, RunResponse, DataKind } from './protocol';
+import type { Step } from '../engine/types';
 
 export interface RunOptions {
   /** 用户代码 */
@@ -13,6 +14,8 @@ export interface RunOptions {
   dataKind: DataKind;
   /** 超时毫秒，默认 5000 */
   timeoutMs?: number;
+  /** V3.2 流式回调：每批步骤到达时调用 */
+  onProgress?: (steps: Step[]) => void;
 }
 
 export class WorkerClient {
@@ -29,7 +32,7 @@ export class WorkerClient {
 
   /**
    * 运行用户代码。
-   * - 成功：resolve { type: 'steps', steps }
+   * - 流式：onProgress 逐批收到步骤，最后 resolve DoneSignal
    * - 失败：resolve { type: 'error', message }
    * - 超时：terminate Worker 并 resolve 超时错误（不死循环）
    */
@@ -47,7 +50,6 @@ export class WorkerClient {
         worker.onerror = null;
       };
 
-      // 超时保护：5s 后强杀子线程
       this.timer = setTimeout(() => {
         cleanup();
         this.terminate();
@@ -55,8 +57,13 @@ export class WorkerClient {
       }, timeoutMs);
 
       worker.onmessage = (e: MessageEvent<RunResponse>) => {
+        const msg = e.data;
+        if (msg.type === 'progress') {
+          opts.onProgress?.(msg.steps);
+          return;
+        }
         cleanup();
-        resolve(e.data);
+        resolve(msg);
       };
       worker.onerror = (e: ErrorEvent) => {
         cleanup();

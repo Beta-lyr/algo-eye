@@ -15,7 +15,6 @@ import { WorkerClient } from '../playground/workerClient';
 import { BUBBLE_TEMPLATE } from '../playground/templates';
 import { CodeEditor } from '../components/CodeEditor';
 import { TracePanel } from '../components/TracePanel';
-import type { Step } from '../engine/types';
 
 const DEFAULT_DATA = [42, 68, 35, 91, 27, 54, 73, 48];
 
@@ -32,6 +31,7 @@ export function Playground() {
   const client = clientRef.current;
 
   const loadCustomSteps = useVizStore((s) => s.loadCustomSteps);
+  const appendSteps = useVizStore((s) => s.appendSteps);
   const storeError = useVizStore((s) => s.error);
   const clearError = useVizStore((s) => s.clearError);
 
@@ -53,18 +53,35 @@ export function Playground() {
     return arr;
   }, [t]);
 
-  /** 执行用户代码：跑 Worker → 灌 steps / 显示错误 */
+  /** 执行用户代码：跑 Worker → 流式灌步骤 / 显示错误 */
   const runCode = useCallback(async (src: string, data: number[]) => {
     setRunning(true);
     setErrMsg(null);
-    const res = await client.run({ code: src, data, dataKind: 'array' });
-    if (res.type === 'steps') {
-      loadCustomSteps(res.steps as Step[], data);
-    } else if (res.type === 'error') {
-      setErrMsg(res.message);
+
+    // 首次运行先用 loadCustomSteps 初始化（清空旧状态）
+    let firstBatch = true;
+
+    const res = await client.run({
+      code: src,
+      data,
+      dataKind: 'array',
+      onProgress: (batch) => {
+        if (firstBatch) {
+          loadCustomSteps(batch, data);
+          firstBatch = false;
+        } else {
+          appendSteps(batch);
+        }
+      },
+    });
+
+    if (res.type === 'error') {
+      // V3.2：行号附在错误消息末尾
+      const lineInfo = res.line != null ? ` [行 ${res.line}]` : '';
+      setErrMsg(`${res.message}${lineInfo}`);
     }
     setRunning(false);
-  }, [client, loadCustomSteps]);
+  }, [client, loadCustomSteps, appendSteps]);
 
   const handleRun = useCallback(() => {
     let data: number[];

@@ -94,4 +94,56 @@ describe('createViz 录制契约', () => {
     expect(snap.states[1]).toBe('sorted');
     expect(snap.states[2]).toBe('sorted');
   });
+
+  // ===== V3.2: __line 参数传递 =====
+
+  it('__line 参数写入 Step.line', () => {
+    const steps: Step[] = [];
+    const viz = createViz([5, 3], steps);
+    viz.compare(0, 1, 5);
+    expect(steps[0].line).toBe(5);
+  });
+
+  it('所有录制方法都接受 __line 末参', () => {
+    const steps: Step[] = [];
+    const viz = createViz([1, 2, 3], steps);
+    viz.set(0, 9, 10);
+    viz.mark(1, 'sorted', 11);
+    viz.pointer(2, 'p', 12);
+    viz.visit(0, 13);
+    viz.log('test', 14);
+    viz.done(15);
+
+    expect(steps[0].line).toBe(10);
+    expect(steps[1].line).toBe(11);
+    expect(steps[2].line).toBe(12);
+    expect(steps[3].line).toBe(13);
+    expect(steps[4].line).toBe(14);
+    expect(steps[5].line).toBe(15);
+  });
+
+  it('省略 __line 时 line 为 undefined', () => {
+    const steps: Step[] = [];
+    const viz = createViz([5, 3], steps);
+    viz.compare(0, 1);
+    expect(steps[0].line).toBeUndefined();
+  });
+
+  it('instrumentLines + createViz 管线: 行号正确传入 Step.line', () => {
+    const steps: Step[] = [];
+    const viz = createViz([5, 3], steps);
+    const code = 'viz.compare(0, 1, 3); viz.swap(0, 1, 4);';
+    new Function('viz', code)(viz);
+    expect(steps[0].line).toBe(3);
+    expect(steps[1].line).toBe(4);
+  });
+
+  it('onStep 流式回调每步触发一次', () => {
+    const steps: Step[] = [];
+    const called: number[] = [];
+    const viz = createViz([5, 3], steps, (s) => { called.push(s.type === 'compare' ? 1 : 0); });
+    viz.compare(0, 1);
+    viz.done();
+    expect(called).toHaveLength(2);
+  });
 });

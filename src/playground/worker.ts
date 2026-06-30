@@ -4,27 +4,48 @@
 // ============================================================
 
 import { createViz } from './vizApi';
+import { instrumentLines } from './lineInstrument';
 import type { Step } from '../engine/types';
 import type { RunRequest, RunResponse } from './protocol';
 
-(self as unknown).onmessage = (e: MessageEvent<RunRequest>) => {
+/** 每批发送的步数 */
+const BATCH_SIZE = 50;
+
+(self as unknown as Worker).onmessage = (e: MessageEvent<RunRequest>) => {
   const req = e.data;
   if (!req || req.type !== 'run') return;
 
   const steps: Step[] = [];
+  let batch: Step[] = [];
+  const post = (msg: RunResponse) => { (self as unknown as Worker).postMessage(msg); };
+
+  const flushBatch = () => {
+    if (batch.length === 0) return;
+    post({ type: 'progress', steps: batch, dataKind: req.dataKind });
+    batch = [];
+  };
+
   try {
-    const viz = createViz(req.data, steps);
-    // 用 Function 构造器隔离用户代码，viz 为唯一外部依赖
-    // 用户代码以 viz 为参数调用，无法访问主线程 DOM / localStorage / fetch
-    const fn = new Function('viz', `"use strict";\n${req.code}`);
+    const code = instrumentLines(req.code);
+    const onStep = (step: Step) => {
+      batch.push(step);
+      if (batch.length >= BATCH_SIZE) flushBatch();
+    };
+    const viz = createViz(req.data, steps, onStep);
+    const fn = new Function('viz', `"use strict";\n${code}`);
     fn(viz);
-    const res: RunResponse = { type: 'steps', steps, dataKind: req.dataKind };
-    (self as unknown as Worker).postMessage(res);
+    flushBatch();
+    post({ type: 'done', dataKind: req.dataKind });
   } catch (err) {
-    const res: RunResponse = {
+    // 异常时先刷残余步骤（如 StepLimitError 前已录制的步骤）
+    flushBatch();
+    const line = err instanceof SyntaxError && (err as any).loc?.line
+      ? (err as any).loc.line
+      : undefined;
+    post({
       type: 'error',
       message: err instanceof Error ? `${err.name}: ${err.message}` : String(err),
-    };
-    (self as unknown as Worker).postMessage(res);
+      line,
+    });
   }
 };

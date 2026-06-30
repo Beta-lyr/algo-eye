@@ -22,4 +22,5 @@ export interface RunRequest {
 export type RunResponse =
   | { type: 'steps'; steps: Step[]; dataKind: DataKind }
   | { type: 'error'; message: string; line?: number }
-  | { type: 'progress'; count: number };
+  | { type: 'progress'; steps: Step[]; dataKind: DataKind }
+  | { type: 'done'; dataKind: DataKind };

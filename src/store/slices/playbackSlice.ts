@@ -6,7 +6,9 @@ import { CUSTOM_ALGO } from '../../playground/customAlgo';
 import type { VizState } from '../useVizStore';
 import type { Step } from '../../engine/types';
 
-export function createPlaybackSlice(set: (partial: Partial<VizState>) => void, get: () => VizState): Partial<VizState> {
+type SetFn = (partial: Partial<VizState> | ((state: VizState) => Partial<VizState>)) => void;
+
+export function createPlaybackSlice(set: SetFn, get: () => VizState): Partial<VizState> {
   return {
     algorithms,
     currentAlgo: null,
@@ -78,6 +80,13 @@ export function createPlaybackSlice(set: (partial: Partial<VizState>) => void, g
         compareMode: false,
         error: null,
       });
+    },
+
+    // V3.2：流式追加步骤（playback 中途不影响 stepIndex/playing）
+    appendSteps: (newSteps: Step[]) => {
+      const { steps } = get();
+      if (newSteps.length === 0) return;
+      set({ steps: [...steps, ...newSteps] });
     },
 
     getShareUrl: () => {
