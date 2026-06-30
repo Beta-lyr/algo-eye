@@ -13,8 +13,13 @@ import { TracePanel } from '../components/TracePanel';
 import { ExampleLibrary } from '../components/playground/ExampleLibrary';
 import { DraftList } from '../components/playground/DraftList';
 import { ShareDialog } from '../components/playground/ShareDialog';
+import { ChallengePanel } from '../components/playground/ChallengePanel';
+import { RunSummary } from '../components/playground/RunSummary';
+import type { RunStats } from '../components/playground/RunSummary';
 import { autoSaveDraft, loadAutoSaved } from '../playground/storage';
 import { parseShareHash } from '../playground/share';
+import { CHALLENGES } from '../playground/challenges';
+import type { PlaygroundChallenge, ChallengeResult } from '../playground/challenges';
 import type { PlaygroundInput } from '../playground/protocol';
 import type { PlaygroundDraft } from '../playground/storage';
 
@@ -29,6 +34,9 @@ export function Playground() {
   const [running, setRunning] = useState(false);
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const [showShare, setShowShare] = useState(false);
+  const [challengeId, setChallengeId] = useState<string | null>(null);
+  const [runStats, setRunStats] = useState<RunStats | null>(null);
+  const [challengeResult, setChallengeResult] = useState<ChallengeResult | null>(null);
 
   // array input
   const [dataStr, setDataStr] = useState('42, 68, 35, 91, 27, 54, 73, 48');
@@ -53,7 +61,6 @@ export function Playground() {
   const appendSteps = useVizStore((s) => s.appendSteps);
   const storeError = useVizStore((s) => s.error);
   const clearError = useVizStore((s) => s.clearError);
-
   useEffect(() => {
     return () => client.terminate();
   }, [client]);
@@ -94,6 +101,8 @@ export function Playground() {
     }
   }, []);
 
+  const runStartRef = useRef(0);
+
   const runCode = useCallback(async (src: string) => {
     let input: PlaygroundInput;
     try {
@@ -105,6 +114,9 @@ export function Playground() {
 
     setRunning(true);
     setErrMsg(null);
+    setRunStats(null);
+    setChallengeResult(null);
+    runStartRef.current = performance.now();
     let firstBatch = true;
 
     const res = await client.run({
@@ -123,9 +135,34 @@ export function Playground() {
     if (res.type === 'error') {
       const lineInfo = res.line != null ? ` [行 ${res.line}]` : '';
       setErrMsg(`${res.message}${lineInfo}`);
+      setRunning(false);
+      return;
     }
+
+    // 计算统计
+    const allSteps = useVizStore.getState().steps;
+    const duration = Math.round(performance.now() - runStartRef.current);
+    const stats: RunStats = {
+      total: allSteps.length,
+      compare: allSteps.filter((s) => s.type === 'compare').length,
+      swap: allSteps.filter((s) => s.type === 'swap').length,
+      visit: allSteps.filter((s) => s.type === 'visit').length,
+      mark: allSteps.filter((s) => s.type === 'mark').length,
+      duration,
+    };
+    setRunStats(stats);
+
+    // 判题
+    if (challengeId) {
+      const challenge = CHALLENGES.find((c) => c.id === challengeId);
+      if (challenge) {
+        const result = challenge.validate(allSteps);
+        setChallengeResult(result);
+      }
+    }
+
     setRunning(false);
-  }, [client, loadCustomSteps, appendSteps, buildInput]);
+  }, [client, loadCustomSteps, appendSteps, buildInput, challengeId]);
 
   const handleRun = useCallback(() => {
     void runCode(code);
@@ -144,6 +181,7 @@ export function Playground() {
 
   // 选示例
   const handleSelectExample = useCallback((example: PlaygroundExample) => {
+    setChallengeId(null);
     setDataKind(example.dataKind);
     setCode(example.code);
     applyInput(example.input);
@@ -151,10 +189,24 @@ export function Playground() {
 
   // 加载草稿
   const handleLoadDraft = useCallback((draft: PlaygroundDraft) => {
+    setChallengeId(null);
     setDataKind(draft.input.kind);
     setCode(draft.code);
     applyInput(draft.input);
   }, [applyInput]);
+
+  // 选挑战
+  const handleSelectChallenge = useCallback((challenge: PlaygroundChallenge) => {
+    setChallengeId(challenge.id);
+    setDataKind(challenge.dataKind);
+    setCode(challenge.starterCode);
+    applyInput(challenge.input);
+  }, [applyInput]);
+
+  // 退出挑战
+  const handleExitChallenge = useCallback(() => {
+    setChallengeId(null);
+  }, []);
 
   // 重置网格
   const handleRegenerateGrid = useCallback(() => {
@@ -185,7 +237,6 @@ export function Playground() {
       setCode(shareData.code);
       setDataKind(shareData.input.kind);
       applyInput(shareData.input);
-      // 清除 hash，防止刷新后重复加载
       window.history.replaceState(null, '', window.location.pathname);
     }
   }, [applyInput]);
@@ -202,7 +253,7 @@ export function Playground() {
 
   // 自动恢复草稿（仅在首次加载且无 share hash 时）
   useEffect(() => {
-    if (parseShareHash()) return; // share hash 优先
+    if (parseShareHash()) return;
     const autoSaved = loadAutoSaved();
     if (autoSaved && autoSaved.code !== BUBBLE_TEMPLATE) {
       setCode(autoSaved.code);
@@ -223,7 +274,7 @@ export function Playground() {
       <div className="app">
         <Topbar />
         <div className="main">
-          {/* 左：API 速查 + 示例库 + 草稿 */}
+          {/* 左：API 速查 + 示例库 + 挑战题 + 草稿 */}
           <section className="pane">
             <div className="pane-hd">{t.playground.apiRef}</div>
             <div className="api-ref">
@@ -280,6 +331,11 @@ export function Playground() {
             </div>
 
             <ExampleLibrary dataKind={dataKind} onSelect={handleSelectExample} />
+            <ChallengePanel
+              activeChallengeId={challengeId}
+              onSelect={handleSelectChallenge}
+              onExit={handleExitChallenge}
+            />
             <DraftList onLoadDraft={handleLoadDraft} currentCode={code} currentInput={buildInput()} />
           </section>
 
@@ -288,7 +344,12 @@ export function Playground() {
 
           {/* 右：编辑器 + 输入 */}
           <section className="pane">
-            <div className="pane-hd">{t.playground.editor}</div>
+            <div className="pane-hd">
+              <span>{t.playground.editor}</span>
+              {challengeId && (
+                <span className="challenge-badge">{t.playground.challengeMode}</span>
+              )}
+            </div>
             <CodeEditor value={code} onChange={setCode} />
             <TracePanel />
             <div className="editor-controls">
@@ -341,6 +402,11 @@ export function Playground() {
                   {t.playground.share}
                 </button>
               </div>
+              {challengeId && (
+                <button className="btn" onClick={handleExitChallenge}>
+                  {t.playground.exitChallenge}
+                </button>
+              )}
             </div>
           </section>
         </div>
@@ -348,6 +414,13 @@ export function Playground() {
       </div>
       {showShare && (
         <ShareDialog code={code} input={buildInput()} onClose={() => setShowShare(false)} />
+      )}
+      {runStats && (
+        <RunSummary
+          stats={runStats}
+          challengeResult={challengeResult}
+          onClose={() => { setRunStats(null); setChallengeResult(null); }}
+        />
       )}
     </>
   );

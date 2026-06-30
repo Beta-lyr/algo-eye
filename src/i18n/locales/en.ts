@@ -98,7 +98,20 @@ export const en: Record<string, any> = {
     setTargetDesc: 'set target',
     rowsDesc: 'grid rows',
     colsDesc: 'grid cols',
-    // V3.4
+    // V3.4 Batch 2
+    challenges: 'Challenges',
+    exitChallenge: 'Exit Challenge',
+    challengeMode: 'Challenge Mode',
+    runComplete: 'Run Complete',
+    statSteps: 'Total Steps',
+    statCompare: 'Compare',
+    statSwap: 'Swap',
+    statVisit: 'Visit',
+    statMark: 'Mark',
+    statDuration: 'Duration',
+    passed: '✓ PASSED',
+    failed: '✕ FAILED',
+    // V3.4 Batch 1
     examples: 'Examples',
     drafts: 'Drafts',
     autoSaved: 'Auto-saved',

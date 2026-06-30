@@ -98,7 +98,20 @@ export const zh: Record<string, any> = {
     setTargetDesc: '设置终点',
     rowsDesc: '网格行数',
     colsDesc: '网格列数',
-    // V3.4
+    // V3.4 Batch 2
+    challenges: '挑战题',
+    exitChallenge: '退出挑战',
+    challengeMode: '挑战模式',
+    runComplete: '执行完成',
+    statSteps: '总步骤',
+    statCompare: '比较',
+    statSwap: '交换',
+    statVisit: '访问',
+    statMark: '标记',
+    statDuration: '耗时',
+    passed: '✓ 通过',
+    failed: '✕ 失败',
+    // V3.4 Batch 1
     examples: '示例库',
     drafts: '草稿',
     autoSaved: '自动保存',
